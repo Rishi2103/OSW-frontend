@@ -1,0 +1,17 @@
+.partners-content{
+    font-family: 'Open Sans', sans-serif;
+    text-align: left;
+    padding: 30px 150px;
+}
+.partners-head{
+    font-size: 32px;
+    font-weight: 300px;
+    margin-bottom: 0;
+}
+p{
+    margin-bottom: 0;
+}
+.general-partners{
+    font-size: 21px;
+    margin-top: 30px;
+}

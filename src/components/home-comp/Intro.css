@@ -1,0 +1,124 @@
+.container {
+    display: flex;
+    align-items: center;
+    margin-top: 0 ; 
+    margin-left: 120px;
+    margin-right: 200px;
+  }
+  
+  .text {
+
+    display: flex;
+  flex-direction: column; 
+    /* flex: 1; */
+    /* padding: 10px; */
+    width: 800px;
+    justify-content: flex-start;
+  align-items: flex-start;
+  }
+  
+  .image {
+    display: flex;
+    flex: 1; 
+    padding: 10px;
+    margin-left: 100px;
+    padding-right: 0;
+  }
+  
+  /* Optional: Style the image width to a specific size */
+  .image img {
+    width: 400px;
+    height: 300px;
+  }
+  .heading{
+    font-family: 'Open Sans', sans-serif;
+    color: #616161;
+    font-size: 230%;
+    margin-bottom: 0;
+    font-weight: 550px;
+  }
+  .AppName{
+    font-family: 'Open Sans', sans-serif;
+    font-size: 25px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .intro{
+    font-family: 'Open Sans', sans-serif;
+    text-align: left;
+    margin-top: 0;
+  }
+  .box-container{
+    display: flex;
+  }
+  .rounded-grey-div-lg{
+    flex: 1;
+    display: inline-block;
+    background-color: #E0E0E0;
+    border-radius: 10px;
+    width: 113px;
+    height: 24px;
+  margin-right: 5px;
+  }
+  .rounded-grey-div-sm{
+    /* flex: 1; */
+    display: inline-block;
+    background-color: #E0E0E0;
+    border-radius: 10px;
+    width: 60px;
+    height: 24px;
+  margin-right: 5px;
+  }
+  .div-link{
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    text-decoration: none;
+    color: #000000DE;
+  }
+.buttons{
+    margin-top: 20px;
+}
+.my-button{
+    background-color: #0E8388;
+    border: none;
+    margin-right: 10px;
+}
+.my-button:hover{
+    background-color: #3b8d90;
+}
+.my-button-2{
+    color: #0E8388;
+
+    /* Set the outline style with the custom color */
+    border: 2px solid #0E8388;
+  
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: transparent;
+}
+.my-button-2:hover{
+    border-color: #0E8388;
+    background-color: #0E838819;
+    color: #0E8388;
+}
+@media (max-width: 767px) {
+  .container{
+    flex-direction: column;
+  }
+  
+  .text{
+    width: 100%;
+    padding-left: 50px;
+  }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .image{
+    padding-left: 50px;
+  }
+}
+@media (min-width: 1024px) {
+  .containercss{
+      max-width: 100%;
+  }
+}
