@@ -83,6 +83,7 @@ const Events = () => {
             <td>{event.venue}</td>
             <td>
               {/* Add your "See More" link or button here */}
+              {/* Add your "See More" link or button here */}
               <a href={`/events/${event.id}`}>See More</a>
             </td>
           </tr>
