@@ -53,7 +53,7 @@ const Events = () => {
     <>
     <div className='eventpg-intro'>
       <div className='eventpg-con'>
-      <b><p className="eventpg-head">Our <span style={{ color: '#0E8388' }}>Partners</span></p></b>
+      <b><p className="eventpg-head">Our <span style={{ color: '#0E8388' }}>Events</span></p></b>
       <p className='eventpg-text'>Questions? Please contact <span style={{ color: '#0E8388' }}>connectwithaurapp@gmail.com</span></p>
       </div>
       <div className='eventpg-meetup'>
@@ -87,10 +87,11 @@ const Events = () => {
             </td>
           </tr>
         ))}
-      </tbody>
-    </table>
-    <div className='pagination'>
+
+          <tr>
+        <td colspan="4"><div className='pagination'>
         {/* Number of rows per page select */}
+        <div className='pagination-con'>
         <label className='rpp' htmlFor="rowsPerPage">Rows per page:</label>
         <select className='rppdd' id="rowsPerPage" value={rowsPerPage} onChange={handleRowsPerPageChange}>
           {rowsPerPageOptions.map((option) => (
@@ -99,18 +100,23 @@ const Events = () => {
             </option>
           ))}
         </select>
+        
 
         {/* Number of pages */}
-        <p>Page {currentPage} of {totalPages}</p>
-
+        <p style={{fontSize:'13px'}}>Page {currentPage} of {totalPages}</p></div>
+            <div className='pagination-btn'>
         {/* Pagination controls */}
         <button className="page-btn" disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)}>
           {'<'}
         </button>
         <button className="page-btn" disabled={currentPage === totalPages} onClick={() => handlePageChange(currentPage + 1)}>
          {'>'}
-        </button>
-      </div>
+        </button></div>
+      </div></td>
+      </tr>
+      </tbody>
+    </table>
+    
       <br />
   </div>
   </>

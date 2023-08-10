@@ -88,7 +88,7 @@ export default function Footer() {
        </div>
        <div className="footer2">
         {/* <h1 id="appName">Open Source Weekend</h1> */}
-        <span className="appName">App Name</span>
+        <span className="appName">Open Source Weekend</span>
         <a href="">
           <span className="mx-4">Code of Conduct</span>
         </a>
@@ -97,11 +97,6 @@ export default function Footer() {
         </a>
         <a href="/">
           <span className="mx-4"> Community Guidelines </span>
-        </a>
-        <a href="/">
-          <span className="footer2Left">
-            Based on Project <span className="footer2LeftLeft">Aura</span>
-          </span>
         </a>
       </div>
     </footer>

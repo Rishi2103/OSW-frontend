@@ -4,20 +4,30 @@ import logo from '../img/logo1.png';
 import './Navbar.css'
 export default function Navbar() {
 
-  const [showNavbar, setShowNavbar] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(true);
 
-  const handleShowNavbar = () => {
-    setShowNavbar(!showNavbar)
-  }
+  const toggleMenu = () => {
+    console.log('clicked');
+    setMenuOpen(menuOpen);
+  };
+  // const closeMenu = () => {
+  //   setMenuOpen(false);
+  // };
+
 
   return (
-    <nav className="nav">
+    <nav className={`nav ${menuOpen ? 'open' : ''}`}>
+      
+      <div className="menu-toggle" onClick={toggleMenu}>
+        <div className="bar"></div>
+        <div className="bar"></div>
+        <div className="bar"></div>
+      </div>
       <Link to="/" id="site-title">
       <img src={logo} alt="Logo" style={{ height:'45px' ,width: '120px', margin: '0px' }} />
       </Link>
 
-      <div className={`nav-elements  ${showNavbar && 'active'}`}>
-      <ul>
+      <ul className={`nav-list ${menuOpen ? 'open' : ''}`}>
         <CustomLink to="/">Home</CustomLink>
         <CustomLink to="/events">Events</CustomLink>
         <CustomLink to="/about">About</CustomLink>
@@ -26,7 +36,6 @@ export default function Navbar() {
         <CustomLink to="/blogs">Blogs</CustomLink>
         <CustomLink to="/resourceLibrary">Resource Library</CustomLink>
       </ul>
-      </div>
     </nav>
   )
 }

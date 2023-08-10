@@ -8,8 +8,9 @@ const MeetupCard = (props) => {
             <p className="date">{props.date}</p>
             <p className="event-name">{props.event}</p>
             <p className="mode">{props.mode}</p>
-            <p className="see-more">See More</p>
+            
             </div>
+            <div className="card-text2"><p className="see-more">See More</p></div>
         </div>
     )
 }

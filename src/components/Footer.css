@@ -1,3 +1,6 @@
+footer{
+    position: absolute;
+}
 .footer2 {
     font-size: 17.6px;
     margin: 4vh 150px;
@@ -10,9 +13,10 @@
 
 .footer2LeftLeft {
     color: #2196f3;
-
 }
-
+.appName{
+    font-size: 25px;
+}
 .follow {
     border-top: 1px solid #0000001f;
     border-bottom: 1px solid #0000001f;
@@ -58,9 +62,9 @@ a {
     font-family: 'Open Sans', sans-serif;
     font-size: 21px;
 }
-/* @media (max-width: 767px) {
+@media (max-width: 767px) {
 
     footer{
         display: none;
     }
-    } */
+    }

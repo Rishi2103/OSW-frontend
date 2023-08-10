@@ -8,11 +8,14 @@ import Blogs from "./components/Blogs"
 import ResourceLibrary from "./components/ResourceLibrary"
 import { Route, Routes } from "react-router-dom"
 import Footer from "./components/Footer"
+import './App.css'
 
 function App() {
   return (
     <>
-      <Navbar />
+    <Navbar />
+    <div className="wrapper">
+      
       <div className="app-container">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -24,7 +27,8 @@ function App() {
           <Route path="/resourceLibrary" element={<ResourceLibrary />} />
         </Routes>
       </div>
-      <Footer/>
+      <div className="footer"><Footer/></div>
+      </div>
     </>
   )
 }

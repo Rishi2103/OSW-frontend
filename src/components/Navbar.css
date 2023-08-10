@@ -21,6 +21,12 @@ body {
   gap: 5rem;
   padding: 0px 2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+.nav-list {
+  display: flex;
+  list-style-type: none;
+  padding: 0;
 }
 
 #site-title {
@@ -46,6 +52,18 @@ body {
   font-size: 1.05rem;
   font-family: Arial, Helvetica, sans-serif;
 }
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.menu-toggle .bar {
+  width: 25px;
+  height: 3px;
+  background-color: black;
+  margin: 3px 0;
+}
 
 .nav li.active {
   color: #82CD47;
@@ -60,18 +78,43 @@ body {
   background-color: #F6F4EB;
 }
 @media (max-width: 767px) {
-  .nav {
+  /* .nav {
     flex-direction: column;
+  } */
+  .menu-toggle {
+    display: flex;
   }
-
-  .nav a {
-    padding: 10px;
+  .nav li.active{
+    border-bottom: none;
   }
-
-  /* Hide the dropdown content initially on smaller screens */
-  .dropdown-content {
+  .nav li:hover{
+    /* background-color: aqua; */
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+  }
+  .nav-list {
     display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 50%;
+    background-color: white;
+    padding-top: 100px;
+    z-index: 1;
   }
+  .nav-list li {
+    margin-right: 0;
+    margin-bottom: 0px;
+    padding-top: 0;
+  }
+  .nav a{
+    padding: 5px 10px ;
+  }
+  .navbar.open .nav-list {
+    display: flex;
+  }
+
 }
 @media (min-width: 768px) and (max-width: 1023px) {
   .containercss{

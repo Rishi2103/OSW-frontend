@@ -44,6 +44,10 @@ p{
     .about-text{
         padding-left: 10vw;
         padding-right: 10vw;
+        text-align: left;
+    }
+    p{
+        text-align: left;
     }
   }
   @media (min-width: 768px) and (max-width: 1023px) {
