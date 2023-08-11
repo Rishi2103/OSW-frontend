@@ -50,7 +50,7 @@ const Events = () => {
 
 
   return (
-    <>
+    <div className='eventpg'>
     <div className='eventpg-intro'>
       <div className='eventpg-con'>
       <b><p className="eventpg-head">Our <span style={{ color: '#0E8388' }}>Events</span></p></b>
@@ -90,7 +90,7 @@ const Events = () => {
         ))}
 
           <tr>
-        <td colspan="4"><div className='pagination'>
+        <td colSpan="4"><div className='pagination'>
         {/* Number of rows per page select */}
         <div className='pagination-con'>
         <label className='rpp' htmlFor="rowsPerPage">Rows per page:</label>
@@ -118,9 +118,8 @@ const Events = () => {
       </tbody>
     </table>
     
-      <br />
   </div>
-  </>
+  </div>
   )
 };
 

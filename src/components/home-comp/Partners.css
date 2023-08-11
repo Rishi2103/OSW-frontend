@@ -17,7 +17,6 @@ p{
 }
 @media (max-width: 767px) {
    .partners-content{
-    padding-left: 50px;
-    padding-right: 50px;
+    padding: 40px 20px;
    }
 }

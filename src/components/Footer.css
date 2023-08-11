@@ -63,8 +63,22 @@ a {
     font-size: 21px;
 }
 @media (max-width: 767px) {
-
-    footer{
-        display: none;
-    }
-    }
+footer{
+    width: 100%;
+}
+.follow{
+    margin: 0 20px;
+    
+}
+.footer1{
+    margin: 0 20px;
+    display: flex;
+    flex-direction: column;
+}
+.resources{
+    margin: 0;
+}
+.footer2{
+    margin: 0 20px;
+}
+}

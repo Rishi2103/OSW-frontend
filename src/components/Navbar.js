@@ -1,54 +1,88 @@
-import React, {useState} from "react";
-import { Link, useMatch, useResolvedPath } from "react-router-dom"
+import React, { useState, useEffect } from "react";
+import { Link, useMatch, useResolvedPath } from "react-router-dom";
 import logo from '../img/logo1.png';
-import './Navbar.css'
-export default function Navbar() {
+import './Navbar.css';
 
-  const [menuOpen, setMenuOpen] = useState(true);
+export default function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => {
-    console.log('clicked');
-    setMenuOpen(menuOpen);
+    setMenuOpen(!menuOpen);
   };
-  // const closeMenu = () => {
-  //   setMenuOpen(false);
-  // };
+
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
+
+  useEffect(() => {
+    // Add or remove the 'menu-open' class to the body based on menuOpen state
+    if (menuOpen) {
+      document.body.classList.add('menu-open');
+    } else {
+      document.body.classList.remove('menu-open');
+    }
+
+    // Clean up the class when the component unmounts
+    return () => {
+      document.body.classList.remove('menu-open');
+    };
+  }, [menuOpen]);
+
+
+  useEffect(() => {
+    const closeNavbar = (event) => {
+      // Check if the clicked element is part of the navbar
+      if (!event.target.closest('.nav')) {
+        setMenuOpen(false);
+      }
+    };
+
+    // Add the click event listener to the document
+    document.addEventListener('click', closeNavbar);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      document.removeEventListener('click', closeNavbar);
+    };
+  }, []);
 
 
   return (
     <nav className={`nav ${menuOpen ? 'open' : ''}`}>
-      
-      <div className="menu-toggle" onClick={toggleMenu}>
-        <div className="bar"></div>
-        <div className="bar"></div>
-        <div className="bar"></div>
+       <div className="menu-toggle" onClick={toggleMenu}>
+        <div className={`bar ${menuOpen ? 'open' : ''}`}></div>
+        <div className={`bar ${menuOpen ? 'open' : ''}`}></div>
+        <div className={`bar ${menuOpen ? 'open' : ''}`}></div>
       </div>
+      <div className="logo-img">
       <Link to="/" id="site-title">
-      <img src={logo} alt="Logo" style={{ height:'45px' ,width: '120px', margin: '0px' }} />
-      </Link>
-
-      <ul className={`nav-list ${menuOpen ? 'open' : ''}`}>
-        <CustomLink to="/">Home</CustomLink>
-        <CustomLink to="/events">Events</CustomLink>
-        <CustomLink to="/about">About</CustomLink>
-        <CustomLink to="/contact">Contact</CustomLink>
-        <CustomLink to="/partners">Partners</CustomLink>
-        <CustomLink to="/blogs">Blogs</CustomLink>
-        <CustomLink to="/resourceLibrary">Resource Library</CustomLink>
-      </ul>
+        <img src={logo} alt="Logo" style={{ height: '45px', width: '120px', margin: '0px' }} />
+      </Link></div>
+      <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
+      <p id='osw'>Open Source Weekend</p>
+      <hr />
+        <CustomLink to="/" onClick={closeMenu}><span className="nav-icons"><i className="fa-solid fa-house" style={{ color: '#5a5e63' }}></i></span>Home</CustomLink>
+        <CustomLink to="/events" onClick={closeMenu}><span className="nav-icons"><i className="fa-solid fa-calendar-check" style={{ color: '#5a5e63' }}></i></span>Events</CustomLink>
+        <CustomLink to="/about" onClick={closeMenu}><span className="nav-icons"><i className="fa-solid fa-address-card" style={{ color: '#5a5e63' }}></i></span>About</CustomLink>
+        <CustomLink to="/contact" onClick={closeMenu}><span className="nav-icons"><i className="fa-solid fa-comments" style={{ color: '#5a5e63' }}></i></span>Contact</CustomLink>
+        <CustomLink to="/blogs" onClick={closeMenu}><span className="nav-icons"><i className="fa-brands fa-blogger" style={{ color: '#5a5e63' }}></i></span>Blogs</CustomLink>
+        <CustomLink to="/resourceLibrary" onClick={closeMenu}><span className="nav-icons"><i className="fa-regular fa-images" style={{ color: '#5a5e63' }}></i></span>Resource Library</CustomLink>
+      </div>
+     
     </nav>
-  )
+
+  );
 }
 
 function CustomLink({ to, children, ...props }) {
-  const resolvedPath = useResolvedPath(to)
-  const isActive = useMatch({ path: resolvedPath.pathname, end: true })
-
-  return (
-    <li className={isActive ? "active" : ""}>
-      <Link to={to} {...props}>
-        {children}
-      </Link>
-    </li>
-  )
-}
+    const resolvedPath = useResolvedPath(to)
+    const isActive = useMatch({ path: resolvedPath.pathname, end: true })
+  
+    return (
+      <li className={isActive ? "active" : ""}>
+        <Link to={to} {...props}>
+          {children}
+        </Link>
+      </li>
+    )
+  }
