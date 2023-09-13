@@ -5,7 +5,7 @@
 
 .eventpg-intro{
     background-color: #f5f5f5;
-    width: 1520px;
+    width: 100%;
     flex: 0;
     
 }
@@ -20,7 +20,8 @@
 .eventpg-text{
     /* font-family: 'Open Sans', sans-serif; */
     /* font-weight: ; */
-    font-size: 18px;
+    font-size: 20px;
+    margin-left: 150px;
 }
 .past-events{
     padding-left: 150px;
@@ -45,7 +46,9 @@
     margin-top: 30px;
     padding-bottom: 100px;
   }
-  
+  .fa-eye:hover{
+    color: #0E8388;
+  }
   .event-table th,
   .event-table td {
     border-bottom: 1px solid #ccc; /* Add a horizontal border */
@@ -55,10 +58,15 @@
   
   .event-table th {
     border-top: 1px solid #ccc; /* Add a horizontal border */
-    background-color: #f2f2f2;
+    background-color: #fff;
     cursor: pointer; 
   }
-  
+  tr:nth-child(even) {
+    background-color: #fff; /* Change this to your desired background color */
+  }
+  tr:nth-child(odd) {
+    background-color: rgb(195, 236, 163,0.2); /* Change this to your desired background color */
+  }
 
   
   .event-table tbody tr:hover {
@@ -84,11 +92,7 @@
   border: none;
   cursor: pointer;
   padding-right: 20px;
-  font-size: 25px;
   font-weight: 300px;
-  padding-bottom: 10px;
-
-  height: 10px;
 }
 .pagination{
   /* width: 100%; */
@@ -100,6 +104,12 @@
     display: flex;
     flex-direction: row;
 }
+.btn{
+  background-color: rgb(14, 131, 136);
+  border: none;  
+  border-radius: 4px; 
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.3);
+}
 .pagination-con{
   /* flex: 0; */
   width: 1000px;
@@ -107,10 +117,8 @@
   width: auto;
   padding-right: 50px;
 }
-.pagination-btn{
-  display: flex;
-  flex: 1;
-  width: 50px;
+.fa-solid{
+  padding-left: 0;
 }
 .rpp{
   font-size: 13px;
@@ -122,7 +130,7 @@
     height: 25px;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   .eventpg-intro{
     max-width: 100%;
     text-align: left;
@@ -134,5 +142,10 @@
   }
   .past-events{
     padding-left: 20px;
+  }
+}
+@media (max-width: 960px){
+  .page-btn{
+    margin-top: 0;
   }
 }

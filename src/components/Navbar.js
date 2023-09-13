@@ -1,10 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { Link, useMatch, useResolvedPath } from "react-router-dom";
 import logo from '../img/logo1.png';
+import profile_img from '../img/profile-img.jpg';
 import './Navbar.css';
+import { Padding } from "@mui/icons-material";
+import ModalForm from "./ModalForm";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+
+  const dropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const openModal = () => {
+    setIsProfileOpen(true);
+  };
+  const closeModal = () => {
+        setIsProfileOpen(false);
+      };
+    
+
+  const handleLogoutClick = () => {
+    // Handle the "Logout" action here
+  };
+
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -56,19 +79,52 @@ export default function Navbar() {
       </div>
       <div className="logo-img">
       <Link to="/" id="site-title">
-        <img src={logo} alt="Logo" style={{ height: '45px', width: '120px', margin: '0px' }} />
+        <img src={logo} alt="Logo" style={{ height: '45px', width: '120px', margin: '0px', objectFit:'fill' }} />
       </Link></div>
+      <div className="icons">
+      <span className="icons-nav"><i class="fa-regular fa-comment-dots"></i></span>
+      <span className="icons-nav"><i class="fa-solid fa-bell"></i></span>
+      {/* <div><img className="profile-img-nav" src={profile_img} alt="" /></div> */}
+      </div>
       <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
-      <p id='osw'>Open Source Weekend</p>
+      <img src={logo} className="logo-img2" alt="Logo" style={{ height: '45px', width: '120px', margin: '0 10px', objectFit:'fill' }} />
       <hr />
         <CustomLink to="/" onClick={closeMenu}><span className="nav-icons"><i className="fa-solid fa-house" style={{ color: '#5a5e63' }}></i></span>Home</CustomLink>
         <CustomLink to="/events" onClick={closeMenu}><span className="nav-icons"><i className="fa-solid fa-calendar-check" style={{ color: '#5a5e63' }}></i></span>Events</CustomLink>
+        <CustomLink to="/team" onClick={closeMenu}><span className="nav-icons"><i className="fa-solid fa-user" style={{ color: '#5a5e63' }}></i></span>Team</CustomLink>
+        <CustomLink to="/speakers" onClick={closeMenu}><span className="nav-icons"><i className="fa-solid fa-volume-up" style={{ color: '#5a5e63' }}></i></span>Speakers</CustomLink>
         <CustomLink to="/about" onClick={closeMenu}><span className="nav-icons"><i className="fa-solid fa-address-card" style={{ color: '#5a5e63' }}></i></span>About</CustomLink>
         <CustomLink to="/contact" onClick={closeMenu}><span className="nav-icons"><i className="fa-solid fa-comments" style={{ color: '#5a5e63' }}></i></span>Contact</CustomLink>
-        <CustomLink to="/blogs" onClick={closeMenu}><span className="nav-icons"><i className="fa-brands fa-blogger" style={{ color: '#5a5e63' }}></i></span>Blogs</CustomLink>
-        <CustomLink to="/resourceLibrary" onClick={closeMenu}><span className="nav-icons"><i className="fa-regular fa-images" style={{ color: '#5a5e63' }}></i></span>Resource Library</CustomLink>
-      </div>
-     
+        <CustomLink to="/blogs" onClick={closeMenu}><span className="nav-icons"><i className="fa-solid fa-blog" style={{ color: '#5a5e63' }}></i></span>Blogs</CustomLink>
+        <CustomLink to="/resourceLibrary" onClick={closeMenu}><span className="nav-icons"><i className="fa-solid fa-photo-film" style={{ color: '#5a5e63' }}></i></span>Resource Library</CustomLink>
+        <span className="icons-norm"><i className="fa-solid fa-comment-dots" ></i></span>
+        <span className="icons-norm"><i class="fa-solid fa-bell"></i></span>
+        <div className="profile-div" onClick={dropdown}><img className="profile-img" src={profile_img} alt="" />    </div> 
+        {isOpen && (
+        <ul className="dropdown-menu">
+          <li style={{marginTop: '10px'}} onClick={openModal}><i class="fa-solid fa-user" style={{padding: '0', marginRight: '10px'}}></i>View Profile</li>
+          <li style={{marginBottom: '10px'}} onClick={handleLogoutClick}><i class="fa-solid fa-arrow-right-from-bracket" style={{padding: '0', marginRight: '10px'}}></i>Logout</li>
+        </ul>
+      )}
+      {isProfileOpen && ( 
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <span className="close-button" onClick={closeModal}>
+              &times;
+            </span>
+            {/* Your form content goes here */}
+            <form>
+              <label>
+                Name:
+                <input type="text" />
+              </label>
+              {/* Add other form fields here */}
+              <button type="submit">Submit</button>
+            </form>
+          </div>
+        </div>
+       )} 
+        </div>
     </nav>
 
   );

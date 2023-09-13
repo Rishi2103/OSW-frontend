@@ -1,6 +1,8 @@
 import React from "react";
 import './Meetup.css';
 import MeetupCard from "./MeetupCard";
+import EventsPage from "../EventsPage";
+
 
 
 const Meetup = () => {

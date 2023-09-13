@@ -49,12 +49,15 @@ p{
         text-align: left;
     }
   }
-  @media (min-width: 768px) and (max-width: 1023px) {
+  @media (min-width: 768px) and (max-width: 1263px) {
     .containercss{
         max-width: 100%;
     }
+    .about-text{
+        padding: 50px 20px;
+    }
   }
-  @media (min-width: 1024px) {
+  @media (min-width: 1264px) {
     .containercss{
         max-width: 100%;
     }

@@ -54,6 +54,7 @@ export default function Footer() {
         </div>
        </div>
        <div className="footer1 ">
+        <div className="pair-1">
         <div className="about">
           <span className="aboutHeading">About</span>
           <span className="aboutText">
@@ -75,29 +76,22 @@ export default function Footer() {
             </p>
           </span>
          </div>
-         <div className="developerConsole">
-          <span className="developerConsoleHeading">Developer Console</span>
+         </div>
+  
+          <div className="pair-2">
+            
+            <div className="developerConsole">
+          <span className="developerConsoleHeading">Open Source Weekend</span>
           <span className="developerConsoleText">
             <p>
-              <a href="/">Google API Console </a> <br />
-              <a href="/">Google Play Console</a> <br />
-              <a href="/">Firebase Console</a>
+              <a href="/">Code of Conduct </a> <br />
+              <a href="/">Terms and Services</a> <br />
+              <a href="/">Community Guidelines</a>
             </p>
           </span>
-        </div>
-       </div>
-       <div className="footer2">
-        {/* <h1 id="appName">Open Source Weekend</h1> */}
-        <span className="appName">Open Source Weekend</span>
-        <a href="">
-          <span className="mx-4">Code of Conduct</span>
-        </a>
-        <a href="/">
-          <span className="mx-4"> Terms & Servies </span>
-        </a>
-        <a href="/">
-          <span className="mx-4"> Community Guidelines </span>
-        </a>
+          </div>
+     
+          </div>
       </div>
     </footer>
   );

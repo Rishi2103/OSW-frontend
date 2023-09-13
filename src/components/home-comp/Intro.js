@@ -1,14 +1,19 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import intro_img from "../../img/Onboarding.gif";
 import "./Intro.css";
 
 const Intro = () =>{
-    const handleClick = () =>{
-
+  const navigate = useNavigate();
+    const handleClickLogin = () =>{
+      navigate('/login');
+    }
+    const handleClickAbout = () =>{
+      navigate('/about');
     }
     return (
-      <div className="container">
+      <div className="intro-container">
         <div className="image">
         <img src={intro_img} alt=""/>
       
@@ -32,10 +37,10 @@ const Intro = () =>{
       </div>
     </div>
     <div className='buttons'>
-    <Button  className="my-button" onClick={handleClick}>
+    <Button  className="my-button" onClick={handleClickLogin}>
           Become A Member
         </Button>
-        <Button  className="my-button-2" onClick={handleClick}>
+        <Button  className="my-button-2" onClick={handleClickAbout}>
           Learn More
         </Button>
     </div>

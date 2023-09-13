@@ -1,4 +1,4 @@
-.container {
+.intro-container {
     display: flex;
     align-items: center;
     margin-top: 0 ; 
@@ -74,6 +74,7 @@
     font-size: 12px;
     text-decoration: none;
     color: #000000DE;
+    padding-left: 12px;
   }
 .buttons{
     margin-top: 20px;
@@ -85,6 +86,11 @@
 }
 .my-button:hover{
     background-color: #3b8d90;
+}
+.my-button:active,
+.my-button:focus,
+.my-button:default{
+  background-color: rgb(14, 131, 136) !important;
 }
 .my-button-2{
     color: #0E8388;
@@ -102,12 +108,22 @@
     background-color: #0E838819;
     color: #0E8388;
 }
-@media (max-width: 767px) {
-  .container{
+.my-button-2:active,
+.my-button-2:focus{
+  border-color: #0E8388 !important;
+  background-color: #0E838819 !important;
+  color: #0E8388 !important;
+}
+
+@media (max-width: 599px) {
+  .intro-container{
     flex-direction: column;
+    width: 100%;
+    margin: 0;
+    overflow: hidden;
   }
   .text{
-    width: 100%;
+    max-width: 100%;
     padding:0 25px;
   }
   .image{
@@ -116,14 +132,45 @@
     padding:0 25px;
     justify-items: center;
   }
-}
-@media (min-width: 768px) and (max-width: 1023px) {
-  .image{
-    padding:0 25px;
+  .image img{
+    max-width: 100%;
+    height: auto;
+  }
+  .box-container{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  Button{
+    margin-top: 10px;
   }
 }
-@media (min-width: 1024px) {
-  .containercss{
-      max-width: 100%;
+@media (min-width: 600px) and (max-width: 1023px) {
+.intro-container{
+  margin: 0;
+  overflow: hidden;
+  display: flex;
+  padding: 0 20px;
+}
+.image{
+  margin: 0;
+  flex: 1;
+}
+.box-container{
+  width: 100%;
+}
+.image img{
+  max-width: 100%;
+  height: auto;
+}
+.text{
+  max-width: 50%;
+flex: 2;
+}
+}
+@media (min-width: 1024px) and (max-width: 1263px) {
+  .intro-container{
+    width: 80%;
+    margin: 0;
   }
 }

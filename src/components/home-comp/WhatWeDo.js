@@ -17,7 +17,6 @@ const WhatWeDo = () => {
         <p className="intro-text">Google Developer Groups (GDGs) are for developers who are interested in Google's developer technology.</p>
         <p className="intro-text-1">About different Google technologies</p> 
         <div className="tech-img"> 
-          <div className="row1">  
             <a className='a-link' href="https://angular.io/">
             <img className="images1" src={angular_img} alt="" />
             </a>
@@ -33,12 +32,9 @@ const WhatWeDo = () => {
             <a className='a-link' href="https://firebase.google.com/">
               <img className="images5" src={firebase_img} alt="" />
             </a>
-         </div> 
-          <div className="row-2">
             <a className='a-link' href="https://www.tensorflow.org/">
               <img className="images6" src={tensorflow_img} alt="" />
             </a>
-          </div>
         </div> 
       </div>
       <div className="pairs">
