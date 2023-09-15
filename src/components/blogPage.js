@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
-import blogData from "./blogData";
-import "./blogPage.css";
-import Profile from "../images/blank-profile.png";
+import blogData from "./BlogData";
+import "./BlogPage.css";
+import Profile from "../img/blank-profile.png";
 import { deepOrange } from "@mui/material/colors";
+import Navbar from "./Navbar";
 
 const BlogPage = () => {
   const { id } = useParams();
@@ -41,6 +42,8 @@ const BlogPage = () => {
   }
 
   return (
+    <>
+    <Navbar/>
     <div className="blog-page fade-in">
       <div className="author-section">
         <Avatar
@@ -62,12 +65,11 @@ const BlogPage = () => {
         />
         <div className="blog-content">
           <h1
-            className={`blog-title scrolling-underline teal-underline`}
+            className={`blog-title scrolling-underline`}
             style={{ "--underline-width": underlineWidth }}
           >
             {selectedBlog.blogTitle}
           </h1>
-
           <div
             className="blog-text"
             dangerouslySetInnerHTML={{ __html: selectedBlog.blogContent }}
@@ -75,6 +77,7 @@ const BlogPage = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

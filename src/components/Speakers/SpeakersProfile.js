@@ -1,7 +1,60 @@
-import React from "react";
-import Bharat_Agarwal from "../../images/Speakers/Bharat_Agarwal.jpeg";
+import React, { useEffect, useState } from "react";
+import Bharat_Agarwal from "../../img/Bharat_Agarwal.jpeg";
 import "./SpeakersProfile.css";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { hostname } from "../../hostname";
 export default function SpeakersProfile(props) {
+  const [speakerDetails, setSpeakerDetails] = useState(null);
+  const { id } = useParams();
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchMemberDetails = async () => {
+      try {
+        const response = await fetch(`${hostname}/speaker/all-details/${id}`);
+        const data = await response.json();
+        if (data.success) {
+          console.log(data.data);
+          setSpeakerDetails(data.data);
+        } else {
+          console.error("Failed to fetch member details:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching member details:", error);
+      } finally {
+        // Set loading to false regardless of success or failure
+        setLoading(false);
+      }
+    };
+
+    fetchMemberDetails();
+  }, [id]);
+
+  if (loading) {
+    // While loading, you can show a loading indicator or message
+    return <div>Loading...</div>;
+  }
+  const generateLinkIcon = (link) => {
+    // Determine the icon based on the link
+    // ... Your existing icon logic
+    if (link.includes("twitter")) {
+      return <i className="fa fa-brands fa-twitter fa-2xs"></i>;
+    } else if (link.includes("linkedin")) {
+      return <i className="fa fa-brands fa-linkedin fa-2xs"></i>;
+    } else if (link.includes("github")) {
+      return <i className="fa fa-brands fa-github fa-2xs"></i>;
+    } else if (link.includes("medium")) {
+      return <i className="fa fa-brands fa-medium fa-2xs"></i>;
+    } else if (link.includes("gmail")) {
+      return <i className="fa fa-envelope fa-2xs"></i>;
+    } else if (link.includes("youtube")) {
+      return <i className="fa fa-brands fa-youtube fa-2xs"></i>;
+    } else if (link.includes("instagram")) {
+      return <i className="fa fa-brands fa-instagram fa-2xs"></i>;
+    } else {
+      return <i className="fa fa-brands fa-link mx fa-2xs"></i>;
+    }
+  };
   return (
     <div className="speakerspPage">
       <div className="SpeakersProfile">
@@ -13,57 +66,48 @@ export default function SpeakersProfile(props) {
           </div>
           <div className="info">
             <div className="infotext">
-              <p className="name">Bharat Agarwal </p>
-              <p className="job">Developer </p>
-              <p className="community">GDG Jalandhar </p>
-              <p className="address">Chandigarh , India</p>
+              <p className="name">{speakerDetails.name}</p>
+              <br />
+              <p className="job">{speakerDetails.post} </p>
+              <br />
+              <p className="community">{speakerDetails.university}</p>
+              <h1> </h1>
+              <p className="address">
+                {speakerDetails.location.city} , {speakerDetails.location.state}{" "}
+                {speakerDetails.pincode}
+              </p>
             </div>
             <div className="links">
-              <a href="https://twitter.com/bharatagsrwal" target="_blank">
-                <i className="fa fa-brands fa-twitter fa-sm"></i>
-              </a>
-              <a href="https://linkedin.com/in/bharatagsrwal" target="_blank">
-                <i className="fa fa-brands fa-linkedin fa-sm"></i>
-              </a>
-              <a href="https://github.com/bharatagsrwal" target="_blank">
-                <i className="fa fa-brands fa-github fa-sm"></i>
-              </a>
-              <a href="https://medium.com/@agarwalbharat68/" target="_blank">
-                <i className="fa fa-brands fa-medium fa-sm"></i>
-              </a>
-              <a href="https://iambharat.me" target="_blank">
-                <i className="fa fa-link"></i>
-              </a>
+              {speakerDetails.social_links.map((link, index) => (
+                <a key={index} className="" href={link}>
+                  {generateLinkIcon(link)}
+                </a>
+              ))}
             </div>
           </div>
         </div>
         <div className="aboutspeaker">
           <h5 className="aboutspeakertitle">About</h5>
-          <span>
-            "At vero eos et accusamus et iusto odio dignissimos ducimus qui
-            blanditiis praesentium voluptatum deleniti atque corrupti quos
-            dolores et quas molestias excepturi sint occaecati cupiditate non
-            provident, similique sunt in culpa qui officia deserunt mollitia
-            animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis
-            est et expedita distinctio."
-          </span>
+          <span>{speakerDetails.about}</span>
         </div>
       </div>
       <div className="sessions">
         <p className="title">Sessions</p>
         <div className="sessionbodymain">
-          <div className="sessionbody">
-            <span className="sessionAvatar">A</span>
-            <span className="sessionname">Aura22</span>
-          </div>
-          <div className="sessionbody">
-            <span className="sessionAvatar">D</span>
-            <span className="sessionname">DevFest 2021</span>
-          </div>
-          <div className="sessionbody">
-            <span className="sessionAvatar">D</span>
-            <span className="sessionname">DevFest 2021</span>
-          </div>
+          {speakerDetails.sessions.map((session, index) => (
+            <Link
+              to={{
+                pathname: `/event/details/${session._id}`,
+              }}
+            >
+              <div key={index} className="sessionbody">
+                <span className="sessionAvatar">
+                  {session.event_name.charAt(0)}
+                </span>
+                <span className="sessionname">{session.event_name}</span>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </div>

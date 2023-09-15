@@ -606,7 +606,7 @@ function EventRegistrationForm() {
                         <input
                           type="checkbox"
                           name="event_tags"
-                          value={option.value}
+                          value={option._id}
                           checked={formData.event_tags.includes(option.value)}
                           onChange={handleChange}
                         />

@@ -20,16 +20,28 @@
     border: 1px solid #e0e0e0;
     padding: 3vh;
     padding-left: 1.5vw;
+    -webkit-text-fill-color: black;
 }
 
 .back .arrow button {
     border: 0;
     font-size: 16.8px;
+    padding-left: 0.5vw;
 }
 
 .back .arrow button i {
-    margin-right: 1vw;
+    margin-right: 0vw;
 }
+.back .arrow button:hover {
+  background-color: rgba(0, 0, 0, 0.1); /* Darken the background on hover */
+  cursor: pointer;
+}
+
+/* Adjust the arrow icon color on hover */
+.back .arrow button:hover i {
+  color: #555; /* Adjust the color on hover */
+}
+
 
 .profile {
     margin: 5vh 10vw;
@@ -80,10 +92,11 @@
     background-color: #e0e0e0;
     width: 13vh;
     font-weight: 500;
-    margin-left: 2.4vw;
+    /* margin-left: 1vw; */
     border-radius: 20vh;
     font-size: 12px;
     padding: 0.5vh;
+    text-align: center;
 }
 
 .memberinfostatus {

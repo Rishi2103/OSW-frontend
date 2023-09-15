@@ -42,7 +42,7 @@ const Speakers = () => {
         <div className="SpeakersTile">
           {speakers.map((speaker) => (
             <SpeakersTile
-              key={speaker._id}
+              _id={speaker._id}
               speakername={speaker.name}
               university={speaker.university}
               image={speaker.pic} // Assuming pic is the image URL

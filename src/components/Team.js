@@ -57,7 +57,7 @@ const Team = () => {
         <div className="TeamTile">
           {teamMembers.map((member, index) => (
             <TeamTile
-              key={index}
+              _id={member._id}
               name={member.name}
               job={member.post}
               img={member.pic} // Assuming pic is the image URL

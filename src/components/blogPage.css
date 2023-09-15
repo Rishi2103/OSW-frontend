@@ -58,10 +58,10 @@
     font-family: Arial, sans-serif;
     position: relative;
     display: inline-block;
-    padding: 10px 0;
-    /* transition: color 0.3s ease, box-shadow 0.3s ease; */
+    padding: 20px 20px;
+    transition: color 0.3s ease, box-shadow 0.3s ease;
     /* Add transition for color and shadow */
-    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     /* Add a shadow */
 }
 
@@ -82,41 +82,16 @@
 .blog-title:hover {
     color: #451b63;
     transition: color 0.3s ease;
-    /* box-shadow: 0 6px 10px rgba(255, 107, 107, 0.2); */
+    box-shadow: 0 6px 10px rgba(255, 107, 107, 0.2);
     /* Change the shadow on hover */
 }
 
 /* Class for controlling the underline width */
-.blog-title scrolling-underline {
-    color: #008080;
-}
-
 .scrolling-underline::after {
     width: var(--underline-width, 100%);
     left: calc((100% - var(--underline-width, 100%)) / 2);
     transition: width 0.3s ease, left 0.3s ease;
 }
-
-/* blogPage.css or your custom CSS file */
-.teal-underline {
-    position: relative;
-}
-
-.teal-underline::after {
-    /* content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0; */
-    /* width: var(--underline-width); */
-    /* This variable is set in your JavaScript code */
-    height: 2px;
-    /* Adjust the height as needed */
-    background-color: teal;
-    /* Change this to your desired teal color */
-    /* transition: width 0.3s ease; */
-    /* Add a smooth transition effect */
-}
-
 
 
 

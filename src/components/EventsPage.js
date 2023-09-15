@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./EventsPage.css";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "./Navbar";
 import { hostname } from "../hostname";
 
 const EventsPage = (props) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [event, setEvent] = useState();
   const { id } = useParams();
   const [loading, setLoading] = useState(true); // Add loading state
@@ -67,9 +67,9 @@ const EventsPage = (props) => {
     // While loading, you can show a loading indicator or message
     return <div>Loading...</div>;
   }
-  const handleClick = () => {
-    navigate("/events");
-  };
+  // const handleClick = () => {
+  //   navigate("/events");
+  // };
   return (
     <>
       <Navbar />

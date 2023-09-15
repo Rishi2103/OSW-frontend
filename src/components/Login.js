@@ -194,6 +194,38 @@ const Login = () => {
   const onFailure = (res) => {
     console.log("LOGIN FAILURE! res: ", res);
   };
+  const forgotPassword = async () => {
+    if (!email) {
+      console.log("Please enter the registerd email");
+      return;
+    }
+
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+
+      const response = await fetch(`${hostname}/user/forgotPassword`, {
+        method: "POST",
+        headers: config.headers,
+        body: JSON.stringify({
+          email,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Password change link sent successfully");
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Login failed");
+      }
+    } catch (error) {
+      console.error("An error occured while send link.please try again");
+    }
+  };
   return (
     <div className="login-bg">
       <div className="login-con">
@@ -286,7 +318,7 @@ const Login = () => {
           <div></div>
         ) : (
           <div className="forgot-password">
-            Forgot Password? <span>Click Here!</span>
+            Forgot Password? <span onClick={forgotPassword}>Click Here!</span>
           </div>
         )}
 
