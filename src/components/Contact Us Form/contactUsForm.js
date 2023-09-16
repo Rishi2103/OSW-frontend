@@ -1,7 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import "./contactUsForm.css";
+import { hostname } from "../../hostname";
 
-function Contact() {
+function ContactForm() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(`${hostname}/user/contactus`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Uncomment this line
+        },
+        body: JSON.stringify(formData),
+      });
+
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      console.log("Message sent successfully:", data.message);
+      // Reset the form after successful submission
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
+  };
+
   return (
     <section className="mb-4">
       <h2 className="h1-responsive font-weight-bold text-center my-4">
@@ -15,12 +59,7 @@ function Contact() {
 
       <div className="row">
         <div className="col-md-9 mb-md-0 mb-5">
-          <form
-            id="contact-form"
-            name="contact-form"
-            action="mail.php"
-            method="POST"
-          >
+          <form id="contact-form" name="contact-form" onSubmit={handleSubmit}>
             <div className="row">
               <div className="col-md-6">
                 <div className="md-form mb-0">
@@ -29,6 +68,8 @@ function Contact() {
                     id="name"
                     name="name"
                     className="form-control"
+                    value={formData.name}
+                    onChange={handleChange}
                   />
                   <label htmlFor="name" className="">
                     Your name
@@ -42,6 +83,8 @@ function Contact() {
                     id="email"
                     name="email"
                     className="form-control"
+                    value={formData.email}
+                    onChange={handleChange}
                   />
                   <label htmlFor="email" className="">
                     Your email
@@ -57,6 +100,8 @@ function Contact() {
                     id="subject"
                     name="subject"
                     className="form-control"
+                    value={formData.subject}
+                    onChange={handleChange}
                   />
                   <label htmlFor="subject" className="">
                     Subject
@@ -73,21 +118,20 @@ function Contact() {
                     name="message"
                     rows="2"
                     className="form-control md-textarea"
+                    value={formData.message}
+                    onChange={handleChange}
                   ></textarea>
                   <label htmlFor="message">Your message</label>
                 </div>
               </div>
             </div>
+            <div className="text-center text-md-left">
+              <button type="submit" className="btn btn-primary">
+                Send
+              </button>
+            </div>
+            <div className="status"></div>
           </form>
-          <div className="text-center text-md-left">
-            <a
-              className="btn btn-primary"
-              onClick={() => document.getElementById("contact-form").submit()}
-            >
-              Send
-            </a>
-          </div>
-          <div className="status"></div>
         </div>
         <div className="col-md-3 text-center">
           <ul className="list-unstyled mb-0">
@@ -110,4 +154,4 @@ function Contact() {
   );
 }
 
-export default Contact;
+export default ContactForm;

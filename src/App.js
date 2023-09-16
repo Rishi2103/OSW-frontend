@@ -28,6 +28,7 @@ import EventRegistrationForm from "./components/EventForm";
 import TeamProfile from "./components/Team/TeamProfile";
 import SpeakersProfile from "./components/Speakers/SpeakersProfile";
 import ForgetPassword from "./components/forgotePassword";
+import ContactForm from "./components/Contact Us Form/contactUsForm";
 
 const clientId =
   "574757039734-2hfvakv45d24o82mp3r80akqri2b70mq.apps.googleusercontent.com";
@@ -73,7 +74,7 @@ function App() {
         <Route path="/blogs" element={<Blogs />} />
         <Route path="/login" element={<Login />} />
         <Route path="/user/reset-password" element={<ForgetPassword />} />
-        {/* <Route path="/contact" element={<ContactUs />} /> */}
+        <Route path="/contact-us/send-message" element={<ContactForm />} />
         <Route path="/blogPage/:id" exact element={<BlogPage />} />
       </Routes>
     </div>
