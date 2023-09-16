@@ -12,7 +12,7 @@ import Home from "./components/Home";
 import About from "./components/About";
 import Partners from "./components/Partners";
 import Blogs from "./components/Blogs";
-import ResourceLibrary from "./components/ResourceLibrary";
+import ResourceLibrary from "./components/ResourceLibrary/ResourceLibrary";
 // import Footer from "./components/Footer";
 import "./App.css";
 // import Meetup from "./components/home-comp/Meetup";
@@ -29,6 +29,9 @@ import TeamProfile from "./components/Team/TeamProfile";
 import SpeakersProfile from "./components/Speakers/SpeakersProfile";
 import ForgetPassword from "./components/forgotePassword";
 import ContactForm from "./components/Contact Us Form/contactUsForm";
+import ViewProfile from "./components/ViewProfile";
+import User from "./components/Admin/User";
+import AdminLogin from "./components/Admin/AdminLogin";
 
 const clientId =
   "574757039734-2hfvakv45d24o82mp3r80akqri2b70mq.apps.googleusercontent.com";
@@ -73,7 +76,10 @@ function App() {
         <Route path="/event/details/:id" element={<EventsPage />} />
         <Route path="/blogs" element={<Blogs />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/profile" element={<ViewProfile />} />
+        <Route path="/user" element={<User />} />
         <Route path="/user/reset-password" element={<ForgetPassword />} />
+        <Route path="/adminLogin" exact element={<AdminLogin />} />
         <Route path="/contact-us/send-message" element={<ContactForm />} />
         <Route path="/blogPage/:id" exact element={<BlogPage />} />
       </Routes>

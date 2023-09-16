@@ -11,8 +11,21 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(profile_img);
   const navigate = useNavigate();
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
 
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        setSelectedImage(e.target.result);
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
   const dropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -71,6 +84,9 @@ export default function Navbar() {
       document.removeEventListener("click", closeNavbar);
     };
   }, []);
+  const viewProfile = () => {
+    navigate("/profile");
+  };
 
   return (
     <nav className={`nav ${menuOpen ? "open" : ""}`}>
@@ -101,6 +117,93 @@ export default function Navbar() {
           <i class="fa-solid fa-bell"></i>
         </span>
         {/* <div><img className="profile-img-nav" src={profile_img} alt="" /></div> */}
+        <div className="profile-div-nav" onClick={dropdown}>
+          <img className="profile-img" src={profile_img} alt="" />{" "}
+        </div>
+        {isOpen && (
+          <ul className="dropdown-menu">
+            <li style={{ marginTop: "10px" }} onClick={viewProfile}>
+              <i
+                class="fa-solid fa-user"
+                style={{ padding: "0", marginRight: "10px" }}
+              ></i>
+              View Profile
+            </li>
+            <li onClick={openModal}>
+              <i
+                class="fa-solid fa-square-check"
+                style={{ padding: "0", marginRight: "10px" }}
+              ></i>
+              Profile Form
+            </li>
+            <li style={{ marginBottom: "10px" }} onClick={handleLogoutClick}>
+              <i
+                class="fa-solid fa-arrow-right-from-bracket"
+                style={{ padding: "0", marginRight: "10px" }}
+              ></i>
+              Logout
+            </li>
+          </ul>
+        )}
+        {isProfileOpen && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <span className="close-button" onClick={closeModal}>
+                &times;
+              </span>
+              {/* Your form content goes here */}
+              <form
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "17px",
+                }}
+              >
+                <img
+                  src={selectedImage}
+                  alt="Preview"
+                  style={{
+                    maxWidth: "20%",
+                    borderRadius: "50%",
+                    marginBottom: "20px",
+                  }}
+                />
+
+                <div className="form-field">
+                  <label>Profile Photo: </label>
+                  <input type="file" onChange={handleImageChange} />
+                </div>
+
+                <div className="form-field">
+                  <label>Username:</label>
+                  <input type="text" required />
+                </div>
+                <div className="form-field">
+                  <label>Email:</label>
+                  <input type="text" required />
+                </div>
+                <div className="form-field">
+                  <label>First Name:</label>
+                  <input type="text" required />
+                </div>
+                <div className="form-field">
+                  <label>Last Name:</label>
+                  <input type="text" required />
+                </div>
+                <div className="form-field">
+                  <label>Contact No.:</label>
+                  <input type="text" required />
+                </div>
+
+                <button className="modal-submit" type="submit">
+                  Submit
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
       <div className={`nav-links ${menuOpen ? "open" : ""}`}>
         <img
@@ -189,12 +292,19 @@ export default function Navbar() {
         </div>
         {isOpen && (
           <ul className="dropdown-menu">
-            <li style={{ marginTop: "10px" }} onClick={openModal}>
+            <li style={{ marginTop: "10px" }} onClick={viewProfile}>
               <i
                 class="fa-solid fa-user"
                 style={{ padding: "0", marginRight: "10px" }}
               ></i>
               View Profile
+            </li>
+            <li onClick={openModal}>
+              <i
+                class="fa-solid fa-square-check"
+                style={{ padding: "0", marginRight: "10px" }}
+              ></i>
+              Profile Form
             </li>
             <li style={{ marginBottom: "10px" }} onClick={handleLogoutClick}>
               <i
@@ -212,13 +322,54 @@ export default function Navbar() {
                 &times;
               </span>
               {/* Your form content goes here */}
-              <form>
-                <label>
-                  Name:
-                  <input type="text" />
-                </label>
-                {/* Add other form fields here */}
-                <button type="submit">Submit</button>
+              <form
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "17px",
+                }}
+              >
+                <img
+                  src={selectedImage}
+                  alt="Preview"
+                  style={{
+                    maxWidth: "20%",
+                    borderRadius: "50%",
+                    marginBottom: "20px",
+                  }}
+                />
+
+                <div className="form-field">
+                  <label>Profile Photo: </label>
+                  <input type="file" onChange={handleImageChange} />
+                </div>
+
+                <div className="form-field">
+                  <label>Username:</label>
+                  <input type="text" required />
+                </div>
+                <div className="form-field">
+                  <label>Email:</label>
+                  <input type="text" required />
+                </div>
+                <div className="form-field">
+                  <label>First Name:</label>
+                  <input type="text" required />
+                </div>
+                <div className="form-field">
+                  <label>Last Name:</label>
+                  <input type="text" required />
+                </div>
+                <div className="form-field">
+                  <label>Contact No.:</label>
+                  <input type="text" required />
+                </div>
+
+                <button className="modal-submit" type="submit">
+                  Submit
+                </button>
               </form>
             </div>
           </div>
