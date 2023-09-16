@@ -1,27 +1,45 @@
 import React, { useEffect, useState } from "react";
 import "./AdminLogin.css";
-import user_icon from "../../img/person.png";
 import email_icon from "../..//img/email.png";
 import password_icon from "../../img/password.png";
-import { GoogleLogin } from "react-google-login";
+import { useNavigate } from "react-router-dom";
+import { hostname } from "../../hostname";
 
-const clientId =
-  "574757039734-2hfvakv45d24o82mp3r80akqri2b70mq.apps.googleusercontent.com";
 const AdminLogin = () => {
-  const [action, setaction] = useState("LogIn");
   const [optLoginOpen, setOtpLogin] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const onSuccess = (res) => {
-    console.log("LOGIN SUCCESS! Current User: ", res.profileObj);
-  };
-  const onFailure = (res) => {
-    console.log("LOGIN FAILURE! res: ", res);
-  };
   const openOtpLogin = () => {
     setOtpLogin(true);
   };
+
   const closeOtpLogin = () => {
     setOtpLogin(false);
+  };
+
+  const handleLogin = async () => {
+    try {
+      const response = await fetch(`${hostname}/admin/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem("adminAuthToken", data);
+        navigate("/", { replace: true });
+        console.log("Login successful", data);
+      } else {
+        console.error("Login failed");
+      }
+    } catch (error) {
+      console.error("An error occurred during login", error);
+    }
   };
 
   return (
@@ -39,11 +57,21 @@ const AdminLogin = () => {
         <div className="inputs">
           <div className="input">
             <img className="login-img" src={email_icon} alt="" />
-            <input type="email" placeholder="Email" />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
           <div className="input">
             <img className="login-img" src={password_icon} alt="" />
-            <input type="password" placeholder="Password" />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
         </div>
 
@@ -51,9 +79,15 @@ const AdminLogin = () => {
           Forgot Password? <span onClick={openOtpLogin}>Click Here!</span>
         </div>
 
-        <div className="submit-button">
-          <div className="submit-text">{action}</div>
-        </div>
+        <button
+          className="submit-button"
+          type="submit"
+          onClick={() => {
+            handleLogin();
+          }}
+        >
+          Login
+        </button>
       </div>
       {optLoginOpen && (
         <div className="modal-overlay">

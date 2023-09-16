@@ -84,9 +84,9 @@ export default function Navbar() {
       document.removeEventListener("click", closeNavbar);
     };
   }, []);
-  const viewProfile = () => {
-    navigate("/profile");
-  };
+      const viewProfile = () =>{
+      navigate('/profile');
+    }
 
   return (
     <nav className={`nav ${menuOpen ? "open" : ""}`}>
