@@ -466,10 +466,10 @@ export default function ResourceLibrary() {
               </div>
             </div>
           </div>
+             <SecFooter/>
+              <Footer/>
         </div>
       </div>
-      {/* <SecFooter/> */}
-      {/* <Footer/> */}
     </>
   );
 }
