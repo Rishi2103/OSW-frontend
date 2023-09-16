@@ -1,17 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./ResourceLibrary.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDocker, faGithub } from "@fortawesome/free-brands-svg-icons";
 import {
   faEye,
   faGreaterThan,
-  faLessThan,
+  // faLessThan,
 } from "@fortawesome/free-solid-svg-icons";
 import TruncateText from "../TruncateText";
-import ResourceLibraryProfile from "./ResourceLibraryProfile";
+// import ResourceLibraryProfile from "./ResourceLibraryProfile";
 import Navbar from "../Navbar";
 import Footer from "../Footer";
 import SecFooter from "../SecFooter";
+import { hostname } from "../../hostname";
 export default function ResourceLibrary() {
   const [sortOrder, setSortOrder] = useState("asc");
   const [projectNameError, setProjectNameError] = useState("");
@@ -23,32 +24,27 @@ export default function ResourceLibrary() {
   const rowsPerPageOptions = [5, 10, 15];
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [projects, setProjects] = useState([
-    {
-      // id: 1,
-      name: "kjbvshjvb",
-      projectdesc: "kkjjbakcj  dnsvnjdvsvbdvbdsvbsjvbjd",
-      projectlinksInputs:
-        "https://github.com/HARSHDUDHAT07/AWT_ASSIGNMENTS/blob/main/task1.html",
-      projecttags: ["hubhacd", "jhvbdvh"],
-    },
-    {
-      // id: 2,
-      name: "n dvjvbvjsv",
-      projectdesc: "svdsvjsvdbjd vdjsvbdvbkjbkjb",
-      projectlinksInputs:
-        "https://github.com/HARSHDUDHAT07/AWT_ASSIGNMENTS/blob/main/task1.html",
-      projecttags: ["knbhjv", "jvbsjh"],
-    },
-    {
-      // id: 3,
-      name: "jhsvbdsjvbjdbvjv",
-      projectdesc: "svjbsvhjbjdsvbsvbhjb",
-      projectlinksInputs:
-        "https://github.com/HARSHDUDHAT07/AWT_ASSIGNMENTS/blob/main/task1.html",
-      projecttags: [],
-    },
-  ]);
+  const [projects, setProjects] = useState([]);
+  const [getprojects, setGetProjects] = useState([]);
+
+  const fetchProjects = async () => {
+    try {
+      const response = await fetch(`${hostname}/resource-library/allprojects`);
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data.projects);
+        setGetProjects(data.projects); // Assuming the response structure has a 'projects' property
+      } else {
+        console.error("Failed to fetch projects");
+      }
+    } catch (error) {
+      console.error("An error occurred while fetching projects", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProjects(); // Fetch projects when the component mounts
+  }, []);
 
   const handleRowsPerPageChange = (e) => {
     setRowsPerPage(parseInt(e.target.value, 10));
@@ -112,19 +108,6 @@ export default function ResourceLibrary() {
       !projects.projectlinksInputs ||
       !projects.projecttags
     ) {
-      // Set error messages for the respective input fields
-      // if (!projects.projectname) {
-      //   setProjectNameError("Project Name is required.")
-      // }
-      // if (!projects.projectdesc) {
-      //   setProjectDescError("Project Description is required.")
-      // }
-      // if (!projects.projectlinksInputs) {
-      //   setProjectLinksError("Project Links are required.")
-      // }
-      // if (!projects.projecttags) {
-      //   setProjecttagsError("Project tags are required.")
-      // }
       setIsModalOpen(false); // Add this line to close the modal
 
       // Prevent form submission
@@ -184,13 +167,13 @@ export default function ResourceLibrary() {
       ? projects.slice(indexOfFirstProject, indexOfLastProject)
       : [];
 
-  const hasDockerLink = projects.some((project) =>
-    project.projectlinksInputs.includes("docker")
-  );
+  // const hasDockerLink = projects.some((project) =>
+  //   project.projectlinksInputs.includes("docker")
+  // );
 
-  const hasGithubLink = projects.some((project) =>
-    project.projectlinksInputs.includes("github")
-  );
+  // const hasGithubLink = projects.some((project) =>
+  //   project.projectlinksInputs.includes("github")
+  // );
 
   return (
     <>
@@ -218,34 +201,39 @@ export default function ResourceLibrary() {
               </tr>
             </thead>
             <tbody>
-              {currentProjects.map((projects) => (
-                <tr key={projects.name}>
-                  <td>{projects.name}</td>
-                  <td className="projectdesc">
+              {getprojects.map((projects) => (
+                <tr key={projects._id}>
+                  <td>{projects.project_name}</td>
+                  <td className="projectdesc" style={{ paddingLeft: "50px" }}>
                     <TruncateText
-                      text={projects.projectdesc}
+                      text={projects.project_details}
                       maxChars={20}
                     ></TruncateText>
                   </td>
                   <td className="github-docker-icons">
-                    {hasDockerLink && (
-                      <FontAwesomeIcon icon={faDocker} className="docker" />
-                    )}
-                    {hasGithubLink && (
-                      <FontAwesomeIcon icon={faGithub} className="github" />
-                    )}
+                    {projects.project_links.map((link, index) => (
+                      <React.Fragment key={index}>
+                        {link.includes("docker") && (
+                          <FontAwesomeIcon icon={faDocker} className="docker" />
+                        )}
+                        {link.includes("github") && (
+                          <FontAwesomeIcon icon={faGithub} className="github" />
+                        )}
+                      </React.Fragment>
+                    ))}
                   </td>
+
                   <td className="tags-cell">
                     {/* Add margin or padding to the tags */}
-                    {projects.projecttags &&
-                      projects.projecttags.map((projecttags, index) => (
+                    {projects.project_tags &&
+                      projects.project_tags.map((tag, index) => (
                         <span key={index} className="tag-cell-span">
-                          {projecttags}
+                          {tag}
                         </span>
                       ))}
                   </td>
                   <td className="see-more-cell">
-                    <a href={`/projects/${projects.name}`}>
+                    <a href={`/projects-details`}>
                       <FontAwesomeIcon
                         icon={faEye}
                         className="eye"
@@ -466,8 +454,8 @@ export default function ResourceLibrary() {
               </div>
             </div>
           </div>
-             <SecFooter/>
-              <Footer/>
+          <SecFooter />
+          <Footer />
         </div>
       </div>
     </>

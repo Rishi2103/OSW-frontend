@@ -32,6 +32,7 @@ import ContactForm from "./components/Contact Us Form/contactUsForm";
 import ViewProfile from "./components/ViewProfile";
 import User from "./components/Admin/User";
 import AdminLogin from "./components/Admin/AdminLogin";
+import ResourceLibraryProfile from "./components/ResourceLibrary/ResourceLibraryProfile";
 
 const clientId =
   "574757039734-2hfvakv45d24o82mp3r80akqri2b70mq.apps.googleusercontent.com";
@@ -72,6 +73,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/partners" element={<Partners />} />
         <Route path="/resourceLibrary" element={<ResourceLibrary />} />
+        <Route path="/projects-details" element={<ResourceLibraryProfile />} />
         {/* <Route path="/" exact element={<Meetup />} /> */}
         <Route path="/event/details/:id" element={<EventsPage />} />
         <Route path="/blogs" element={<Blogs />} />
