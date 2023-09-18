@@ -110,8 +110,34 @@ export default function ResourceLibrary() {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+  const handleEdit = (projectId) => {
+
+  }
   const handleDelete = (projectId) => {
-    // Implement logic to delete a project based on its ID
+    // Make an HTTP DELETE request to delete the event
+    fetch(`${hostname}/resource-library/delete-project/${projectId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: localStorage.getItem("adminAuthToken"), // Replace with your access token if needed
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Handle the successful response
+        console.log("Event deleted successfully:", data);
+        fetchProjects();
+        // Add any further actions you want to take upon successful deletion
+      })
+      .catch((error) => {
+        // Handle errors during the fetch
+        console.error("Error deleting event:", error);
+      });
   };
   const totalProjects = projects.length;
   const totalPages = Math.ceil(totalProjects / rowsPerPage);
@@ -377,7 +403,7 @@ export default function ResourceLibrary() {
                         <div className="editprojectbutton">
                           <button
                             className="btn btn-primary"
-                            onClick={() => handleDelete(projects.name)}
+                            onClick={() => handleEdit(projects._id)}
                           >
                             <FontAwesomeIcon
                               icon={faEdit}
@@ -390,7 +416,7 @@ export default function ResourceLibrary() {
                         <div className="deleteprojectbutton">
                           <button
                             className="btn btn-primary"
-                            onClick={() => handleDelete(projects.name)}
+                            onClick={() => handleDelete(projects._id)}
                           >
                             <FontAwesomeIcon
                               icon={faTrash}

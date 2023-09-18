@@ -103,30 +103,57 @@ const Events = () => {
     console.log(event._id);
     navigate(`/events/edit-Event/${event._id}`);
   };
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${hostname}/events`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log(data);
-          setEvents(data.eventsData);
-        } else {
-          const errorData = await response.json();
-          console.error("Failed to fetch events:", errorData);
-          // Handle the error or display an error message to the user
+  const handleDeleteClick = (eventId) => {
+    // Make an HTTP DELETE request to delete the event
+    fetch(`${hostname}/event/delete-event/${eventId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: localStorage.getItem("adminAuthToken"), // Replace with your access token if needed
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
         }
-      } catch (error) {
-        console.error("Error fetching events:", error);
+        return response.json();
+      })
+      .then((data) => {
+        // Handle the successful response
+        console.log("Event deleted successfully:", data);
+        fetchData();
+        // Add any further actions you want to take upon successful deletion
+      })
+      .catch((error) => {
+        // Handle errors during the fetch
+        console.error("Error deleting event:", error);
+      });
+  };
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`${hostname}/events`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+        setEvents(data.eventsData);
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to fetch events:", errorData);
         // Handle the error or display an error message to the user
       }
-    };
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      // Handle the error or display an error message to the user
+    }
+  };
+  useEffect(() => {
 
     fetchData(); // Call the fetchData function when the component mounts
   }, []);
@@ -215,7 +242,7 @@ const Events = () => {
                       <div className="deleteprojectbutton">
                         <button
                           className="btn btn-primary"
-                          onClick={(e) => handleEditClick(event)}
+                          onClick={(e) => handleDeleteClick(event._id)}
                         >
                           <FontAwesomeIcon
                             icon={faTrash}
