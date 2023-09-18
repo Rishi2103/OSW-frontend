@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import "./TeamTile.css";
-import TruncateText from '../TruncateText';
+import TruncateText from "../TruncateText";
 import { Link } from "react-router-dom";
-export default function teamTile(props) {
+export default function TeamTile(props) {
+  const [pic, setPic] = useState(null);
   const generateLinkIcon = (link) => {
     // Determine the icon based on the link
     // ... Your existing icon logic
@@ -24,6 +25,19 @@ export default function teamTile(props) {
       return <i className="fa fa-brands fa-link mx fa-2xs"></i>;
     }
   };
+  fetch(props.img)
+    .then((response) => response.blob())
+    .then((blob) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result;
+        console.log(props.img);
+        console.log("Data URL:", dataUrl);
+        // Use the data URL to display the image or perform other operations
+      };
+      reader.readAsDataURL(blob);
+    })
+    .catch((error) => console.error("Error fetching blob:", error));
   return (
     // <div className="teamTile">
     <Link
@@ -33,7 +47,7 @@ export default function teamTile(props) {
       }}
       className="Team"
     >
-      <img className="teamimg" src={props.img} alt="" />
+      <img className="teamimg" src={pic} alt="" />
       <TruncateText text={props.name} maxChars={20} />
       <TruncateText text={props.job} maxChars={20} />
       <div className="teamlinks">
@@ -44,8 +58,7 @@ export default function teamTile(props) {
             </a>
           ))}
         </div>
-      </div>
-      {" "}
+      </div>{" "}
     </Link>
   );
 }

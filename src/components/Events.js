@@ -6,6 +6,8 @@ import Footer from "./Footer";
 import SecFooter from "./SecFooter";
 import { hostname } from "../hostname";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const Events = () => {
   const [sortOrder, setSortOrder] = useState("asc");
@@ -32,7 +34,49 @@ const Events = () => {
   const indexOfLastEvent = currentPage * rowsPerPage;
   const indexOfFirstEvent = indexOfLastEvent - rowsPerPage;
   const currentEvents = events.slice(indexOfFirstEvent, indexOfLastEvent);
+  const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    // Get the JWT token from wherever you have stored it (e.g., localStorage)
+    const getUser = async () => {
+      if (localStorage.getItem("userAuthToken")) {
+        const token = localStorage.getItem("userAuthToken");
+
+        if (token) {
+          try {
+            // Split the token into its parts
+            const tokenParts = token.split(".");
+
+            // Base64-decode and parse the payload part (the second part)
+            const payload = JSON.parse(atob(tokenParts[1]));
+            console.log(payload.type);
+            await setUser(payload); // Set user state with decoded data
+          } catch (error) {
+            // Handle decoding error (e.g., token is invalid)
+            console.error("Error decoding JWT token:", error);
+          }
+        }
+      } else {
+        const token = localStorage.getItem("adminAuthToken");
+        if (token) {
+          try {
+            // Split the token into its parts
+            const tokenParts = token.split(".");
+
+            // Base64-decode and parse the payload part (the second part)
+            const payload = JSON.parse(atob(tokenParts[1]));
+            console.log(payload.type);
+            await setUser(payload); // Set user state with decoded data
+          } catch (error) {
+            // Handle decoding error (e.g., token is invalid)
+            console.error("Error decoding JWT token:", error);
+          }
+        }
+      }
+    };
+    getUser();
+    // console.log(user.type);
+  }, []);
   const handleSort = () => {
     const sortedEvents = [...events].sort((a, b) => {
       const nameA = a.name.toLowerCase();
@@ -54,6 +98,10 @@ const Events = () => {
   const handleSeeMoreClick = (event) => {
     console.log(event._id);
     navigate(`/event/details/${event._id}`);
+  };
+  const handleEditClick = (event) => {
+    console.log(event._id);
+    navigate(`/events/edit-Event/${event._id}`);
   };
   useEffect(() => {
     const fetchData = async () => {
@@ -82,7 +130,9 @@ const Events = () => {
 
     fetchData(); // Call the fetchData function when the component mounts
   }, []);
-
+  const handleDelete = (projectId) => {
+    // Implement logic to delete a project based on its ID
+  };
   return (
     <div className="eventpg">
       <Navbar />
@@ -112,6 +162,12 @@ const Events = () => {
               <th>Date</th>
               <th>Type</th>
               <th>See More</th>
+              {user && user.type === "admin" && (
+                <>
+                  <th>Edit Project</th>
+                  <th>Delete Project</th>
+                </>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -137,8 +193,39 @@ const Events = () => {
                       paddingLeft: "20px",
                     }}
                   ></i>
+
                   {/* </button> */}
                 </td>
+                {user && user.type === "admin" && (
+                  <>
+                    <td className="edit-project-buttons">
+                      <div className="editprojectbutton">
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => handleEditClick(event)}
+                        >
+                          <FontAwesomeIcon
+                            icon={faEdit}
+                            className="edit"
+                          ></FontAwesomeIcon>
+                        </button>
+                      </div>
+                    </td>
+                    <td className="delete-project-buttons">
+                      <div className="deleteprojectbutton">
+                        <button
+                          className="btn btn-primary"
+                          onClick={(e) => handleEditClick(event)}
+                        >
+                          <FontAwesomeIcon
+                            icon={faTrash}
+                            className="trash"
+                          ></FontAwesomeIcon>
+                        </button>
+                      </div>
+                    </td>
+                  </>
+                )}
               </tr>
             ))}
 

@@ -33,6 +33,7 @@ import ViewProfile from "./components/ViewProfile";
 import User from "./components/Admin/User";
 import AdminLogin from "./components/Admin/AdminLogin";
 import ResourceLibraryProfile from "./components/ResourceLibrary/ResourceLibraryProfile";
+// import EventEditForm from "./components/editEventForm";
 
 const clientId =
   "574757039734-2hfvakv45d24o82mp3r80akqri2b70mq.apps.googleusercontent.com";
@@ -65,6 +66,7 @@ function App() {
           path="/events/create-Event"
           element={<EventRegistrationForm />}
         />
+        {/* <Route path="/events/edit-Event/:id" element={<EventEditForm />} /> */}
         <Route path="/team" element={<Team />} />
         <Route path="/team-member/details/:id" element={<TeamProfile />} />
         <Route path="/speakers" element={<Speakers />} />

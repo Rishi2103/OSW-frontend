@@ -3,8 +3,10 @@ import "./ResourceLibrary.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDocker, faGithub } from "@fortawesome/free-brands-svg-icons";
 import {
+  faEdit,
   faEye,
   faGreaterThan,
+  faTrash,
   // faLessThan,
 } from "@fortawesome/free-solid-svg-icons";
 import TruncateText from "../TruncateText";
@@ -13,20 +15,69 @@ import Navbar from "../Navbar";
 import Footer from "../Footer";
 import SecFooter from "../SecFooter";
 import { hostname } from "../../hostname";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export default function ResourceLibrary() {
   const [sortOrder, setSortOrder] = useState("asc");
   const [projectNameError, setProjectNameError] = useState("");
   const [projectDescError, setProjectDescError] = useState("");
   const [projectLinksError, setProjectLinksError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [projecttagsError, setProjecttagsError] = useState("");
   const rowsPerPageOptions = [5, 10, 15];
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState({
+    project_name: "",
+    project_details: "",
+    project_tags: [],
+    project_links: "",
+  });
   const [getprojects, setGetProjects] = useState([]);
+  const [user, setUser] = useState(null);
+  const [textInputs, setTextInputs] = useState([""]);
 
+  useEffect(() => {
+    // Get the JWT token from wherever you have stored it (e.g., localStorage)
+    const getUser = async () => {
+      if (localStorage.getItem("userAuthToken")) {
+        const token = localStorage.getItem("userAuthToken");
+
+        if (token) {
+          try {
+            // Split the token into its parts
+            const tokenParts = token.split(".");
+
+            // Base64-decode and parse the payload part (the second part)
+            const payload = JSON.parse(atob(tokenParts[1]));
+            console.log(payload.type);
+            await setUser(payload); // Set user state with decoded data
+          } catch (error) {
+            // Handle decoding error (e.g., token is invalid)
+            console.error("Error decoding JWT token:", error);
+          }
+        }
+      } else {
+        const token = localStorage.getItem("adminAuthToken");
+        if (token) {
+          try {
+            // Split the token into its parts
+            const tokenParts = token.split(".");
+
+            // Base64-decode and parse the payload part (the second part)
+            const payload = JSON.parse(atob(tokenParts[1]));
+            console.log(payload.type);
+            await setUser(payload); // Set user state with decoded data
+          } catch (error) {
+            // Handle decoding error (e.g., token is invalid)
+            console.error("Error decoding JWT token:", error);
+          }
+        }
+      }
+    };
+    getUser();
+    // console.log(user.type);
+  }, []);
   const fetchProjects = async () => {
     try {
       const response = await fetch(`${hostname}/resource-library/allprojects`);
@@ -61,18 +112,14 @@ export default function ResourceLibrary() {
   };
   const handleDelete = (projectId) => {
     // Implement logic to delete a project based on its ID
-    const updatedProjects = projects.filter(
-      (project) => project.name !== projectId
-    );
-    setProjects(updatedProjects);
   };
   const totalProjects = projects.length;
   const totalPages = Math.ceil(totalProjects / rowsPerPage);
   const indexOfLastProject = currentPage * rowsPerPage;
-  const indexOfFirstProject = indexOfLastProject - rowsPerPage;
+  // const indexOfFirstProject = indexOfLastProject - rowsPerPage;
 
   const handleSort = () => {
-    const sortedProjects = [...projects].sort((a, b) => {
+    const sortedProjects = [...getprojects].sort((a, b) => {
       const nameA = a.name.toLowerCase();
       const nameB = b.name.toLowerCase();
 
@@ -85,95 +132,171 @@ export default function ResourceLibrary() {
       return 0;
     });
 
-    setProjects(sortedProjects);
+    setGetProjects(sortedProjects);
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
-  const handleSubmit = (e) => {
+
+  const formData = new FormData();
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(
+      projects.project_name,
+      projects.project_details,
+      projects.project_links,
+      projects.project_tags
+    );
+    // console.log(projects);
 
     const githubLinkPattern = /github\.com/i;
     const dockerLinkPattern = /docker\.com/i;
-    const projectLinks = (projects.projectlinksInputs || "")
-      .split(",")
-      .map((link) => link.trim());
+    // Check if project_links is a string
+    const projectLinks = projects.project_links || "";
 
-    const areLinksValid = projectLinks.every((link) => {
-      return githubLinkPattern.test(link) || dockerLinkPattern.test(link);
-    });
+    // Assuming githubLinkPattern and dockerLinkPattern are RegExp patterns
+    const areLinksValid =
+      githubLinkPattern.test(projectLinks) ||
+      dockerLinkPattern.test(projectLinks);
+
+    // Now areLinksValid will be true if the link matches either pattern
 
     if (
       !areLinksValid ||
-      !projects.projectname ||
-      !projects.projectdesc ||
-      !projects.projectlinksInputs ||
-      !projects.projecttags
+      !projects.project_name ||
+      !projects.project_details ||
+      !projects.project_links ||
+      !projects.project_tags
     ) {
       setIsModalOpen(false); // Add this line to close the modal
 
       // Prevent form submission
+      toast("Error Occured!", {
+        position: "top-right",
+        backgroundColor: "#0E8388",
+      });
       return;
     }
 
     // Continue with form submission or other actions
-    console.log(
-      "Form submitted with valid links and all required fields:",
-      projects
-    );
-
-    // If you want to reset the form fields after submission, you can do so by setting the project state to an empty object or initializing a new project object.
-    setProjects({
-      projectname: "",
-      projectdesc: "",
-      projectlinksInputs: "",
-      projecttags: "",
+    projects.project_tags.forEach((tag) => {
+      formData.append(`project_tags`, tag);
     });
+    // Append other project details
+    formData.append("project_name", projects.project_name);
+    formData.append("project_details", projects.project_details);
 
-    // Close the modal (if you want)
-    // Add code to close the modal here if needed
+    // Append the single project link
+    formData.append("project_links", projects.project_links);
+    fetch(`${hostname}/resource-library/add-project`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        authorization: localStorage.getItem("adminAuthToken"), // Replace with your access token if needed
+      },
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          // Team member added successfully, you can handle the response data here
+          console.log("Project added successfully:", data.team_member);
+          setProjects({
+            project_name: "",
+            project_details: "",
+            project_links: "",
+            project_tags: "",
+          });
+
+          // Close the modal (if you want)
+          fetchProjects();
+          printformData();
+          // setIsModalOpen(false);
+          // Add code to close the modal here if needed
+          toast("Successfully Submited!", {
+            position: "top-right",
+            backgroundColor: "#0E8388",
+          });
+        } else {
+          // Error occurred while adding a team member, handle the error message
+          console.error("Error adding Project:", data.message);
+          toast("Error Occured!", {
+            position: "top-right",
+            backgroundColor: "#0E8388",
+          });
+        }
+      })
+      .catch((error) => {
+        // Handle any network or other errors
+        console.error("Error:", error);
+        toast("Error Occured!", {
+          position: "top-right",
+          backgroundColor: "#0E8388",
+        });
+      });
   };
 
+  function printformData() {
+    const plainFormData = {};
+    for (let [key, value] of formData.entries()) {
+      plainFormData[key] = value;
+    }
+
+    console.log(plainFormData);
+  }
   // Close the modal (if you want)
   // Add code to close the modal here if needed
 
   const handleTextInputChange = (identifier, event) => {
     // Ensure that the event object is properly passed
     if (event && event.target) {
-      const updatedProjects = [...projects]; // Create a copy of the projects array
-      const index = 0; // Replace with the appropriate index
+      const updatedProjects = { ...projects }; // Create a copy of the projects array
 
       // Clear previous error messages when input changes
       setProjectNameError("");
       setProjectDescError("");
       setProjectLinksError("");
-      setProjecttagsError("");
 
       // Update the corresponding field based on the identifier and index
-      if (identifier === "projectname") {
-        updatedProjects[index].name = event.target.value;
-      } else if (identifier === "projectdesc") {
-        updatedProjects[index].projectdesc = event.target.value;
-      } else if (identifier === "projectlinksInputs") {
-        updatedProjects[index].projectlinksInputs = event.target.value;
-      } else if (identifier === "projecttags") {
-        updatedProjects[index].projecttags = event.target.value;
+      if (identifier === "project_name") {
+        console.log(event.target.value);
+        updatedProjects.project_name = event.target.value;
+        setProjectNameError("");
+      } else if (identifier === "project_details") {
+        updatedProjects.project_details = event.target.value;
+        setProjectDescError("");
+      } else if (identifier === "project_links") {
+        updatedProjects.project_links = event.target.value;
+        setProjectLinksError("");
       }
+      // console.log(updatedProjects);
 
       // Update the state with the modified projects array
       setProjects(updatedProjects);
     }
   };
-  const currentProjects =
-    projects && projects.length > 0
-      ? projects.slice(indexOfFirstProject, indexOfLastProject)
-      : [];
+  const handletagsInputChange = (event, index) => {
+    const updatedtags = [...projects.project_tags];
+    updatedtags[index] = event.target.value;
+    setProjects({
+      ...projects,
+      project_tags: updatedtags,
+    });
+    setProjecttagsError("");
+  };
+  const removeTextInput = (index) => {
+    if (textInputs.length > 1) {
+      const updatedInputs = [...textInputs];
+      updatedInputs.splice(index, 1);
+      setTextInputs(updatedInputs);
+    }
+  };
 
-  // const hasDockerLink = projects.some((project) =>
-  //   project.projectlinksInputs.includes("docker")
-  // );
-
-  // const hasGithubLink = projects.some((project) =>
-  //   project.projectlinksInputs.includes("github")
-  // );
+  const addTextInput = () => {
+    setTextInputs([...textInputs, ""]);
+    setProjects((prevProject) => ({
+      ...prevProject,
+      project_tags: [...prevProject.project_tags, ""],
+    }));
+  };
 
   return (
     <>
@@ -197,30 +320,38 @@ export default function ResourceLibrary() {
                 <th>Github/Docker Link</th>
                 <th>Tags</th>
                 <th>See More</th>
-                <th>Add/Delete Project</th>
+                {user && user.type === "admin" && (
+                  <>
+                    <th>Edit Project</th>
+                    <th>Delete Project</th>
+                  </>
+                )}
               </tr>
             </thead>
             <tbody>
               {getprojects.map((projects) => (
                 <tr key={projects._id}>
                   <td>{projects.project_name}</td>
-                  <td className="projectdesc" style={{ paddingLeft: "50px" }}>
+                  <td
+                    className="project_details"
+                    style={{ paddingLeft: "50px" }}
+                  >
                     <TruncateText
                       text={projects.project_details}
                       maxChars={20}
                     ></TruncateText>
                   </td>
                   <td className="github-docker-icons">
-                    {projects.project_links.map((link, index) => (
-                      <React.Fragment key={index}>
-                        {link.includes("docker") && (
+                    {projects.project_links && (
+                      <React.Fragment key={projects._id}>
+                        {projects.project_links.includes("docker") && (
                           <FontAwesomeIcon icon={faDocker} className="docker" />
                         )}
-                        {link.includes("github") && (
+                        {projects.project_links.includes("github") && (
                           <FontAwesomeIcon icon={faGithub} className="github" />
                         )}
                       </React.Fragment>
-                    ))}
+                    )}
                   </td>
 
                   <td className="tags-cell">
@@ -240,16 +371,36 @@ export default function ResourceLibrary() {
                       ></FontAwesomeIcon>
                     </a>
                   </td>
-                  <td className="delete-project-buttons">
-                    <div className="deleteprojectbutton">
-                      <button
-                        className="btn btn-primary"
-                        onClick={() => handleDelete(projects.name)}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
+                  {user && user.type === "admin" && (
+                    <>
+                      <td className="edit-project-buttons">
+                        <div className="editprojectbutton">
+                          <button
+                            className="btn btn-primary"
+                            onClick={() => handleDelete(projects.name)}
+                          >
+                            <FontAwesomeIcon
+                              icon={faEdit}
+                              className="edit"
+                            ></FontAwesomeIcon>
+                          </button>
+                        </div>
+                      </td>
+                      <td className="delete-project-buttons">
+                        <div className="deleteprojectbutton">
+                          <button
+                            className="btn btn-primary"
+                            onClick={() => handleDelete(projects.name)}
+                          >
+                            <FontAwesomeIcon
+                              icon={faTrash}
+                              className="trash"
+                            ></FontAwesomeIcon>
+                          </button>
+                        </div>
+                      </td>
+                    </>
+                  )}
                 </tr>
               ))}
 
@@ -308,17 +459,19 @@ export default function ResourceLibrary() {
             </tbody>
           </table>
           <div className="add-project-button">
-            <div className="addpeojectfromhere">
-              <button
-                type="button"
-                className="btn btn-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#exampleModal"
-                onClick={() => setIsModalOpen(true)}
-              >
-                Add Project
-              </button>
-            </div>
+            {user && user.type === "admin" && (
+              <div className="addpeojectfromhere">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModal"
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  Add Project
+                </button>
+              </div>
+            )}
             <div
               className="modal fade"
               id="exampleModal"
@@ -326,7 +479,14 @@ export default function ResourceLibrary() {
               aria-labelledby="exampleModalLabel"
               aria-hidden="true"
             >
-              <div className="modal-dialog modal-lg">
+              <div
+                className="modal-dialog modal-lg"
+                style={{
+                  marginLeft: "30vw",
+                  maxWidth: "150%",
+                  marginRight: "-90vw",
+                }}
+              >
                 <div className="modal-content">
                   <div className="modal-header">
                     <h1 className="modal-title fs-5" id="exampleModalLabel">
@@ -352,10 +512,10 @@ export default function ResourceLibrary() {
                           type="text"
                           className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
                           id="project-name"
-                          name="projectname"
-                          value={projects.projectname}
+                          name="project_name"
+                          // value={getprojects.projectname}
                           onChange={(e) =>
-                            handleTextInputChange("projectname", e)
+                            handleTextInputChange("project_name", e)
                           }
                           required
                         />
@@ -368,18 +528,18 @@ export default function ResourceLibrary() {
 
                       <div className="mb-3">
                         <label
-                          htmlFor="projectdesc-text"
+                          htmlFor="project_details-text"
                           className="col-form-label"
                         >
                           Project Description
                         </label>
                         <textarea
                           className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
-                          id="projectdesc-text"
-                          name="projectdesc"
-                          value={projects.projectdesc}
+                          id="project_details-text"
+                          name="project_details"
+                          // value={projects.project_details}
                           onChange={(e) =>
-                            handleTextInputChange("projectdesc", e)
+                            handleTextInputChange("project_details", e)
                           }
                           required
                         ></textarea>
@@ -396,22 +556,44 @@ export default function ResourceLibrary() {
                         >
                           Project Tags
                         </label>
-                        <input
-                          type="text"
-                          className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
-                          id="project-tags"
-                          name="projecttags"
-                          value={projects.projecttags}
-                          onChange={(e) =>
-                            handleTextInputChange("projecttags", e)
-                          }
-                          required
-                        />
-                        {projecttagsError && (
-                          <div className="error-message">
-                            {projecttagsError}
+                        {textInputs.map((textInput, index) => (
+                          <div className="minus" key={index}>
+                            <div className="project-tagsInput">
+                              <input
+                                type="text"
+                                id={`project-tags-${index}`}
+                                name={`project_tags-${index}`}
+                                // value={projects.project_tags[index] || ""}
+                                className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
+                                onChange={(e) =>
+                                  handletagsInputChange(e, index)
+                                }
+                                required
+                              />
+                            </div>
+                            <button
+                              type="button"
+                              className="ms-3 btn btn-primary"
+                              style={{ backgroundColor: "#0E8388" }}
+                              onClick={() => removeTextInput(index)}
+                            >
+                              Remove
+                            </button>
+                            {projecttagsError && (
+                              <div className="error-message">
+                                {projecttagsError}
+                              </div>
+                            )}
                           </div>
-                        )}
+                        ))}
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          style={{ backgroundColor: "#0E8388" }}
+                          onClick={addTextInput}
+                        >
+                          Add Tag
+                        </button>
                       </div>
                       <div className="mb-3">
                         <label
@@ -423,12 +605,12 @@ export default function ResourceLibrary() {
                         <div className="projectlinksInput">
                           <input
                             type="text"
-                            id="projectlinksInputs"
-                            name="projectlinksInputs"
-                            value={projects.projectlinksInputs}
+                            id="project_links"
+                            name="project_links"
+                            // value={projects.project_links}
                             className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
                             onChange={(e) =>
-                              handleTextInputChange("projectlinksInputs", e)
+                              handleTextInputChange("project_links", e)
                             }
                             required
                           />
@@ -445,16 +627,17 @@ export default function ResourceLibrary() {
                     <button
                       type="button"
                       className="btn btn-primary"
+                      data-bs-dismiss
                       onClick={handleSubmit}
                     >
-                      Send message
+                      Add Project
                     </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <SecFooter />
+          <ToastContainer /> <SecFooter />
           <Footer />
         </div>
       </div>

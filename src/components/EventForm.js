@@ -38,20 +38,40 @@ function EventRegistrationForm() {
   useEffect(() => {
     // Get the JWT token from wherever you have stored it (e.g., localStorage)
     const getUser = async () => {
-      const token = localStorage.getItem("userAuthToken");
+      if (localStorage.getItem("userAuthToken")) {
+        console.log(localStorage.getItem("userAuthToken"));
+        const token = localStorage.getItem("userAuthToken");
 
-      if (token) {
-        try {
-          // Split the token into its parts
-          const tokenParts = token.split(".");
+        if (token) {
+          try {
+            // Split the token into its parts
+            const tokenParts = token.split(".");
 
-          // Base64-decode and parse the payload part (the second part)
-          const payload = JSON.parse(atob(tokenParts[1]));
-          console.log(payload.type);
-          await setUser(payload); // Set user state with decoded data
-        } catch (error) {
-          // Handle decoding error (e.g., token is invalid)
-          console.error("Error decoding JWT token:", error);
+            // Base64-decode and parse the payload part (the second part)
+            const payload = JSON.parse(atob(tokenParts[1]));
+            console.log(payload.type);
+            await setUser(payload); // Set user state with decoded data
+          } catch (error) {
+            // Handle decoding error (e.g., token is invalid)
+            console.error("Error decoding JWT token:", error);
+          }
+        }
+      } else {
+        const token = localStorage.getItem("adminAuthToken");
+        console.log();
+        if (token) {
+          try {
+            // Split the token into its parts
+            const tokenParts = token.split(".");
+
+            // Base64-decode and parse the payload part (the second part)
+            const payload = JSON.parse(atob(tokenParts[1]));
+            console.log(payload.type);
+            await setUser(payload); // Set user state with decoded data
+          } catch (error) {
+            // Handle decoding error (e.g., token is invalid)
+            console.error("Error decoding JWT token:", error);
+          }
         }
       }
     };
@@ -348,7 +368,8 @@ function EventRegistrationForm() {
             type="text"
             name="event_name"
             placeholder="Event name"
-            value={formData.event_name}
+            defaultValue={formData.event_name}
+            // value={formData.event_name}
             onChange={handleChange}
           />
         </div>
@@ -357,7 +378,7 @@ function EventRegistrationForm() {
           <label htmlFor="language">Language</label>
           <select
             name="language"
-            value={formData.language}
+            // value={formData.language}
             onChange={handleChange}
           >
             {languageOptions.map((option) => (
@@ -383,7 +404,7 @@ function EventRegistrationForm() {
             <input
               type="date"
               name="event_date"
-              value={formData.event_date}
+              // value={formData.event_date}
               onChange={handleChange}
             />
           </div>
@@ -394,7 +415,7 @@ function EventRegistrationForm() {
             <input
               type="time"
               name="startTime"
-              value={formData.startTime}
+              // value={formData.startTime}
               onChange={handleChange}
             />
           </div>
@@ -404,7 +425,7 @@ function EventRegistrationForm() {
             <input
               type="time"
               name="endTime"
-              value={formData.endTime}
+              // value={formData.endTime}
               onChange={handleChange}
             />
           </div>
@@ -413,7 +434,7 @@ function EventRegistrationForm() {
           <label htmlFor="timezone">Timezone</label>
           <select
             name="timeZone"
-            value={formData.timeZone}
+            // value={formData.timeZone}
             onChange={handleChange}
           >
             {timezoneOptions.map((option) => (
@@ -428,7 +449,7 @@ function EventRegistrationForm() {
           <label htmlFor="meetingMode">Meeting Mode</label>
           <select
             name="event_type"
-            value={formData.event_type}
+            // value={formData.event_type}
             onChange={handleChange}
           >
             {meetingModeOptions.map((option) => (
@@ -447,7 +468,7 @@ function EventRegistrationForm() {
               type="url"
               name="meet_link"
               placeholder="Meeting link"
-              value={formData.meet_link}
+              // value={formData.meet_link}
               onChange={handleChange}
             />
           </div>
@@ -461,13 +482,15 @@ function EventRegistrationForm() {
                 type="text"
                 name="address"
                 placeholder="Address"
-                value={formData.address}
+                // value={formData.address}
                 onChange={handleChange}
               />
             </div>
             <div className="form-group">
               <label htmlFor="city">City</label>
-              <select name="city" value={formData.city} onChange={handleChange}>
+              <select name="city"
+                // value={formData.city}
+                onChange={handleChange}>
                 {countryOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -479,7 +502,7 @@ function EventRegistrationForm() {
               <label htmlFor="state">state</label>
               <select
                 name="state"
-                value={formData.state}
+                // value={formData.state}
                 onChange={handleChange}
               >
                 {countryOptions.map((option) => (
@@ -493,7 +516,7 @@ function EventRegistrationForm() {
               <label htmlFor="country">Country</label>
               <select
                 name="country"
-                value={formData.country}
+                // value={formData.country}
                 onChange={handleChange}
               >
                 {countryOptions.map((option) => (
@@ -510,7 +533,7 @@ function EventRegistrationForm() {
                 type="number"
                 name="pincode"
                 placeholder="Enter Zip Code/Pin Code of city"
-                value={formData.pincode}
+                // value={formData.pincode}
                 onChange={handleChange}
               />
             </div>
@@ -524,7 +547,7 @@ function EventRegistrationForm() {
             type="number"
             name="limit"
             placeholder="Enter limit"
-            value={formData.limit}
+            // value={formData.limit}
             onChange={handleChange}
           />
         </div>
@@ -536,7 +559,7 @@ function EventRegistrationForm() {
               <input
                 type="text"
                 name="social_links"
-                value={formData.social_links}
+                // value={formData.social_links}
                 onChange={handleChange}
               />
               <button type="button" onClick={handleAddSocial_links}>
@@ -559,7 +582,7 @@ function EventRegistrationForm() {
           <textarea
             name="event_goals"
             placeholder="Enter event goals"
-            value={formData.event_goals}
+            // value={formData.event_goals}
             onChange={handleChange}
           />
         </div>
@@ -568,7 +591,7 @@ function EventRegistrationForm() {
           <textarea
             name="event_description"
             placeholder="Enter event description"
-            value={formData.event_description}
+            // value={formData.event_description}
             onChange={handleChange}
           />
         </div>
@@ -592,7 +615,7 @@ function EventRegistrationForm() {
                       <input
                         type="text"
                         name="customTag"
-                        value={formData.customTag}
+                        // value={formData.customTag}
                         onChange={handleChange}
                       />
                       <button type="button" onClick={handleAddCustomTag}>
@@ -606,7 +629,7 @@ function EventRegistrationForm() {
                         <input
                           type="checkbox"
                           name="event_tags"
-                          value={option._id}
+                          value={option.label}
                           checked={formData.event_tags.includes(option.value)}
                           onChange={handleChange}
                         />
@@ -652,7 +675,7 @@ function EventRegistrationForm() {
                           <input
                             type="text"
                             name="external_speaker"
-                            value={formData.external_speaker}
+                            // value={formData.external_speaker}
                             onChange={handleChange}
                           />
                           <button
@@ -669,10 +692,8 @@ function EventRegistrationForm() {
                             <input
                               type="checkbox"
                               name="speakers"
-                              value={speaker.name}
-                              checkedSpeaker={formData.speakers.includes(
-                                speaker.name
-                              )}
+                              value={speaker._id}
+                              checked={formData.speakers.includes(speaker.name)}
                               onChange={handleChange}
                             />
                             {speaker.name}
@@ -701,7 +722,7 @@ function EventRegistrationForm() {
                   <input
                     type="text"
                     name="external_speaker"
-                    value={formData.external_speaker}
+                    // value={formData.external_speaker}
                     onChange={handleChange}
                   />
                   <button type="button" onClick={handleAddCustomSpeaker}>

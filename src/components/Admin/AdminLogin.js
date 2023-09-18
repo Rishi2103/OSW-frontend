@@ -31,7 +31,9 @@ const AdminLogin = () => {
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem("adminAuthToken", data);
+        const { result } = data;
+        localStorage.setItem("adminAuthToken", result);
+        // console.log(token);
         navigate("/", { replace: true });
         console.log("Login successful", data);
       } else {
