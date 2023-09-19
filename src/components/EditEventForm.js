@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./EventForm.css";
 import { hostname } from "../hostname";
-function EventRegistrationForm() {
+import { useParams } from "react-router-dom";
+function EventEditForm() {
+  const Id = useParams();
+  const [event, setEvent] = useState();
+  const [loading, setLoading] = useState(true); // Add loading state
+
   const [formData, setFormData] = useState({
     event_name: "",
     language: "",
@@ -65,7 +70,7 @@ function EventRegistrationForm() {
           // Base64-decode and parse the payload part (the second part)
           const payload = JSON.parse(atob(tokenParts[1]));
           console.log(payload.type);
-          await setUser(payload); // Set user state with decoded data
+          setUser(payload); // Set user state with decoded data
           token1 = localStorage.getItem("adminAuthToken");
         } catch (error) {
           // Handle decoding error (e.g., token is invalid)
@@ -76,8 +81,47 @@ function EventRegistrationForm() {
   };
   useEffect(() => {
     getUser();
-  });
+  }, []);
+  useEffect(() => {
+    if (user && user === "admin") {
+      get_speaker();
+    }
+    // Call the function to fetch the speakers
+  }, [user]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${hostname}/event/${Id.id}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
 
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data.eventData);
+          setEvent(data.eventData);
+        } else {
+          const errorData = await response.json();
+          console.error("Failed to fetch event details:", errorData);
+          // Handle the error or display an error message to the user
+        }
+      } catch (error) {
+        console.error("Error fetching event details:", error);
+        // Handle the error or display an error message to the user
+      } finally {
+        // Set loading to false regardless of success or failure
+        setLoading(false);
+      }
+    };
+    fetchData(); // Call the fetchData function when the component mounts
+  }, [Id]);
+
+  if (loading) {
+    // While loading, you can show a loading indicator or message
+    return <div>Loading...</div>;
+  }
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     // const reader = new FileReader();
@@ -255,6 +299,7 @@ function EventRegistrationForm() {
       "event_poster.jpg"
     );
     try {
+      // console.log(formData);
       console.log(ProfilePicFile);
       const formData1 = new FormData();
       formData1.append("file", ProfilePicFile);
@@ -276,43 +321,41 @@ function EventRegistrationForm() {
       endDateTime.setHours(parseInt(endTimeParts[0], 10)); // Set hours
       endDateTime.setMinutes(parseInt(endTimeParts[1], 10)); // Set minutes
 
-      
+      // const response = await fetch(`${hostname}/event/update-event/${Id}`, {
+      //   method: "POST",
+      //   headers: options,
+      //   body: JSON.stringify({
+      //     event_name: formData.event_name,
+      //     event_description: formData.event_description,
+      //     language: formData.language,
+      //     event_date: formData.event_date,
+      //     startTime: startDateTime,
+      //     endTime: endDateTime,
+      //     timeZone: formData.timeZone,
+      //     event_type: formData.event_type,
+      //     meet_link: formData.meet_link,
+      //     address: formData.address,
+      //     city: formData.city,
+      //     state: formData.state,
+      //     country: formData.country,
+      //     pincode: formData.pincode,
+      //     limit: formData.limit,
+      //     socialmedia_links: formData.socialmedia_links,
+      //     event_goals: formData.event_goals,
+      //     event_tags: formData.event_tags,
+      //     speakers: formData.speakers,
+      //   }), // Convert form data to JSON
+      // });
 
-      const response = await fetch(`${hostname}/event/create-event`, {
-        method: "POST",
-        headers: options,
-        body: JSON.stringify({
-          event_name: formData.event_name,
-          event_description: formData.event_description,
-          language: formData.language,
-          event_date: formData.event_date,
-          startTime: startDateTime,
-          endTime: endDateTime,
-          timeZone: formData.timeZone,
-          event_type: formData.event_type,
-          meet_link: formData.meet_link,
-          address: formData.address,
-          city: formData.city,
-          state: formData.state,
-          country: formData.country,
-          pincode: formData.pincode,
-          limit: formData.limit,
-          socialmedia_links: formData.socialmedia_links,
-          event_goals: formData.event_goals,
-          event_tags: formData.event_tags,
-          speakers: formData.speakers,
-        }), // Convert form data to JSON
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Event created successfully:", data.Event);
-        // Reset the form or perform any other actions
-      } else {
-        const errorData = await response.json();
-        console.error("Failed to create event:", errorData);
-        // Handle error or display an error message to the user
-      }
+      // if (response.ok) {
+      //   const data = await response.json();
+      //   console.log("Event created successfully:", data.Event);
+      //   // Reset the form or perform any other actions
+      // } else {
+      //   const errorData = await response.json();
+      //   console.error("Failed to create event:", errorData);
+      //   // Handle error or display an error message to the user
+      // }
     } catch (error) {
       console.error("Error creating event:", error);
       // Handle network errors or other exceptions
@@ -344,12 +387,6 @@ function EventRegistrationForm() {
       // Handle the error
     }
   };
-  useEffect(() => {
-    if (user && user === "admin") {
-      get_speaker();
-    }
-    // Call the function to fetch the speakers
-  }, [user]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -380,7 +417,7 @@ function EventRegistrationForm() {
             type="text"
             name="event_name"
             placeholder="Event name"
-            defaultValue={formData.event_name}
+            defaultValue={"darsh"}
             // value={formData.event_name}
             onChange={handleChange}
           />
@@ -390,6 +427,7 @@ function EventRegistrationForm() {
           <label htmlFor="language">Language</label>
           <select
             name="language"
+            // defaultValue={}
             // value={formData.language}
             onChange={handleChange}
           >
@@ -416,6 +454,7 @@ function EventRegistrationForm() {
             <input
               type="date"
               name="event_date"
+              // defaultValue={}
               // value={formData.event_date}
               onChange={handleChange}
             />
@@ -427,6 +466,7 @@ function EventRegistrationForm() {
             <input
               type="time"
               name="startTime"
+              defaultValue={event.startTime}
               // value={formData.startTime}
               onChange={handleChange}
             />
@@ -437,6 +477,7 @@ function EventRegistrationForm() {
             <input
               type="time"
               name="endTime"
+              // defaultValue={}
               // value={formData.endTime}
               onChange={handleChange}
             />
@@ -446,6 +487,7 @@ function EventRegistrationForm() {
           <label htmlFor="timezone">Timezone</label>
           <select
             name="timeZone"
+            // defaultValue={}
             // value={formData.timeZone}
             onChange={handleChange}
           >
@@ -462,6 +504,7 @@ function EventRegistrationForm() {
           <select
             name="event_type"
             // value={formData.event_type}
+            // defaultValue={}
             onChange={handleChange}
           >
             {meetingModeOptions.map((option) => (
@@ -480,6 +523,7 @@ function EventRegistrationForm() {
               type="url"
               name="meet_link"
               placeholder="Meeting link"
+              // defaultValue={}
               // value={formData.meet_link}
               onChange={handleChange}
             />
@@ -494,6 +538,7 @@ function EventRegistrationForm() {
                 type="text"
                 name="address"
                 placeholder="Address"
+                // defaultValue={}
                 // value={formData.address}
                 onChange={handleChange}
               />
@@ -775,4 +820,4 @@ function EventRegistrationForm() {
   );
 }
 
-export default EventRegistrationForm;
+export default EventEditForm;

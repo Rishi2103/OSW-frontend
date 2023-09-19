@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 
-const Events = () => {
+const PersonalEvents = () => {
   const [sortOrder, setSortOrder] = useState("asc");
   const [events, setEvents] = useState([]);
   const rowsPerPageOptions = [5, 10, 15]; // Customize the rows per page options as needed
@@ -43,14 +43,15 @@ const Events = () => {
         const token = localStorage.getItem("userAuthToken");
 
         if (token) {
+          console.log(token);
           try {
             // Split the token into its parts
             const tokenParts = token.split(".");
 
             // Base64-decode and parse the payload part (the second part)
             const payload = JSON.parse(atob(tokenParts[1]));
-            console.log(payload.type);
-            await setUser(payload); // Set user state with decoded data
+            console.log(payload);
+            setUser(payload); // Set user state with decoded data
           } catch (error) {
             // Handle decoding error (e.g., token is invalid)
             console.error("Error decoding JWT token:", error);
@@ -66,7 +67,7 @@ const Events = () => {
             // Base64-decode and parse the payload part (the second part)
             const payload = JSON.parse(atob(tokenParts[1]));
             console.log(payload.type);
-            await setUser(payload); // Set user state with decoded data
+            setUser(payload); // Set user state with decoded data
           } catch (error) {
             // Handle decoding error (e.g., token is invalid)
             console.error("Error decoding JWT token:", error);
@@ -101,13 +102,7 @@ const Events = () => {
   };
   const handleEditClick = (event) => {
     console.log(event._id);
-    navigate(`/events/edit-Event/${event._id}`, { state: { event } });
-  };
-  const handleCreateClick = () => {
-    navigate(`/events/create-Event`);
-  };
-  const handlePersonalEevntsClick = (event) => {
-    navigate(`/personal-events`);
+    navigate(`/events/edit-Event/${event._id}`);
   };
   const handleDeleteClick = (eventId) => {
     // Make an HTTP DELETE request to delete the event
@@ -136,13 +131,11 @@ const Events = () => {
       });
   };
 
-  const fetchData = async () => {
+  const fetchData = async (options) => {
     try {
-      const response = await fetch(`${hostname}/events`, {
+      const response = await fetch(`${hostname}/personal-events`, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers:options,
       });
 
       if (response.ok) {
@@ -160,8 +153,22 @@ const Events = () => {
     }
   };
   useEffect(() => {
-    fetchData(); // Call the fetchData function when the component mounts
-  }, []);
+    let options;
+
+    if (user && user.type === "user") {
+      console.log(localStorage.getItem("userAuthToken"));
+      options = {
+        "Content-Type": "application/json",
+        authorization: localStorage.getItem("userAuthToken"),
+      };
+    } else {
+      options = {
+        "Content-Type": "application/json",
+        authorization: localStorage.getItem("adminAuthToken"),
+      };
+    }
+    fetchData(options); // Call the fetchData function when the component mounts
+  }, [user]);
 
   return (
     <div className="eventpg">
@@ -171,21 +178,12 @@ const Events = () => {
       <b><p className="eventpg-head">Our <span style={{ color: '#0E8388' }}>Events</span></p></b>
       <p className='eventpg-text'>Questions? Please contact <span style={{ color: '#0E8388' }}>connectwithaurapp@gmail.com</span></p>
       </div> */}
-        <div className="eventpg-meetup">
-          <Meetup />
-        </div>
       </div>
       <div className="past-events">
         <p className="past-events-title">Directory of past events</p>
         <p className="past-events-text">
           Events are listed in reverse chronological order by date.
         </p>
-        <button
-          className="personal-events-button"
-          onClick={handlePersonalEevntsClick}
-        >
-          Personal Events
-        </button>
         <table className="event-table">
           <thead>
             <tr>
@@ -198,9 +196,9 @@ const Events = () => {
               <th>Date</th>
               <th>Type</th>
               <th>See More</th>
+              <th>Edit Project</th>
               {user && user.type === "admin" && (
                 <>
-                  <th>Edit Project</th>
                   <th>Delete Project</th>
                 </>
               )}
@@ -232,21 +230,21 @@ const Events = () => {
 
                   {/* </button> */}
                 </td>
+                <td className="edit-project-buttons">
+                  <div className="editprojectbutton">
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => handleEditClick(event)}
+                    >
+                      <FontAwesomeIcon
+                        icon={faEdit}
+                        className="edit"
+                      ></FontAwesomeIcon>
+                    </button>
+                  </div>
+                </td>
                 {user && user.type === "admin" && (
                   <>
-                    <td className="edit-project-buttons">
-                      <div className="editprojectbutton">
-                        <button
-                          className="btn btn-primary"
-                          onClick={() => handleEditClick(event)}
-                        >
-                          <FontAwesomeIcon
-                            icon={faEdit}
-                            className="edit"
-                          ></FontAwesomeIcon>
-                        </button>
-                      </div>
-                    </td>
                     <td className="delete-project-buttons">
                       <div className="deleteprojectbutton">
                         <button
@@ -312,16 +310,6 @@ const Events = () => {
             </tr>
           </tbody>
         </table>
-        <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-primary"
-            data-bs-dismiss
-            onClick={handleCreateClick}
-          >
-            Create Event
-          </button>
-        </div>
       </div>
       <p className="eventpg-text">
         <span style={{ color: "#0E8388", fontSize: "30px", fontWeight: "500" }}>
@@ -336,4 +324,4 @@ const Events = () => {
   );
 };
 
-export default Events;
+export default PersonalEvents;

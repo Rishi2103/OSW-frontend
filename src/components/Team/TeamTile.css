@@ -47,7 +47,7 @@
   position: absolute;
   margin-top: -10%;
   top: -10%;
-  right: -39%;
+  right: -39%!important;
   cursor: pointer;
   opacity: 0; /* Initially hide the delete icon */
 }

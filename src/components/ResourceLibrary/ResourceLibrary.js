@@ -17,12 +17,15 @@ import SecFooter from "../SecFooter";
 import { hostname } from "../../hostname";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import EditResourceLibrary from "./edit_project_details";
 export default function ResourceLibrary() {
   const [sortOrder, setSortOrder] = useState("asc");
   const [projectNameError, setProjectNameError] = useState("");
   const [projectDescError, setProjectDescError] = useState("");
   const [projectLinksError, setProjectLinksError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [iseditModalOpen, setIseditModalOpen] = useState(false);
+  const [editProject, setEditProject] = useState(null);
   const [projecttagsError, setProjecttagsError] = useState("");
   const rowsPerPageOptions = [5, 10, 15];
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
@@ -110,10 +113,14 @@ export default function ResourceLibrary() {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
-  const handleEdit = (projectId) => {
+  const handleEditButtonClick = (project) => {
+    console.log(project);
+    setEditProject(project)
+    setIseditModalOpen(true);
+  };
 
-  }
   const handleDelete = (projectId) => {
+    console.log(projectId);
     // Make an HTTP DELETE request to delete the event
     fetch(`${hostname}/resource-library/delete-project/${projectId}`, {
       method: "DELETE",
@@ -202,7 +209,7 @@ export default function ResourceLibrary() {
     }
 
     // Continue with form submission or other actions
-    
+
     fetch(`${hostname}/resource-library/add-project`, {
       method: "POST",
       headers: {
@@ -255,7 +262,6 @@ export default function ResourceLibrary() {
       });
   };
 
-  
   // Close the modal (if you want)
   // Add code to close the modal here if needed
 
@@ -318,9 +324,9 @@ export default function ResourceLibrary() {
       <div className="resourceLibrarypg">
         <div className="past-projects">
           <p className="past-projects-title">Directory of Projects</p>
-          {/* <p className="past-projects-text">
-          Projects are listed in reverse chronological order by date.
-        </p> */}
+          <p className="past-projects-text">
+            Projects are listed in reverse chronological order by date.
+          </p>
           <table className="project-table">
             <thead>
               <tr>
@@ -391,7 +397,7 @@ export default function ResourceLibrary() {
                         <div className="editprojectbutton">
                           <button
                             className="btn btn-primary"
-                            onClick={() => handleEdit(projects._id)}
+                            onClick={() => handleEditButtonClick(projects)}
                           >
                             <FontAwesomeIcon
                               icon={faEdit}
@@ -400,6 +406,12 @@ export default function ResourceLibrary() {
                           </button>
                         </div>
                       </td>
+                      {iseditModalOpen && (
+                        <EditResourceLibrary
+                          project={editProject}
+                          isOpen={iseditModalOpen}
+                        />
+                      )}
                       <td className="delete-project-buttons">
                         <div className="deleteprojectbutton">
                           <button
@@ -637,16 +649,16 @@ export default function ResourceLibrary() {
                       </div>
                     </form>
                   </div>
-                  <div className="modal-footer">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      data-bs-dismiss
-                      onClick={handleSubmit}
-                    >
-                      Add Project
-                    </button>
-                  </div>
+                  <div className="modal-header"></div>
+                  <br />
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    data-bs-dismiss
+                    onClick={handleSubmit}
+                  >
+                    Add Project
+                  </button>
                 </div>
               </div>
             </div>

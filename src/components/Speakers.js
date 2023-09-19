@@ -180,9 +180,7 @@ export default function Speakers() {
     );
     console.log(ProfilePicFile);
     const formData = new FormData();
-    speaker.sociallinks.forEach((link) => {
-      formData.append("social_links", link);
-    });
+    
     formData.append("name", speaker.name);
     formData.append("post", speaker.post);
     formData.append("university", speaker.university);
