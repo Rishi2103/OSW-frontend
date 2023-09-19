@@ -162,7 +162,6 @@ export default function ResourceLibrary() {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
 
-  const formData = new FormData();
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(
@@ -203,22 +202,19 @@ export default function ResourceLibrary() {
     }
 
     // Continue with form submission or other actions
-    projects.project_tags.forEach((tag) => {
-      formData.append(`project_tags`, tag);
-    });
-    // Append other project details
-    formData.append("project_name", projects.project_name);
-    formData.append("project_details", projects.project_details);
-
-    // Append the single project link
-    formData.append("project_links", projects.project_links);
+    
     fetch(`${hostname}/resource-library/add-project`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
         authorization: localStorage.getItem("adminAuthToken"), // Replace with your access token if needed
       },
-      body: formData,
+      body: JSON.stringify({
+        project_name: projects.project_name,
+        project_details: projects.project_details,
+        project_links: projects.project_links,
+        project_tags: projects.project_tags,
+      }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -234,7 +230,6 @@ export default function ResourceLibrary() {
 
           // Close the modal (if you want)
           fetchProjects();
-          printformData();
           // setIsModalOpen(false);
           // Add code to close the modal here if needed
           toast("Successfully Submited!", {
@@ -260,14 +255,7 @@ export default function ResourceLibrary() {
       });
   };
 
-  function printformData() {
-    const plainFormData = {};
-    for (let [key, value] of formData.entries()) {
-      plainFormData[key] = value;
-    }
-
-    console.log(plainFormData);
-  }
+  
   // Close the modal (if you want)
   // Add code to close the modal here if needed
 

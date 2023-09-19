@@ -28,6 +28,7 @@
   text-align: center;
 }
 .Team {
+  position: relative;
   border: 1px solid #e0e0e0;
   border-radius: 5px;
   padding: 4vh 1vw;
@@ -53,6 +54,21 @@
   line-height: 1.5em;
   font-size: 30px;
 }
+.delete-icon {
+  position: relative;
+  top: 2%;
+  right: -39%;
+  cursor: pointer;
+  opacity: 0; /* Initially hide the delete icon */
+}
+
+.Team:hover .delete-icon {
+  opacity: 1; /* Show the delete icon on hover */
+  color: white;
+  background-color: red;
+}
+
+/* Rest of your existing CSS remains unchanged */
 
 @media screen and (max-width: 500px) {
   .links {

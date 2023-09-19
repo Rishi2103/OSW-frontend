@@ -6,34 +6,67 @@ import { hostname } from "../../hostname";
 
 const Meetup = () => {
   const [events, setEvents] = useState([]);
+  const isDeleteEnabled = true;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${hostname}/events`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+  const fetchData = async () => {
+    console.log("Fetching data...");
+    try {
+      const response = await fetch(`${hostname}/events`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-        if (response.ok) {
-          const data = await response.json();
-          console.log(data);
-          setEvents(data.eventsData);
-        } else {
-          const errorData = await response.json();
-          console.error("Failed to fetch events:", errorData);
-          // Handle the error or display an error message to the user
-        }
-      } catch (error) {
-        console.error("Error fetching events:", error);
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+        setEvents(data.eventsData);
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to fetch events:", errorData);
         // Handle the error or display an error message to the user
       }
-    };
-
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      // Handle the error or display an error message to the user
+    }
+  };
+  useEffect(() => {
     fetchData(); // Call the fetchData function when the component mounts
+    console.log("Component mounted");
   }, []);
+
+  const handleDelete = async (e, Id) => {
+    // Make an HTTP DELETE request to delete the event
+    if (isDeleteEnabled) {
+      console.log(isDeleteEnabled);
+      e.preventDefault();
+      fetch(`${hostname}/event/delete-event/${Id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: localStorage.getItem("adminAuthToken"), // Replace with your access token if needed
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          // Handle the successful response
+          console.log("Event deleted successfully:", data);
+          fetchData();
+          // Add any further actions you want to take upon successful deletion
+        })
+        .catch((error) => {
+          // Handle errors during the fetch
+          console.error("Error deleting event:", error);
+        });
+    }
+  };
   return (
     <div className="meetup-con">
       <div className="meetup-content">
@@ -50,20 +83,17 @@ const Meetup = () => {
               <>
                 {event.hosted_by_admin && (
                   <MeetupCard
-                    id={event._id}
-                    date={event.event_date}
-                    event={event.event_name}
-                    mode={event.event_type}
-                    // Provide other event details as needed
+                    // id={event._id}
+                    // date={event.event_date}
+                    // event={event.event_name}
+                    // mode={event.event_type}
+                    event={event}
+                    onDelete={(e) => handleDelete(e, event._id)}
                   />
                 )}
               </>
             ))}
-            {/* <MeetupCard date={date[0]} event={event[0]} mode={mode[0]}/> */}
-            {/* <MeetupCard date={date[1]} event={event[1]} mode={mode[1]}/> */}
           </div>
-          {/* <div className="meet-p2">
-                <MeetupCard date={date[2]} event={event[2]} mode={mode[2]}/></div> */}
         </div>
       </div>
     </div>

@@ -6,12 +6,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SecFooter from "./SecFooter";
 import Footer from "./Footer";
-import { useNavigate } from "react-router-dom";
 import { hostname } from "../hostname";
 // import minus from "../img/minus-solid.svg";
 export default function Speakers() {
   const [getspeakers, setgetSpeakers] = useState([]);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
+  const isDeleteEnabled = true;
   const [user, setUser] = useState(null);
   useEffect(() => {
     // Get the JWT token from wherever you have stored it (e.g., localStorage)
@@ -27,7 +27,7 @@ export default function Speakers() {
             // Base64-decode and parse the payload part (the second part)
             const payload = JSON.parse(atob(tokenParts[1]));
             console.log(payload.type);
-            await setUser(payload); // Set user state with decoded data
+            setUser(payload); // Set user state with decoded data
           } catch (error) {
             // Handle decoding error (e.g., token is invalid)
             console.error("Error decoding JWT token:", error);
@@ -289,6 +289,35 @@ export default function Speakers() {
       sociallinks: updatedSocialLinks,
     });
   };
+
+  const handleDelete = async (event,Id) => {
+    // Make an HTTP DELETE request to delete the event
+    if (isDeleteEnabled) {
+      console.log(isDeleteEnabled);
+      event.preventDefault();
+      try {
+        const response = await fetch(`${hostname}/delete/speaker/${Id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: localStorage.getItem("adminAuthToken"),
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
+        console.log("Speaker deleted successfully:", data);
+        fetchSpeakers();
+        // Navigate to the "/speakers" route
+      } catch (error) {
+        console.error("Error deleting speaker:", error);
+      }
+    }
+  };
+
   return (
     <div className="speakers">
       <Navbar />
@@ -309,7 +338,7 @@ export default function Speakers() {
             Add Speaker
           </button>
         </div>
-      )}  
+      )}
       <div
         className="modal fade"
         id="exampleModal"
@@ -556,11 +585,12 @@ export default function Speakers() {
       <div className="SpeakersTile">
         {getspeakers.map((speaker) => (
           <SpeakersTile
-            _id={speaker._id}
-            speakername={speaker.name}
-            university={speaker.university}
-            image={speaker.pic} // Assuming pic is the image URL
-            links={speaker.social_links}
+            // _id={speaker._id}
+            speaker={speaker}
+            // university={speaker.university}
+            // image={speaker.pic} // Assuming pic is the image URL
+            // links={speaker.social_links}
+            onDelete={(event) => handleDelete(event,speaker._id)}
           />
         ))}
       </div>

@@ -13,6 +13,8 @@ import "react-toastify/dist/ReactToastify.css";
 const Team = () => {
   const [teamMembers, setTeamMembers] = useState([]);
   const [user, setUser] = useState(null);
+  const isDeleteEnabled = true;
+
   useEffect(() => {
     // Get the JWT token from wherever you have stored it (e.g., localStorage)
     const getUser = async () => {
@@ -213,7 +215,7 @@ const Team = () => {
 
           // Close the modal (if you want)
           fetchTeamMembers();
-          
+
           // Add code to close the modal here if needed
           toast("Successfully Submited!", {
             position: "top-right",
@@ -222,22 +224,49 @@ const Team = () => {
         } else {
           // Error occurred while adding a team member, handle the error message
           console.error("Error adding team member:", data.message);
-           toast("Error Occured!", {
-             position: "top-right",
-             backgroundColor: "#0E8388",
-           });
+          toast("Error Occured!", {
+            position: "top-right",
+            backgroundColor: "#0E8388",
+          });
         }
       })
       .catch((error) => {
         // Handle any network or other errors
         console.error("Error:", error);
-         toast("Error Occured!", {
-           position: "top-right",
-           backgroundColor: "#0E8388",
-         });
+        toast("Error Occured!", {
+          position: "top-right",
+          backgroundColor: "#0E8388",
+        });
       });
   };
 
+  const handleDelete = async (event, Id) => {
+    // Make an HTTP DELETE request to delete the event
+    if (isDeleteEnabled) {
+      console.log(isDeleteEnabled);
+      event.preventDefault();
+      try {
+        const response = await fetch(`${hostname}/delete/team-member/${Id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: localStorage.getItem("adminAuthToken"),
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
+        console.log("Speaker deleted successfully:", data);
+        fetchTeamMembers();
+        // Navigate to the "/speakers" route
+      } catch (error) {
+        console.error("Error deleting speaker:", error);
+      }
+    }
+  };
   return (
     <>
       <div className="team">
@@ -460,11 +489,14 @@ const Team = () => {
         <div className="TeamTile">
           {teamMembers.map((member, index) => (
             <TeamTile
-              _id={member._id}
-              name={member.name}
-              job={member.post}
-              img={member.pic} // Assuming pic is the image URL
-              links={member.social_links}
+              // _id={member._id}
+              // name={member.name}
+              // job={member.post}
+              // img={member.pic} // Assuming pic is the image URL
+              // links={member.social_links}
+              team={member}
+              onDelete={(event) => handleDelete(event, member._id)}
+
               // ... Other props
             />
           ))}

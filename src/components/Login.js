@@ -52,14 +52,14 @@ const Login = () => {
         console.error("Password and Confirm-Password does not match");
         return;
       }
-
+      let response;
       try {
         const config = {
           headers: {
             "Content-type": "application/json",
           },
         };
-        const response = await fetch(`${hostname}/user/signup`, {
+        response = await fetch(`${hostname}/user/signup`, {
           method: "POST",
           headers: config.headers,
           body: JSON.stringify({
@@ -80,7 +80,7 @@ const Login = () => {
           throw new Error("Error occurred during registration");
         }
       } catch (error) {
-        console.error("Error in SignUp:", error);
+        console.error("Error in SignUp:", response.message);
       }
     } else {
       if (!email || !password) {

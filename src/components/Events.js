@@ -157,9 +157,7 @@ const Events = () => {
 
     fetchData(); // Call the fetchData function when the component mounts
   }, []);
-  const handleDelete = (projectId) => {
-    // Implement logic to delete a project based on its ID
-  };
+
   return (
     <div className="eventpg">
       <Navbar />
@@ -177,6 +175,7 @@ const Events = () => {
         <p className="past-events-text">
           Events are listed in reverse chronological order by date.
         </p>
+        <button className="personal-events-button">Personal Events</button>
         <table className="event-table">
           <thead>
             <tr>
@@ -303,6 +302,16 @@ const Events = () => {
             </tr>
           </tbody>
         </table>
+        <div className="modal-footer">
+          <button
+            type="button"
+            className="btn btn-primary"
+            data-bs-dismiss
+            // onClick={handleSubmit}
+          >
+            Create Event
+          </button>
+        </div>
       </div>
       <p className="eventpg-text">
         <span style={{ color: "#0E8388", fontSize: "30px", fontWeight: "500" }}>
