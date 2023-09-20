@@ -5,12 +5,13 @@ import SecFooter from "../SecFooter";
 import "./User.css";
 import { hostname } from "../../hostname";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 const User = () => {
   const [sortOrder, setSortOrder] = useState("asc");
   const [user, setUsers] = useState([]);
-
+  const navigate = useNavigate();
   const rowsPerPageOptions = [5, 10, 15]; // Customize the rows per page options as needed
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,6 +33,10 @@ const User = () => {
   const indexOfLastEvent = currentPage * rowsPerPage;
   const indexOfFirstEvent = indexOfLastEvent - rowsPerPage;
   const currentEvents = user.slice(indexOfFirstEvent, indexOfLastEvent);
+ 
+  const viewProfile = (userId) => {
+    navigate("/profile", { state: { userId } });
+  };
 
   const handleSort = () => {
     const sortedEvents = [...user].sort((a, b) => {
@@ -76,6 +81,30 @@ const User = () => {
   useEffect(() => {
     fetchUsers();
   }, []);
+ const deleteUser = async (userId) => {
+   try {
+     const response = await fetch(`${hostname}/delete/user/${userId}`, {
+       method: "DELETE",
+       headers: {
+         "Content-Type": "application/json",
+         authorization: localStorage.getItem("adminAuthToken"), // Add your authentication token here
+       },
+     });
+
+     const data = await response.json();
+
+     if (!response.ok) {
+       throw new Error(data.message);
+     }
+
+     console.log("User deleted successfully:", data.message);
+     fetchUsers();
+     // Handle success here
+   } catch (error) {
+     console.error("Error deleting user:", error.message);
+     // Handle error here
+   }
+ };
   return (
     <div className="eventpg">
       <Navbar />
@@ -116,7 +145,7 @@ const User = () => {
                   <div className="editprojectbutton">
                     <button
                       className="btn btn-primary"
-                      // onClick={() => ()}
+                      onClick={() => viewProfile(user._id)}
                     >
                       <FontAwesomeIcon
                         icon={faEye}
@@ -129,7 +158,7 @@ const User = () => {
                   <div className="deleteprojectbutton">
                     <button
                       className="btn btn-primary"
-                      // onClick={(e) => ()}
+                      onClick={(e) => (deleteUser(user._id))}
                     >
                       <FontAwesomeIcon
                         icon={faTrash}

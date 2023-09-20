@@ -4,56 +4,93 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDoubleRight } from "@fortawesome/free-solid-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { hostname } from "../../hostname";
 
 const NotificationsPanel = ({ onClose }) => {
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      message: "Notification 1",
-      link: null,
-      visited: false,
-    },
-    {
-      id: 2,
-      message: "Notification 2",
-      link: null,
-      visited: false,
-    },
-    {
-      id: 3,
-      message:
-        "Visit Medium for the latest blogs fsif sfjsof sljfsl osjfo fsfg dgas sa gs asfasa asfsg agasdgsfsafadsgddagaagsafs",
-      link: "https://medium.com",
-      visited: false,
-    },
-  ]);
+  const [notifications, setNotifications] = useState([]);
 
-  const removeNotification = (id) => {
-    setNotifications(
-      notifications.filter((notification) => notification.id !== id)
-    );
-  };
+  const getUserNotifications = async () => {
+    try {
+      const response = await fetch(`${hostname}/notifications`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: localStorage.getItem("userAuthToken"), // Add your authentication token here
+        },
+      });
 
-  const visitNotificationLink = (link, id) => {
-    if (link) {
-      window.open(link, "_blank"); // Open the link in a new tab/window
-      markAsVisited(id);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+
+      console.log("User notifications:", data.notifications);
+      setNotifications(data.notifications);
+      // Handle success here
+    } catch (error) {
+      console.error("Error fetching user notifications:", error.message);
+      // Handle error here
     }
   };
 
-  const markAsVisited = (id) => {
-    const updatedNotifications = notifications.map((notification) => {
-      if (notification.id === id) {
-        return { ...notification, visited: true };
-      }
-      return notification;
+  useEffect(() => {
+    getUserNotifications();
+  }, []);
+
+  const removeNotification = async (id) => {
+    try {
+    const response = await fetch(`${hostname}/notifications/delete`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: localStorage.getItem("userAuthToken"), // Add your authentication token here
+
+        // You may need to include authentication headers here
+      },
+      body: JSON.stringify({ notificationID: id }),
     });
-    setNotifications(updatedNotifications);
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+    console.log("Notification deletion response:", data);
+    // Handle the response data as needed
+  } catch (error) {
+    console.error("There was a problem with the fetch operation:", error);
+  }
+
   };
 
-  const deleteAllNotifications = () => {
-    setNotifications([]);
+  const visitNotificationLink = (link, id) => {};
+
+  const markAsVisited = (id) => {
+    fetch(`${hostname}/notifications/updatestatus`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: localStorage.getItem("userAuthToken"), // Add your authentication token here
+      },
+      body: JSON.stringify({ notificationID: id }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Read status updated successfully:", data);
+        // Handle the response data as needed
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
   };
+
+  const deleteAllNotifications = () => {};
 
   const [panelOpen, setPanelOpen] = useState(true);
 
@@ -92,19 +129,15 @@ const NotificationsPanel = ({ onClose }) => {
             <div
               key={notification.id}
               className={`notification-item ${
-                notification.visited ? "visited" : ""
+                notification.read ? "visited" : ""
               }`}
-              onClick={() =>
-                visitNotificationLink(notification.link, notification.id)
-              }
+              onClick={() => visitNotificationLink(notification.link)}
             >
-              <div className="msg">{notification.message}</div>
+              <div className="msg">{notification.content}</div>
               <div className="two-buttons">
                 <button
                   className="mark-as-read"
-                  onClick={() =>
-                    visitNotificationLink(notification.link, notification.id)
-                  }
+                  onClick={() => markAsVisited(notification._id)}
                 >
                   <FontAwesomeIcon icon={faCheck} />
                 </button>

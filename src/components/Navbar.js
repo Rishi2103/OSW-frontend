@@ -14,7 +14,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const [userId, setUserId] = useState("");
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState(null);
   const [selectedImage, setSelectedImage] = useState(profile_img);
   const [showNotifications, setShowNotifications] = useState(false);
   const [panelClosing, setPanelClosing] = useState(false);
@@ -47,9 +47,9 @@ export default function Navbar() {
 
             // Base64-decode and parse the payload part (the second part)
             const payload = JSON.parse(atob(tokenParts[1]));
+            console.log(payload);
             setUserId(payload._id);
             setUser(payload);
-            console.log(payload.type);
           } catch (error) {
             // Handle decoding error (e.g., token is invalid)
             console.error("Error decoding JWT token:", error);
@@ -65,7 +65,7 @@ export default function Navbar() {
 
             // Base64-decode and parse the payload part (the second part)
             const payload = JSON.parse(atob(tokenParts[1]));
-            console.log(payload.type);
+            console.log(payload);
             setUserId(payload._id); // Set user state with decoded data
             setUser(payload); // Set user state with decoded data
           } catch (error) {
@@ -148,7 +148,9 @@ export default function Navbar() {
   const viewProfile = () => {
     navigate("/profile");
   };
-
+   const login = () => {
+     navigate("/login");
+   };
   const AddAdmin = () => {
     navigate("/admin/add-admin");
   };
@@ -233,7 +235,7 @@ export default function Navbar() {
                 </li>
               </>
             ) : (
-              <li style={{ marginTop: "10px" }} onClick={viewProfile}>
+              <li style={{ marginTop: "10px" }} onClick={login}>
                 <i
                   className="fa-solid fa-user"
                   style={{ padding: "0", marginRight: "10px" }}
@@ -378,7 +380,7 @@ export default function Navbar() {
                 </li>
               </>
             ) : (
-              <li style={{ marginTop: "10px" }} onClick={viewProfile}>
+              <li style={{ marginTop: "10px" }} onClick={login}>
                 <i
                   className="fa-solid fa-user"
                   style={{ padding: "0", marginRight: "10px" }}

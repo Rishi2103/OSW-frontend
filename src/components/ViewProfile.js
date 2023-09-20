@@ -4,7 +4,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import profile_img from "../img/profile-img.jpg";
 import jwt_decode from "jwt-decode";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const ViewProfile = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -19,15 +19,22 @@ const ViewProfile = () => {
   const [showotpinput, setShowotpInput] = useState(false);
   const [showVerifyButton, setShowVerifyButton] = useState(false);
   const [otp, setOtp] = useState();
-  const [userId, setUserId] = useState("");
+  const location = useLocation();
+  const [userId, setUserId] = useState(
+    location.state ? location.state.userId : "" || ""
+  );
+  const [userType,setUserType] = useState("")
   const [profileData, setProfileData] = useState(null);
   const [isImageChanged, setIsImageChanged] = useState(false);
 
   const navigate = useNavigate();
   useEffect(() => {
-    const token = localStorage.getItem("userAuthToken");
-    const decodedToken = jwt_decode(token);
-    setUserId(decodedToken._id);
+    if (localStorage.getItem("userAuthToken")) {
+      const token = localStorage.getItem("userAuthToken");
+      const decodedToken = jwt_decode(token);
+      setUserId(decodedToken._id);
+      setUserType(decodedToken.type)
+    }
   }, []);
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -155,9 +162,7 @@ const ViewProfile = () => {
       }
     } catch (error) {}
   };
-  const handleOtpChange = (value) => {
-    setOtp(value);
-  };
+
   const handleverifyemail = async (e) => {
     e.preventDefault();
     setShowotpInput(false);
@@ -295,7 +300,7 @@ const ViewProfile = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
-                {showOtpButton && (
+                {userType === "user" && showOtpButton && (
                   <>
                     {is_verified ? (
                       "verified"

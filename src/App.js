@@ -3,7 +3,6 @@ import {
   // BrowserRouter as Router,
   Route,
   Routes,
-  useNavigate,
   // useLocation,
 } from "react-router-dom";
 // import Navbar from "./components/Navbar";
@@ -43,22 +42,11 @@ const clientId =
   "574757039734-2hfvakv45d24o82mp3r80akqri2b70mq.apps.googleusercontent.com";
 
 function App() {
-  const authToken = localStorage.getItem("userAuthToken");
+  // const authToken = localStorage.getItem("userAuthToken");
   const AdminauthToken = localStorage.getItem("adminAuthToken");
   // let selectedOption = "";
-  const isUserAuthenticated = authToken !== null;
+  // const isUserAuthenticated = authToken !== null;
   const isAdminAuthenticated = AdminauthToken !== null;
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (
-      !isUserAuthenticated &&
-      !isAdminAuthenticated &&
-      window.location.pathname !== "/adminLogin"
-    ) {
-      navigate("/login", { replace: true });
-    }
-  }, [isUserAuthenticated, isAdminAuthenticated, navigate]);
 
   useEffect(() => {
     function start() {
@@ -100,7 +88,7 @@ function App() {
           <Route path="/partners" element={<Partners />} />
           <Route path="/resourceLibrary" element={<ResourceLibrary />} />
           <Route
-            path="/projects-details"
+            path="/project/details/:id"
             element={<ResourceLibraryProfile />}
           />
           <Route path="/event/details/:id" element={<EventsPage />} />

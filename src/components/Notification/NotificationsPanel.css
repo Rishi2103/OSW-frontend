@@ -1,131 +1,131 @@
 /* NotificationsPanel.css */
 
 .notifications-panel {
-    position: fixed;
-    top: 0;
-    right: 0;
-    height: 100%;
-    width: 350px;
-    background-color: #f0f0f0;
-    overflow-y: auto;
-    z-index: 100;
-    overflow-x: hidden;
-    font-size: medium;
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 350px;
+  background-color: #f0f0f0;
+  overflow-y: auto;
+  z-index: 100;
+  overflow-x: hidden;
+  font-size: medium;
 }
 
 .notifications-panel.hidden {
-    transform: translateX(100%);
+  transform: translateX(100%);
 }
 
 .panel-header {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    background-color: #008080;
-    color: white;
-    box-shadow: 0px 5px 20px rgb(98, 98, 98);
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #008080;
+  color: white;
+  box-shadow: 0px 5px 20px rgb(98, 98, 98);
 }
 
 .close-button {
-    background: transparent;
-    border: none;
-    /* color: rgb(0, 0, 0); */
-    cursor: pointer;
-    margin-top: -0.8vh;
-    transition: transform 0.1s ease;
+  background: transparent;
+  border: none;
+  /* color: rgb(0, 0, 0); */
+  cursor: pointer;
+  margin-top: -0.8vh;
+  transition: transform 0.1s ease;
 }
 
 .close-button:hover {
-    transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 .notification-item {
-    display: flex;
-    justify-content: space-between;
-    /* align-items: center; */
-    border-bottom: 1px solid #ccc;
-    padding: 10px;
-    cursor: pointer;
-    transition: 0.2s ease-in-out;
+  display: flex;
+  justify-content: space-between;
+  /* align-items: center; */
+  border-bottom: 1px solid #ccc;
+  padding: 10px;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
 }
 
 .msg {
-    margin-left: 5px;
-    max-width: 70%;
+  margin-left: 5px;
+  max-width: 70%;
 }
 
-
 .notification-item:hover {
-    background-color: rgb(226, 226, 226);
-    transform: scale(1.02);
+  background-color: rgb(226, 226, 226);
+  transform: scale(1.02);
 }
 
 .panel-footer {
-    text-align: center;
-    padding: 10px;
-    background-color: #008080;
-    color: white;
+  text-align: center;
+  padding: 10px;
+  background-color: #008080;
+  color: white;
+  flex-shrink: 0; /* Prevent the footer from shrinking */
+  margin-top: auto; /* Push the footer to the bottom */
 }
 
 .delete-notification {
-    background: transparent;
-    border: none;
-    /* color: rgb(0, 0, 0); */
-    cursor: pointer;
-    transition: transform 0.2s ease;
-    /* margin-left: 0px; */
-    padding: 1px 7px !important;
+  background: transparent;
+  border: none;
+  /* color: rgb(0, 0, 0); */
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  /* margin-left: 0px; */
+  padding: 1px 7px !important;
 }
 
 .mark-as-read:hover {
-    cursor: pointer;
-    color: white;
+  cursor: pointer;
+  color: white;
 }
 
 .delete-notificaton:hover {
-    background-color: #0E8388;
-    cursor: pointer;
-    color: white;
-
+  background-color: #0e8388;
+  cursor: pointer;
+  color: white;
 }
 
 .notifications-panel .two-buttons {
-    position: relative;
-    right: 0;
-    top: 0;
+  position: relative;
+  right: 0;
+  top: 0;
 }
 
 .two-buttons {
-    display: flex;
-    width: 75px;
-    justify-content: space-around;
+  display: flex;
+  width: 75px;
+  justify-content: space-around;
 }
 
 .two-buttons button {
-    /* position: relative;
+  /* position: relative;
     top: 0; */
-    height: 28px;
-    border-radius: 50%;
-    border: none;
-    background-color: transparent;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background-color: transparent;
 }
 
 .two-buttons .mark-as-read {
-    color: rgb(50, 129, 156);
+  color: rgb(50, 129, 156);
 }
 
 .two-buttons .mark-as-read:hover {
-    background-color: rgba(11, 139, 182, 0.142);
-    color: rgb(11, 139, 182);
+  background-color: rgba(11, 139, 182, 0.142);
+  color: rgb(11, 139, 182);
 }
 
 .two-buttons .delete-notificaton {
-    color: rgb(217, 61, 61);
+  color: rgb(217, 61, 61);
 }
 
 .two-buttons .delete-notificaton:hover {
-    color: rgb(209, 13, 13);
-    background-color: rgba(220, 46, 46, 0.142);
+  color: rgb(209, 13, 13);
+  background-color: rgba(220, 46, 46, 0.142);
 }
 
 /* .button {
@@ -142,139 +142,137 @@
 } */
 
 .panel-footer button {
-    margin: 5px 13px;
-    border: none
-        /* border-radius: 5%; */
+  margin: 5px 13px;
+  border: none;
+  /* border-radius: 5%; */
 }
 
 .panel-footer {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    box-shadow: 0px -5px 20px rgb(98, 98, 98);
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  box-shadow: 0px -5px 20px rgb(98, 98, 98);
 }
 
 .notification-item.visited {
-    background-color: #b3b3b3;
+  background-color: #b3b3b3;
 }
 
 .notifications-panel .no-notifications {
-    font-size: large;
-    height: 80vh;
-    display: grid;
-    place-items: center;
+  font-size: large;
+  height: 80vh;
+  display: grid;
+  place-items: center;
 }
 
 .delete-all-button button {
-    height: 15px;
-    width: auto;
+  height: 15px;
+  width: auto;
 }
 
 .delete-all-button {
-    background: #FF4742;
-    border: 1px solid #FF4742;
-    border-radius: 6px;
-    box-shadow: rgba(0, 0, 0, 0.1) 1px 2px 4px;
-    box-sizing: border-box;
-    color: #FFFFFF;
-    cursor: pointer;
-    display: inline-block;
-    font-family: nunito, roboto, proxima-nova, "proxima nova", sans-serif;
-    font-size: 11px;
-    font-weight: 800;
-    line-height: 16px;
-    min-height: 40px;
-    outline: 0;
-    padding: 12px 14px;
-    text-align: center;
-    text-rendering: geometricprecision;
-    text-transform: none;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    vertical-align: middle;
+  background: #ff4742;
+  border: 1px solid #ff4742;
+  border-radius: 6px;
+  box-shadow: rgba(0, 0, 0, 0.1) 1px 2px 4px;
+  box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: nunito, roboto, proxima-nova, "proxima nova", sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 16px;
+  min-height: 40px;
+  outline: 0;
+  padding: 12px 14px;
+  text-align: center;
+  text-rendering: geometricprecision;
+  text-transform: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
 }
 
 .delete-all-button:hover,
 .delete-all-button:active {
-    background-color: white;
-    background-position: 0 0;
-    color: #FF4742;
+  background-color: white;
+  background-position: 0 0;
+  color: #ff4742;
 }
 
 .delete-all-button:active {
-    opacity: .5;
+  opacity: 0.5;
 }
 
 .mark-as-read-all-button {
-    background: #42a4ff;
-    border: 1px solid #42a4ff;
-    border-radius: 6px;
-    box-shadow: rgba(0, 0, 0, 0.1) 1px 2px 4px;
-    box-sizing: border-box;
-    color: #FFFFFF;
-    cursor: pointer;
-    display: inline-block;
-    font-family: nunito, roboto, proxima-nova, "proxima nova", sans-serif;
-    font-size: 11px;
-    font-weight: 800;
-    line-height: 16px;
-    min-height: 40px;
-    outline: 0;
-    padding: 12px 14px;
-    text-align: center;
-    text-rendering: geometricprecision;
-    text-transform: none;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    vertical-align: middle;
+  background: #42a4ff;
+  border: 1px solid #42a4ff;
+  border-radius: 6px;
+  box-shadow: rgba(0, 0, 0, 0.1) 1px 2px 4px;
+  box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: nunito, roboto, proxima-nova, "proxima nova", sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 16px;
+  min-height: 40px;
+  outline: 0;
+  padding: 12px 14px;
+  text-align: center;
+  text-rendering: geometricprecision;
+  text-transform: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
 }
 
 .mark-as-read-all-button:hover,
 .mark-as-read-all-button:active {
-    background-color: white;
-    background-position: 0 0;
-    color: #42a4ff;
+  background-color: white;
+  background-position: 0 0;
+  color: #42a4ff;
 }
 
 .mark-as-read-all-button:active {
-    opacity: .5;
+  opacity: 0.5;
 }
-
 
 /* Mobile and Tablet Styles */
 @media (max-width: 768px) {
-    .notifications-panel {
-        width: 100%;
-        transform: translateX(0);
-    }
+  .notifications-panel {
+    width: 100%;
+    transform: translateX(0);
+  }
 
-    .panel-header {
-        justify-content: space-between;
-        padding: 10px 20px;
+  .panel-header {
+    justify-content: space-between;
+    padding: 10px 20px;
+  }
 
-    }
+  .panel-footer {
+    padding: 10px 20px;
+  }
 
-    .panel-footer {
-        padding: 10px 20px;
-    }
+  .two-buttons {
+    display: flex;
+    justify-content: space-around;
+  }
 
-    .two-buttons {
-        display: flex;
-        justify-content: space-around;
-    }
-
-    .notification-item {
-        padding: 10px 20px;
-    }
+  .notification-item {
+    padding: 10px 20px;
+  }
 }
 
 /* Larger Screens Styles */
 @media (min-width: 769px) {
-    .notifications-panel {
-        width: 350px;
-    }
+  .notifications-panel {
+    width: 350px;
+  }
 }
