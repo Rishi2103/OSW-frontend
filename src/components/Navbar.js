@@ -5,45 +5,106 @@ import profile_img from "../img/profile-img.jpg";
 import "./Navbar.css";
 // import { Padding } from "@mui/icons-material";
 // import ModalForm from "./ModalForm";
+import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import NotificationsPanel from "./Notification/notificationPanel";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(profile_img);
   const navigate = useNavigate();
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
+  const [userId, setUserId] = useState("");
+  const [user, setUser] = useState("");
+  const [selectedImage, setSelectedImage] = useState(profile_img);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [panelClosing, setPanelClosing] = useState(false);
 
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        setSelectedImage(e.target.result);
-      };
-
-      reader.readAsDataURL(file);
+  const toggleNotifications = () => {
+    if (showNotifications) {
+      // Start the panel closing transition
+      setPanelClosing(true);
+      // Delay hiding the panel until the transition is complete
+      setTimeout(() => {
+        setShowNotifications(false);
+        setPanelClosing(false); // Reset panel closing state
+      }, 300); // Adjust the delay time to match your transition duration (0.3s in this case)
+    } else {
+      setShowNotifications(true);
     }
   };
   const dropdown = () => {
     setIsOpen(!isOpen);
   };
+  useEffect(() => {
+    const getUser = async () => {
+      if (localStorage.getItem("userAuthToken")) {
+        const token = localStorage.getItem("userAuthToken");
 
-  const openModal = () => {
-    setIsProfileOpen(true);
-  };
-  const closeModal = () => {
-    setIsProfileOpen(false);
-  };
+        if (token) {
+          try {
+            // Split the token into its parts
+            const tokenParts = token.split(".");
 
+            // Base64-decode and parse the payload part (the second part)
+            const payload = JSON.parse(atob(tokenParts[1]));
+            setUserId(payload._id);
+            setUser(payload);
+            console.log(payload.type);
+          } catch (error) {
+            // Handle decoding error (e.g., token is invalid)
+            console.error("Error decoding JWT token:", error);
+          }
+        }
+      } else {
+        const token = localStorage.getItem("adminAuthToken");
+        console.log();
+        if (token) {
+          try {
+            // Split the token into its parts
+            const tokenParts = token.split(".");
+
+            // Base64-decode and parse the payload part (the second part)
+            const payload = JSON.parse(atob(tokenParts[1]));
+            console.log(payload.type);
+            setUserId(payload._id); // Set user state with decoded data
+            setUser(payload); // Set user state with decoded data
+          } catch (error) {
+            // Handle decoding error (e.g., token is invalid)
+            console.error("Error decoding JWT token:", error);
+          }
+        }
+      }
+    };
+    getUser();
+  }, []);
+  useEffect(() => {
+    const fetchPic = async () => {
+      console.log(userId);
+      try {
+        const response = await fetch(
+          `http://localhost:4000/user/profile-pic/${userId}`
+        );
+
+        const res = await response.json();
+        console.log(res);
+        setSelectedImage(res.LogoURL);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    if (userId && userId !== "") {
+      fetchPic();
+    }
+  }, [userId]);
   const handleLogoutClick = () => {
     // Handle the "Logout" action here
-    console.log(localStorage.getItem("userAuthToken"));
-
-    localStorage.removeItem("userAuthToken");
-    console.log(localStorage.getItem("userAuthToken"));
-    navigate("/login", { replace: true });
+    if (localStorage.getItem("userAuthToken")) {
+      localStorage.removeItem("userAuthToken");
+      navigate("/login", { replace: true });
+    } else {
+      localStorage.removeItem("adminAuthToken");
+      navigate("/adminLogin", { replace: true });
+    }
   };
 
   const toggleMenu = () => {
@@ -84,10 +145,16 @@ export default function Navbar() {
       document.removeEventListener("click", closeNavbar);
     };
   }, []);
-      const viewProfile = () =>{
-      navigate('/profile');
-    }
+  const viewProfile = () => {
+    navigate("/profile");
+  };
 
+  const AddAdmin = () => {
+    navigate("/admin/add-admin");
+  };
+  const DeleteUser = () => {
+    navigate("/admin/delete-user");
+  };
   return (
     <nav className={`nav ${menuOpen ? "open" : ""}`}>
       <div className="menu-toggle" onClick={toggleMenu}>
@@ -118,91 +185,63 @@ export default function Navbar() {
         </span>
         {/* <div><img className="profile-img-nav" src={profile_img} alt="" /></div> */}
         <div className="profile-div-nav" onClick={dropdown}>
-          <img className="profile-img" src={profile_img} alt="" />{" "}
+          <img
+            className="profile-img"
+            src={selectedImage ? selectedImage : profile_img}
+            alt=""
+          />{" "}
         </div>
         {isOpen && (
           <ul className="dropdown-menu">
-            <li style={{ marginTop: "10px" }} onClick={viewProfile}>
-              <i
-                class="fa-solid fa-user"
-                style={{ padding: "0", marginRight: "10px" }}
-              ></i>
-              View Profile
-            </li>
-            <li onClick={openModal}>
-              <i
-                class="fa-solid fa-square-check"
-                style={{ padding: "0", marginRight: "10px" }}
-              ></i>
-              Profile Form
-            </li>
-            <li style={{ marginBottom: "10px" }} onClick={handleLogoutClick}>
-              <i
-                class="fa-solid fa-arrow-right-from-bracket"
-                style={{ padding: "0", marginRight: "10px" }}
-              ></i>
-              Logout
-            </li>
+            {user ? (
+              <>
+                {user.type === "admin" ? (
+                  <>
+                    <li style={{ marginTop: "10px" }} onClick={DeleteUser}>
+                      <i
+                        className="fa-solid fa-user"
+                        style={{ padding: "0", marginRight: "10px" }}
+                      ></i>
+                      Delete user
+                    </li>
+                    <li style={{ marginTop: "10px" }} onClick={AddAdmin}>
+                      <i
+                        className="fa-solid fa-user"
+                        style={{ padding: "0", marginRight: "10px" }}
+                      ></i>
+                      Add Admin
+                    </li>
+                  </>
+                ) : (
+                  <li style={{ marginTop: "10px" }} onClick={viewProfile}>
+                    <i
+                      className="fa-solid fa-user"
+                      style={{ padding: "0", marginRight: "10px" }}
+                    ></i>
+                    View Profile
+                  </li>
+                )}
+                <li
+                  style={{ marginBottom: "10px" }}
+                  onClick={handleLogoutClick}
+                >
+                  <i
+                    className="fa-solid fa-arrow-right-from-bracket"
+                    style={{ padding: "0", marginRight: "10px" }}
+                  ></i>
+                  Logout
+                </li>
+              </>
+            ) : (
+              <li style={{ marginTop: "10px" }} onClick={viewProfile}>
+                <i
+                  className="fa-solid fa-user"
+                  style={{ padding: "0", marginRight: "10px" }}
+                ></i>
+                Login
+              </li>
+            )}
           </ul>
-        )}
-        {isProfileOpen && (
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <span className="close-button" onClick={closeModal}>
-                &times;
-              </span>
-              {/* Your form content goes here */}
-              <form
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "17px",
-                }}
-              >
-                <img
-                  src={selectedImage}
-                  alt="Preview"
-                  style={{
-                    maxWidth: "20%",
-                    borderRadius: "50%",
-                    marginBottom: "20px",
-                  }}
-                />
-
-                <div className="form-field">
-                  <label>Profile Photo: </label>
-                  <input type="file" onChange={handleImageChange} />
-                </div>
-
-                <div className="form-field">
-                  <label>Username:</label>
-                  <input type="text" required />
-                </div>
-                <div className="form-field">
-                  <label>Email:</label>
-                  <input type="text" required />
-                </div>
-                <div className="form-field">
-                  <label>First Name:</label>
-                  <input type="text" required />
-                </div>
-                <div className="form-field">
-                  <label>Last Name:</label>
-                  <input type="text" required />
-                </div>
-                <div className="form-field">
-                  <label>Contact No.:</label>
-                  <input type="text" required />
-                </div>
-
-                <button className="modal-submit" type="submit">
-                  Submit
-                </button>
-              </form>
-            </div>
-          </div>
         )}
       </div>
       <div className={`nav-links ${menuOpen ? "open" : ""}`}>
@@ -285,94 +324,69 @@ export default function Navbar() {
           <i className="fa-solid fa-comment-dots"></i>
         </span>
         <span className="icons-norm">
-          <i class="fa-solid fa-bell"></i>
+          <i class="fa-solid fa-bell" onClick={toggleNotifications}></i>
+          {showNotifications && (
+            <NotificationsPanel onClose={toggleNotifications} />
+          )}
         </span>
         <div className="profile-div" onClick={dropdown}>
-          <img className="profile-img" src={profile_img} alt="" />{" "}
+          <img
+            className="profile-img"
+            src={selectedImage ? selectedImage : profile_img}
+            alt=""
+          />{" "}
         </div>
         {isOpen && (
           <ul className="dropdown-menu">
-            <li style={{ marginTop: "10px" }} onClick={viewProfile}>
-              <i
-                class="fa-solid fa-user"
-                style={{ padding: "0", marginRight: "10px" }}
-              ></i>
-              View Profile
-            </li>
-            <li onClick={openModal}>
-              <i
-                class="fa-solid fa-square-check"
-                style={{ padding: "0", marginRight: "10px" }}
-              ></i>
-              Profile Form
-            </li>
-            <li style={{ marginBottom: "10px" }} onClick={handleLogoutClick}>
-              <i
-                class="fa-solid fa-arrow-right-from-bracket"
-                style={{ padding: "0", marginRight: "10px" }}
-              ></i>
-              Logout
-            </li>
+            {user ? (
+              <>
+                {user.type === "admin" ? (
+                  <>
+                    <li style={{ marginTop: "10px" }} onClick={DeleteUser}>
+                      <i
+                        className="fa-solid fa-user"
+                        style={{ padding: "0", marginRight: "10px" }}
+                      ></i>
+                      Delete user
+                    </li>
+                    <li style={{ marginTop: "10px" }} onClick={AddAdmin}>
+                      <i
+                        className="fa-solid fa-user"
+                        style={{ padding: "0", marginRight: "10px" }}
+                      ></i>
+                      Add Admin
+                    </li>
+                  </>
+                ) : (
+                  <li style={{ marginTop: "10px" }} onClick={viewProfile}>
+                    <i
+                      className="fa-solid fa-user"
+                      style={{ padding: "0", marginRight: "10px" }}
+                    ></i>
+                    View Profile
+                  </li>
+                )}
+                <li
+                  style={{ marginBottom: "10px" }}
+                  onClick={handleLogoutClick}
+                >
+                  <i
+                    className="fa-solid fa-arrow-right-from-bracket"
+                    style={{ padding: "0", marginRight: "10px" }}
+                  ></i>
+                  Logout
+                </li>
+              </>
+            ) : (
+              <li style={{ marginTop: "10px" }} onClick={viewProfile}>
+                <i
+                  className="fa-solid fa-user"
+                  style={{ padding: "0", marginRight: "10px" }}
+                ></i>
+                Login
+              </li>
+            )}
           </ul>
-        )}
-        {isProfileOpen && (
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <span className="close-button" onClick={closeModal}>
-                &times;
-              </span>
-              {/* Your form content goes here */}
-              <form
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "17px",
-                }}
-              >
-                <img
-                  src={selectedImage}
-                  alt="Preview"
-                  style={{
-                    maxWidth: "20%",
-                    borderRadius: "50%",
-                    marginBottom: "20px",
-                  }}
-                />
-
-                <div className="form-field">
-                  <label>Profile Photo: </label>
-                  <input type="file" onChange={handleImageChange} />
-                </div>
-
-                <div className="form-field">
-                  <label>Username:</label>
-                  <input type="text" required />
-                </div>
-                <div className="form-field">
-                  <label>Email:</label>
-                  <input type="text" required />
-                </div>
-                <div className="form-field">
-                  <label>First Name:</label>
-                  <input type="text" required />
-                </div>
-                <div className="form-field">
-                  <label>Last Name:</label>
-                  <input type="text" required />
-                </div>
-                <div className="form-field">
-                  <label>Contact No.:</label>
-                  <input type="text" required />
-                </div>
-
-                <button className="modal-submit" type="submit">
-                  Submit
-                </button>
-              </form>
-            </div>
-          </div>
         )}
       </div>
     </nav>

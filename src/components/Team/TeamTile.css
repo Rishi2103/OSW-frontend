@@ -6,6 +6,7 @@
 .teamimg {
   height: 120px;
   border-radius: 50px;
+  margin-top: -2vh;
   margin-bottom: 5px;
 }
 
@@ -43,16 +44,15 @@
   line-height: 1.5em;
   font-size: 30px;
 }
-.delete-icon {
+.deleteteam-icon {
   position: absolute;
-  margin-top: -10%;
-  top: -10%;
-  right: -39%!important;
+  top: 2%;
+  right: 3%!important;
   cursor: pointer;
   opacity: 0; /* Initially hide the delete icon */
 }
 
-.Team:hover .delete-icon {
+.Team:hover .deleteteam-icon {
   opacity: 1; /* Show the delete icon on hover */
   color: white;
   background-color: red;

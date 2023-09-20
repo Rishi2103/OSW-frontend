@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./EventForm.css";
 import { hostname } from "../hostname";
-function EventRegistrationForm() {
+import { useLocation } from "react-router-dom";
+function EventRegistrationForm(props) {
   const [formData, setFormData] = useState({
     event_name: "",
     language: "",
@@ -33,50 +34,12 @@ function EventRegistrationForm() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [dropdownSpeakerOpen, setDropdownSpeakerOpen] = useState(false);
   const [speakerOptions, setSpeakerOptions] = useState([]);
-  const [user, setUser] = useState(null);
-  let token1;
+  const location = useLocation();
 
-  const getUser = async () => {
-    if (localStorage.getItem("userAuthToken")) {
-      const token = localStorage.getItem("userAuthToken");
-      token1 = localStorage.getItem("userAuthToken");
-
-      if (token) {
-        try {
-          // Split the token into its parts
-          const tokenParts = token.split(".");
-
-          // Base64-decode and parse the payload part (the second part)
-          const payload = JSON.parse(atob(tokenParts[1]));
-          console.log(payload.type);
-        } catch (error) {
-          // Handle decoding error (e.g., token is invalid)
-          console.error("Error decoding JWT token:", error);
-        }
-      }
-    } else {
-      const token = localStorage.getItem("adminAuthToken");
-      console.log();
-      if (token) {
-        try {
-          // Split the token into its parts
-          const tokenParts = token.split(".");
-
-          // Base64-decode and parse the payload part (the second part)
-          const payload = JSON.parse(atob(tokenParts[1]));
-          console.log(payload.type);
-          await setUser(payload); // Set user state with decoded data
-          token1 = localStorage.getItem("adminAuthToken");
-        } catch (error) {
-          // Handle decoding error (e.g., token is invalid)
-          console.error("Error decoding JWT token:", error);
-        }
-      }
-    }
-  };
-  useEffect(() => {
-    getUser();
-  });
+  // Check if location.state is defined before accessing properties
+  const user = location.state ? location.state.user : null;
+  const token = location.state ? location.state.Token : null;
+  console.log(user, token);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -250,6 +213,7 @@ function EventRegistrationForm() {
     // Add more tag options her
   ];
   const createEvent = async (options) => {
+    console.log(token);
     const ProfilePicFile = new File(
       [formData.event_poster],
       "event_poster.jpg"
@@ -275,8 +239,6 @@ function EventRegistrationForm() {
       endDateTime.setDate(parseInt(eventDateParts[2], 10)); // Set day
       endDateTime.setHours(parseInt(endTimeParts[0], 10)); // Set hours
       endDateTime.setMinutes(parseInt(endTimeParts[1], 10)); // Set minutes
-
-      
 
       const response = await fetch(`${hostname}/event/create-event`, {
         method: "POST",
@@ -345,7 +307,7 @@ function EventRegistrationForm() {
     }
   };
   useEffect(() => {
-    if (user && user === "admin") {
+    if (user && user.type === "admin") {
       get_speaker();
     }
     // Call the function to fetch the speakers
@@ -355,18 +317,12 @@ function EventRegistrationForm() {
     e.preventDefault();
     let options;
 
-    // if (user && user.type === "user") {
-    console.log(localStorage.getItem("userAuthToken"));
     options = {
       "Content-type": "application/json",
-      authorization: token1,
+      authorization: token,
     };
-    // } else {
-    //   options = {
-    //     authorization: localStorage.getItem("adminAuthToken"),
-    //   };
-    // }
-    await createEvent(options); // Call the createEvent function to send the data to the server
+
+    await createEvent(options); 
   };
 
   return (

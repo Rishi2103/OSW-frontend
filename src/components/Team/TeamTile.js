@@ -4,7 +4,7 @@ import TruncateText from "../TruncateText";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-// import Bharat_Agarwal from "../../img/Bharat_Agarwal.jpeg";
+import Bharat_Agarwal from "../../img/Bharat_Agarwal.jpeg";
 
 export default function TeamTile({ team, onDelete }) {
   const [pic, setPic] = useState(null);
@@ -96,7 +96,7 @@ export default function TeamTile({ team, onDelete }) {
       className="Team"
     >
       {user && user.type === "admin" && (
-        <button className="delete-icon" onClick={onDelete}>
+        <button className="deleteteam-icon" onClick={onDelete}>
           <FontAwesomeIcon
             icon={faTrashAlt}
             // className="delete-icon"

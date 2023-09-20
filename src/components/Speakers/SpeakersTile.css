@@ -13,6 +13,7 @@
   height: 100px;
   border-radius: 50%;
   margin-left: 5;
+  margin-top: -6vh;
   justify-content: center;
   align-items: center;
 }
@@ -31,9 +32,10 @@
   position: relative;
   border: 1px solid #e0e0e0;
   border-radius: 5px;
-  padding: 4vh 1vw;
+  padding: 2vh 1vw;
   margin-inline-end: 20px;
   margin-top: 20px;
+  padding-top: 8vh;
   display: flex;
   flex-direction: column;
   width: 20%;
@@ -54,15 +56,18 @@
   line-height: 1.5em;
   font-size: 30px;
 }
-.delete-icon {
+.deletespeaker-icon {
   position: relative;
-  top: 2%!important;
-  right: -40%;
+  margin-left: 83%;
+  top: -7vh;
   cursor: pointer;
-  opacity: 0; /* Initially hide the delete icon */
+  opacity: 0;
+  color: white;
+  background-color: red;
+  transition: opacity 0.2s ease;
 }
 
-.Team:hover .delete-icon {
+.Team:hover .deletespeaker-icon {
   opacity: 1; /* Show the delete icon on hover */
   color: white;
   background-color: red;

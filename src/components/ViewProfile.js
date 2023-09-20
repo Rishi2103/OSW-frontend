@@ -1,20 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./ViewProfile.css";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import profile_card_img from "../img/profile-img.jpg";
+import profile_img from "../img/profile-img.jpg";
+import jwt_decode from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 const ViewProfile = () => {
-  const [isProfileEditOpen, setIsProfileEditOpen] = useState(false);
-  const [file, setFile] = useState();
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(profile_img);
+  const [user_name, setUserName] = useState();
+  const [fname, setFname] = useState();
+  const [lname, setLname] = useState();
+  const [email, setEmail] = useState();
+  const [contactno, setContactno] = useState();
+  const [is_verified, setVerfied] = useState(false);
+  const [showOtpButton, setShowOtpButton] = useState(true);
+  const [showotpinput, setShowotpInput] = useState(false);
+  const [showVerifyButton, setShowVerifyButton] = useState(false);
+  const [otp, setOtp] = useState();
+  const [userId, setUserId] = useState("");
+  const [profileData, setProfileData] = useState(null);
+  const [isImageChanged, setIsImageChanged] = useState(false);
 
-  // function handleChange(e) {
-  //     console.log(e.target.files);
-  //     setFile(URL.createObjectURL(e.target.files[0]));
-  // }
-
-  const [selectedImage, setSelectedImage] = useState(profile_card_img);
-
+  const navigate = useNavigate();
+  useEffect(() => {
+    const token = localStorage.getItem("userAuthToken");
+    const decodedToken = jwt_decode(token);
+    setUserId(decodedToken._id);
+  }, []);
   const handleImageChange = (e) => {
     const file = e.target.files[0];
 
@@ -24,16 +38,200 @@ const ViewProfile = () => {
       reader.onload = (e) => {
         setSelectedImage(e.target.result);
       };
+      setIsImageChanged(true); // Set the state variable to true indicating the image has been changed
 
+      console.log(e.target.result);
       reader.readAsDataURL(file);
     }
   };
 
-  const openProfieEdit = () => {
-    setIsProfileEditOpen(true);
+  const openModal = () => {
+    setIsProfileOpen(true);
   };
-  const closeProfileEdit = () => {
-    setIsProfileEditOpen(false);
+  const closeModal = () => {
+    setIsProfileOpen(false);
+  };
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:4000/user/profile/${userId}`
+        );
+        const data = await response.json();
+        if (data.success) {
+          setProfileData(data.data);
+        } else {
+          console.log(data.message);
+          throw new Error("Failed to Get Profile. Please Reload");
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+
+    const fetchPic = async () => {
+      console.log(userId);
+      try {
+        const response = await fetch(
+          `http://localhost:4000/user/profile-pic/${userId}`
+        );
+
+        const res = await response.json();
+        console.log(res);
+        setSelectedImage(res.LogoURL);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    if (userId && userId !== "") {
+      fetchPic();
+      fetchUserProfile();
+    }
+  }, [userId]);
+  useEffect(() => {
+    if (profileData) {
+      console.log(profileData);
+      setUserName(profileData.user_name);
+      setEmail(profileData.email);
+      setFname(profileData.profile.first_name);
+      setLname(profileData.profile.last_name);
+      setContactno(profileData.contact_no);
+      setVerfied(profileData.is_verified);
+    }
+  }, [profileData]);
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    console.log(user_name, email, lname, fname);
+    if (!user_name || !email || !lname || !fname) {
+      return;
+    }
+    // logo upload start
+    const logoData = new FormData();
+    if (isImageChanged) {
+      const ProfilePicFile = new File([selectedImage], "profile_pic.jpg");
+      console.log(ProfilePicFile);
+      logoData.append("file", ProfilePicFile);
+
+      const logoUploadRes = await fetch(
+        `http://localhost:4000/user/upload-pic`,
+        {
+          method: "POST",
+          headers: {
+            authorization: localStorage.getItem("userAuthToken"),
+          },
+          body: logoData,
+        }
+      );
+      const logoRes = await logoUploadRes.json();
+
+      console.log(logoRes);
+    }
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          authorization: localStorage.getItem("userAuthToken"),
+        },
+      };
+
+      const response = await fetch("http://localhost:4000/user/addprofile", {
+        method: "POST",
+        headers: config.headers,
+        body: JSON.stringify({
+          user_name: user_name,
+          first_name: fname,
+          last_name: lname,
+          email: email,
+          contact_no: contactno,
+        }),
+      });
+
+      if (response.ok) {
+        console.log(response);
+
+        navigate("/profile", { replace: true });
+      } else {
+        throw new Error("Error occurred during registration");
+      }
+    } catch (error) {}
+  };
+  const handleOtpChange = (value) => {
+    setOtp(value);
+  };
+  const handleverifyemail = async (e) => {
+    e.preventDefault();
+    setShowotpInput(false);
+    setOtp();
+    if (!email || email.trim() === "") {
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return;
+    }
+    const data = { email: email };
+
+    try {
+      const response = await fetch(
+        "http://localhost:4000/user/email-verification/sendotp",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: localStorage.getItem("userAuthToken"),
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      if (response.ok) {
+        setShowOtpButton(false);
+        setShowotpInput(true);
+        setShowVerifyButton(true);
+      } else {
+        const errorData = await response.json();
+        console.log(errorData);
+      }
+    } catch (error) {}
+  };
+  const VerifyEmail = async (e) => {
+    e.preventDefault();
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          authorization: localStorage.getItem("userAuthToken"),
+        },
+      };
+
+      const response = await fetch(
+        "http://localhost:4000/user/email-verification/verify",
+        {
+          method: "POST",
+          headers: config.headers,
+          body: JSON.stringify({
+            email,
+            otp,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        setShowotpInput(false);
+        setShowVerifyButton(false);
+        setShowOtpButton(true);
+        setVerfied(true);
+      } else {
+        const errorData = await response.json();
+        console.log(errorData);
+        throw new Error("Failed to verify. Please try again later.");
+      }
+    } catch (error) {
+      console.log(error);
+      console.log(12);
+      return; // Prevent further execution
+    }
   };
   return (
     <div>
@@ -41,20 +239,20 @@ const ViewProfile = () => {
       <div className="profile-con">
         <div className="profile-card">
           <div className="profile-card-img">
-            <img src={profile_card_img} alt="" />
+            <img src={selectedImage} alt="" />
           </div>
           <div className="profile-username">
-            <p>Username</p>
+            <p>{user_name}</p>
           </div>
-          <span className="edit-button" onClick={openProfieEdit}>
+          <span className="edit-button" onClick={openModal}>
             <i class="fa-solid fa-pen-to-square"></i>
           </span>
         </div>
       </div>
-      {isProfileEditOpen && (
+      {isProfileOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <span className="close-button" onClick={closeProfileEdit}>
+            <span className="close-button" onClick={closeModal}>
               &times;
             </span>
             {/* Your form content goes here */}
@@ -67,59 +265,93 @@ const ViewProfile = () => {
                 fontSize: "17px",
               }}
             >
-              <div
-                className="form-field"
+              <img
+                src={selectedImage}
+                alt="Preview"
                 style={{
-                  width: "100%",
-                  display: "flex",
-                  flexDirection: "column",
+                  maxWidth: "20%",
+                  borderRadius: "50%",
+                  marginBottom: "20px",
                 }}
-              >
-                {/* {selectedImage && ( */}
-                {/* <div> */}
-                <img
-                  src={selectedImage}
-                  alt="Preview"
-                  style={{
-                    maxWidth: "20%",
-                    borderRadius: "50%",
-                    marginBottom: "20px",
-                  }}
-                />
-                {/* </div> */}
-                {/* )} */}
-                <div style={{ display: "flex" }}>
-                  <label>Profile Photo: </label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                  />
-                </div>
+              />
+              <div className="form-field">
+                <label>Profile Photo: </label>
+                <input type="file" onChange={handleImageChange} />
               </div>
-
               <div className="form-field">
                 <label>Username:</label>
-                <input type="text" required />
+                <input
+                  type="text"
+                  value={user_name}
+                  onChange={(e) => setUserName(e.target.value)}
+                  required
+                />
               </div>
               <div className="form-field">
                 <label>Email:</label>
-                <input type="text" required />
+                <input
+                  type="text"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                {showOtpButton && (
+                  <>
+                    {is_verified ? (
+                      "verified"
+                    ) : (
+                      <button onClick={handleverifyemail}>Verify</button>
+                    )}
+                  </>
+                )}
               </div>
+              {showotpinput && (
+                <div className="form-field">
+                  <label>Enter OTP:</label>
+                  <input
+                    type="Number"
+                    // value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    required
+                  />
+                </div>
+              )}
+              {showVerifyButton && (
+                <button onClick={VerifyEmail}>Verify</button>
+              )}
+
               <div className="form-field">
                 <label>First Name:</label>
-                <input type="text" required />
+                <input
+                  type="text"
+                  value={fname}
+                  onChange={(e) => setFname(e.target.value)}
+                  required
+                />
               </div>
               <div className="form-field">
                 <label>Last Name:</label>
-                <input type="text" required />
+                <input
+                  type="text"
+                  value={lname}
+                  onChange={(e) => setLname(e.target.value)}
+                  required
+                />
               </div>
               <div className="form-field">
                 <label>Contact No.:</label>
-                <input type="text" required />
+                <input
+                  type="Number"
+                  value={contactno}
+                  onChange={(e) => setContactno(e.target.value)}
+                  required
+                />
               </div>
-
-              <button className="modal-submit" type="submit">
+              <button
+                className="modal-submit"
+                type="submit"
+                onClick={submitHandler}
+              >
                 Submit
               </button>
             </form>

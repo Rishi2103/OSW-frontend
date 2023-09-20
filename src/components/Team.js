@@ -472,16 +472,15 @@ const Team = () => {
                   </div>
                 </form>
               </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={handleSubmit}
-                >
-                  Submit
-                  <ToastContainer />{" "}
-                </button>
-              </div>
+              <div className="modal-header"></div><br/>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleSubmit}
+              >
+                Submit
+                <ToastContainer />{" "}
+              </button>
             </div>
           </div>
         </div>

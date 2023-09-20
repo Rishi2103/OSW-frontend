@@ -64,6 +64,11 @@ const MeetupCard = ({ event, onDelete }) => {
       to={{ pathname: `/event/details/${event.id}`, state: { data: event } }}
       className="card-con"
     >
+      {user && user.type === "admin" && (
+        <button className="deleteevent-icon" onClick={onDelete}>
+          <FontAwesomeIcon icon={faTrashAlt} />
+        </button>
+      )}
       <div className="card-text">
         <p className="date">{convertDate(event.event_date)}</p>
         <p className="event-name">{event.event_name}</p>
@@ -72,11 +77,6 @@ const MeetupCard = ({ event, onDelete }) => {
       <div className="card-text2">
         <p className="see-more">See More</p>
       </div>
-      {user && user.type === "admin" && (
-        <button className="delete-icon" onClick={onDelete}>
-          <FontAwesomeIcon icon={faTrashAlt} />
-        </button>
-      )}
     </Link>
   );
 };

@@ -180,7 +180,7 @@ export default function Speakers() {
     );
     console.log(ProfilePicFile);
     const formData = new FormData();
-    
+
     formData.append("name", speaker.name);
     formData.append("post", speaker.post);
     formData.append("university", speaker.university);
@@ -288,7 +288,7 @@ export default function Speakers() {
     });
   };
 
-  const handleDelete = async (event,Id) => {
+  const handleDelete = async (event, Id) => {
     // Make an HTTP DELETE request to delete the event
     if (isDeleteEnabled) {
       console.log(isDeleteEnabled);
@@ -567,16 +567,16 @@ export default function Speakers() {
                 </div>
               </form>
             </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={handleSubmit}
-              >
-                Submit
-                <ToastContainer />{" "}
-              </button>
-            </div>
+            <div className="modal-header"></div>
+            <br />
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleSubmit}
+            >
+              Submit
+              <ToastContainer />{" "}
+            </button>
           </div>
         </div>
       </div>
@@ -588,7 +588,7 @@ export default function Speakers() {
             // university={speaker.university}
             // image={speaker.pic} // Assuming pic is the image URL
             // links={speaker.social_links}
-            onDelete={(event) => handleDelete(event,speaker._id)}
+            onDelete={(event) => handleDelete(event, speaker._id)}
           />
         ))}
       </div>

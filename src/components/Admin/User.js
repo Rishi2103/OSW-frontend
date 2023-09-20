@@ -1,19 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../Navbar";
 import Footer from "../Footer";
 import SecFooter from "../SecFooter";
 import "./User.css";
+import { hostname } from "../../hostname";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const User = () => {
   const [sortOrder, setSortOrder] = useState("asc");
-  const [events, setEvents] = useState([
-    { id: 1, name: "User 1", date: "2021-12-20", venue: "Online" },
-    { id: 2, name: "User 2", date: "2021-10-23", venue: "ssdfs" },
-    { id: 3, name: "User 3", date: "2021-10-23", venue: "ssdfs" },
-    { id: 4, name: "User 4", date: "2021-10-23", venue: "ssdfs" },
-    { id: 5, name: "User 5", date: "2021-10-23", venue: "ssdfs" },
-    { id: 6, name: "User 6", date: "2021-10-23", venue: "ssdfs" },
-  ]);
+  const [user, setUsers] = useState([]);
 
   const rowsPerPageOptions = [5, 10, 15]; // Customize the rows per page options as needed
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
@@ -31,14 +27,14 @@ const User = () => {
   };
 
   // Pagination calculation
-  const totalEvents = events.length;
+  const totalEvents = user.length;
   const totalPages = Math.ceil(totalEvents / rowsPerPage);
   const indexOfLastEvent = currentPage * rowsPerPage;
   const indexOfFirstEvent = indexOfLastEvent - rowsPerPage;
-  const currentEvents = events.slice(indexOfFirstEvent, indexOfLastEvent);
+  const currentEvents = user.slice(indexOfFirstEvent, indexOfLastEvent);
 
   const handleSort = () => {
-    const sortedEvents = [...events].sort((a, b) => {
+    const sortedEvents = [...user].sort((a, b) => {
       const nameA = a.name.toLowerCase();
       const nameB = b.name.toLowerCase();
 
@@ -51,19 +47,39 @@ const User = () => {
       return 0;
     });
 
-    setEvents(sortedEvents);
+    setUsers(sortedEvents);
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch(`${hostname}/users`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: localStorage.getItem("adminAuthToken"),
+          // Add any additional headers you need (e.g., authentication headers)
+        },
+      });
 
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      console.log("Users data:", data.users);
+      setUsers(data.users);
+      // Process the data as needed
+    } catch (error) {
+      console.error("Error fetching users:", error.message);
+    }
+  };
+  useEffect(() => {
+    fetchUsers();
+  }, []);
   return (
     <div className="eventpg">
       <Navbar />
-      <div className="eventpg-intro">
-        {/* <div className='eventpg-con'>
-        <b><p className="eventpg-head">Our <span style={{ color: '#0E8388' }}>Events</span></p></b>
-        <p className='eventpg-text'>Questions? Please contact <span style={{ color: '#0E8388' }}>connectwithaurapp@gmail.com</span></p>
-        </div> */}
-      </div>
+      <div className="eventpg-intro"></div>
       <div className="past-events">
         <p className="past-events-title">User List</p>
         <table className="event-table">
@@ -75,25 +91,52 @@ const User = () => {
                   {sortOrder === "asc" ? " ↓" : " ↑"}
                 </span>
               </th>
-              <th>Date</th>
-              <th>Venue</th>
-              <th>Actions</th>
+              <th>Full Name</th>
+              <th>Email</th>
+              <th>View</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody>
-            {currentEvents.map((event) => (
-              <tr key={event.id}>
-                <td>{event.name}</td>
-                <td>{event.date}</td>
-                <td>{event.venue}</td>
+            {currentEvents.map((user) => (
+              <tr key={user.id}>
+                <td>{user.user_name}</td>
                 <td>
-                  {/* Add your "See More" link or button here */}
-                  {/* Add your "See More" link or button here */}
-                  <a href={`/events/${event.id}`}>
-                    <i class="fa-solid fa-eye table-icon"></i>
-                    <i class="fa-solid fa-pen-to-square table-icon"></i>
-                    <i class="fa-solid fa-trash-can table-icon"></i>
-                  </a>
+                  {user.profile ? (
+                    <>
+                      {user.profile.first_name || "-----"}{" "}
+                      {user.profile.last_name || "-----"}
+                    </>
+                  ) : (
+                    <>{"----- -----"}</>
+                  )}
+                </td>
+                <td>{user.email}</td>
+                <td className="edit-project-buttons">
+                  <div className="editprojectbutton">
+                    <button
+                      className="btn btn-primary"
+                      // onClick={() => ()}
+                    >
+                      <FontAwesomeIcon
+                        icon={faEye}
+                        className="edit"
+                      ></FontAwesomeIcon>
+                    </button>
+                  </div>
+                </td>
+                <td className="delete-project-buttons">
+                  <div className="deleteprojectbutton">
+                    <button
+                      className="btn btn-primary"
+                      // onClick={(e) => ()}
+                    >
+                      <FontAwesomeIcon
+                        icon={faTrash}
+                        className="trash"
+                      ></FontAwesomeIcon>
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

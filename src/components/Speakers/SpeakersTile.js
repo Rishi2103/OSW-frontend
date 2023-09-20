@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./SpeakersTile.css";
 import TruncateText from "../TruncateText";
-// import Bharat_Agarwal from "../../img/Bharat_Agarwal.jpeg";
+import Bharat_Agarwal from "../../img/Bharat_Agarwal.jpeg";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
@@ -90,7 +90,7 @@ export default function SpeakersTile({ speaker, onDelete }) {
       className="Team"
     >
       {user && user.type === "admin" && (
-        <button className="delete-icon" onClick={onDelete}>
+        <button className="deletespeaker-icon" onClick={onDelete}>
           <FontAwesomeIcon
             icon={faTrashAlt}
             // className="delete-icon"
@@ -98,7 +98,11 @@ export default function SpeakersTile({ speaker, onDelete }) {
         </button>
       )}
       {/* <div className="speakertilespeaker"> */}
-      <img className="speakertilespeakerimg" src={speaker.pic} alt="" />
+      <img
+        className="speakertilespeakerimg"
+        src={speaker.pic || Bharat_Agarwal}
+        alt=""
+      />
       <TruncateText text={speaker.name} maxChars={20} />
       <TruncateText text={speaker.university} maxChars={20} />
       <div className="teamlinks">

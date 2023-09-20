@@ -12,6 +12,7 @@ import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 const Events = () => {
   const [sortOrder, setSortOrder] = useState("asc");
   const [events, setEvents] = useState([]);
+  const [Token, setToken] = useState("");
   const rowsPerPageOptions = [5, 10, 15]; // Customize the rows per page options as needed
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
   const navigate = useNavigate();
@@ -50,6 +51,7 @@ const Events = () => {
             // Base64-decode and parse the payload part (the second part)
             const payload = JSON.parse(atob(tokenParts[1]));
             console.log(payload.type);
+            setToken(token);
             await setUser(payload); // Set user state with decoded data
           } catch (error) {
             // Handle decoding error (e.g., token is invalid)
@@ -66,7 +68,8 @@ const Events = () => {
             // Base64-decode and parse the payload part (the second part)
             const payload = JSON.parse(atob(tokenParts[1]));
             console.log(payload.type);
-            await setUser(payload); // Set user state with decoded data
+            setToken(localStorage.getItem("adminAuthToken"));
+            setUser(payload); // Set user state with decoded data
           } catch (error) {
             // Handle decoding error (e.g., token is invalid)
             console.error("Error decoding JWT token:", error);
@@ -104,7 +107,8 @@ const Events = () => {
     navigate(`/events/edit-Event/${event._id}`, { state: { event } });
   };
   const handleCreateClick = () => {
-    navigate(`/events/create-Event`);
+    console.log(user,Token);
+    navigate(`/events/create-Event`, { state: { user, Token } });
   };
   const handlePersonalEevntsClick = (event) => {
     navigate(`/personal-events`);
