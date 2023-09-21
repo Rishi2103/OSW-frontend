@@ -10,9 +10,21 @@ import { hostname } from "../hostname";
 // import minus from "../img/minus-solid.svg";
 export default function Speakers() {
   const [getspeakers, setgetSpeakers] = useState([]);
-  // const navigate = useNavigate();
   const isDeleteEnabled = true;
   const [user, setUser] = useState(null);
+  const [textInputs, setTextInputs] = useState([""]);
+  // const exampleModal = document.geElementById("exampleModal");
+  const [nameError, setnameError] = useState("");
+  const [postError, setpostError] = useState("");
+  const [universityError, setuniversityError] = useState("");
+  const [cityError, setcityError] = useState("");
+  const [stateError, setstateError] = useState("");
+  const [pincodeError, setpincodeError] = useState("");
+  const [aboutError, setaboutError] = useState("");
+  const [sociallinksError, setsocsociallinksError] = useState("");
+  const [selectedspeakerprofilephoto, setSelectedspeakerprofilephoto] =
+    useState(null);
+
   useEffect(() => {
     // Get the JWT token from wherever you have stored it (e.g., localStorage)
     const getUser = async () => {
@@ -37,22 +49,17 @@ export default function Speakers() {
         const token = localStorage.getItem("adminAuthToken");
         if (token) {
           try {
-            // Split the token into its parts
             const tokenParts = token.split(".");
-
-            // Base64-decode and parse the payload part (the second part)
             const payload = JSON.parse(atob(tokenParts[1]));
             console.log(payload.type);
-            await setUser(payload); // Set user state with decoded data
+            setUser(payload); // Set user state with decoded data
           } catch (error) {
-            // Handle decoding error (e.g., token is invalid)
             console.error("Error decoding JWT token:", error);
           }
         }
       }
     };
     getUser();
-    // console.log(user.type);
   }, []);
   const fetchSpeakers = async () => {
     try {
@@ -71,26 +78,10 @@ export default function Speakers() {
   useEffect(() => {
     fetchSpeakers();
   }, []);
-  const [textInputs, setTextInputs] = useState([""]);
-  // const exampleModal = document.geElementById("exampleModal");
-
-  const [nameError, setnameError] = useState("");
-  const [postError, setpostError] = useState("");
-  const [universityError, setuniversityError] = useState("");
-  const [cityError, setcityError] = useState("");
-  const [stateError, setstateError] = useState("");
-  const [pincodeError, setpincodeError] = useState("");
-  const [aboutError, setaboutError] = useState("");
-  const [sociallinksError, setsocsociallinksError] = useState("");
-  const [selectedspeakerprofilephoto, setSelectedspeakerprofilephoto] =
-    useState(null);
-  const [selectedFile, setSelectedFile] = useState(null);
   useEffect(() => {
     const exampleModal = document.getElementById("exampleModal");
     if (exampleModal) {
-      exampleModal.addEventListener("show.bs.modal", (event) => {
-        // Your event handling code here
-      });
+      exampleModal.addEventListener("show.bs.modal", (event) => {});
     }
   }, []);
   const [speaker, setspeaker] = useState({
@@ -106,24 +97,26 @@ export default function Speakers() {
   });
 
   const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
-    const newValue = type === "file" ? files[0] : value;
-    setspeaker({ ...speaker, [name]: newValue });
-
-    setspeaker((prevSpeaker) => ({
-      ...prevSpeaker,
-      [name]: newValue,
-    }));
-
-    // Set the selected file for display
-    setSelectedFile(files[0]);
-
-    if (type === "file") {
-      const speakerprofilephoto = files[0];
-      // Create a temporary URL for the selected image
-      const imageUrl = URL.createObjectURL(files[0]);
-      setSelectedspeakerprofilephoto(imageUrl); // Store the URL in state
-      setspeaker({ ...speaker, [name]: speakerprofilephoto });
+    const pics = e.target.files[0];
+    if (pics.type === "image/jpeg" || pics.type === "image/png") {
+      const data = new FormData();
+      data.append("file", pics);
+      data.append("upload_preset", "chat-app");
+      data.append("cloud_name", "darsh-cloud");
+      fetch("https://api.cloudinary.com/v1_1/darsh-cloud/image/upload", {
+        method: "post",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setSelectedspeakerprofilephoto(data.url.toString());
+          console.log(data.url.toString());
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      return;
     }
   };
   const handleSubmit = (e) => {
@@ -173,30 +166,23 @@ export default function Speakers() {
       return;
     }
 
-    // Continue with form submission or other actions
-    const ProfilePicFile = new File(
-      [selectedspeakerprofilephoto],
-      "speaker_pic.jpg"
-    );
-    console.log(ProfilePicFile);
-    const formData = new FormData();
-
-    formData.append("name", speaker.name);
-    formData.append("post", speaker.post);
-    formData.append("university", speaker.university);
-    formData.append("city", speaker.city);
-    formData.append("state", speaker.state);
-    formData.append("pincode", speaker.pincode);
-    formData.append("about", speaker.about); // Replace with the appropriate team value
-    formData.append("file", ProfilePicFile);
-    // formData.append("teamprofilephoto", file); // Replace 'file' with your file input reference
-    // console.log(localStorage.getItem("adminAuthToken"));
     fetch(`${hostname}/admin/add-speaker`, {
       method: "POST",
       headers: {
+        "Content-type": "application/json",
         authorization: localStorage.getItem("adminAuthToken"), // Replace with your access token if needed
       },
-      body: formData,
+      body: JSON.stringify({
+        name: speaker.name,
+        post: speaker.post,
+        university: speaker.university,
+        city: speaker.city,
+        state: speaker.state,
+        pincode: speaker.pincode,
+        about: speaker.about,
+        pic: selectedspeakerprofilephoto,
+        social_links: speaker.sociallinks,
+      }),
     })
       .then((response) => response.json())
       .then((data) => {

@@ -4,10 +4,8 @@ import TruncateText from "../TruncateText";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import Bharat_Agarwal from "../../img/Bharat_Agarwal.jpeg";
 
 export default function TeamTile({ team, onDelete }) {
-  const [pic, setPic] = useState(null);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -58,6 +56,8 @@ export default function TeamTile({ team, onDelete }) {
       return <i className="fa fa-brands fa-twitter fa-2xs"></i>;
     } else if (link.includes("linkedin")) {
       return <i className="fa fa-brands fa-linkedin fa-2xs"></i>;
+    } else if (link.includes("facebook")) {
+      return <i className="fa fa-brands fa-facebook fa-2xs"></i>;
     } else if (link.includes("github")) {
       return <i className="fa fa-brands fa-github fa-2xs"></i>;
     } else if (link.includes("medium")) {
@@ -72,20 +72,6 @@ export default function TeamTile({ team, onDelete }) {
       return <i className="fa fa-brands fa-link mx fa-2xs"></i>;
     }
   };
-  fetch(team.img)
-    .then((response) => response.blob())
-    .then((blob) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const dataUrl = reader.result;
-        console.log(team.pic);
-        console.log("Data URL:", dataUrl);
-        setPic(dataUrl);
-        // Use the data URL to display the image or perform other operations
-      };
-      reader.readAsDataURL(blob);
-    })
-    .catch((error) => console.error("Error fetching blob:", error));
   return (
     // <div className="teamTile">
     <Link
@@ -103,7 +89,7 @@ export default function TeamTile({ team, onDelete }) {
           />
         </button>
       )}
-      <img className="teamimg" src={pic} alt="" />
+      <img className="teamimg" src={team.pic} alt="" />
       <TruncateText text={team.name} maxChars={20} />
       <TruncateText text={team.post} maxChars={20} />
       <div className="teamlinks">

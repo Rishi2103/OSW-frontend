@@ -92,7 +92,7 @@ export default function Navbar() {
         console.error(error);
       }
     };
-    if (userId && userId !== "") {
+    if (userId && userId !== "" && user.type === "user") {
       fetchPic();
     }
   }, [userId]);
@@ -148,9 +148,9 @@ export default function Navbar() {
   const viewProfile = () => {
     navigate("/profile");
   };
-   const login = () => {
-     navigate("/login");
-   };
+  const login = () => {
+    navigate("/login");
+  };
   const AddAdmin = () => {
     navigate("/admin/add-admin");
   };

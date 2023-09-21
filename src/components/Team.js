@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Team/Team.css";
 import TeamTile from "./Team/TeamTile";
-// import Bharat from "../img/Bharat_Agarwal.jpeg";
-// import Vrijraj from "../img/Vrijraj Singh.png";
 import toolbar from "../img/toolbar.png";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
@@ -89,24 +87,34 @@ const Team = () => {
   }, []);
 
   const handleChange = (e) => {
-    const { name, type, files } = e.target;
-    if (type === "file") {
-      const teamprofilephoto = files[0];
-      // Create a temporary URL for the selected image
-      const imageUrl = URL.createObjectURL(files[0]);
-      setSelectedteamprofilephoto(imageUrl); // Store the URL in state
-      setteam({ ...team, [name]: teamprofilephoto });
+    const pics = e.target.files[0];
+    if (pics.type === "image/jpeg" || pics.type === "image/png") {
+      const data = new FormData();
+      data.append("file", pics);
+      data.append("upload_preset", "chat-app");
+      data.append("cloud_name", "darsh-cloud");
+      fetch("https://api.cloudinary.com/v1_1/darsh-cloud/image/upload", {
+        method: "post",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setSelectedteamprofilephoto(data.url.toString());
+          console.log(data.url.toString());
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      return;
     }
   };
   const [textInputs, setTextInputs] = useState([""]);
 
   const handleTextInputChange = (identifier, event) => {
-    // Ensure that the event object is properly passed
     if (event && event.target) {
-      // Create a copy of the speaker object
       const updatedteam = { ...team };
 
-      // Update the corresponding field based on the identifier
       if (identifier === "teamname") {
         updatedteam.name = event.target.value;
         setnameError("");
@@ -122,7 +130,6 @@ const Team = () => {
       }
       console.log(updatedteam);
 
-      // Update the state with the modified speaker object
       setteam(updatedteam);
     }
   };
@@ -176,34 +183,28 @@ const Team = () => {
       if (!team.sociallinksofteam) {
         setsocial_linksError("Social Links are required.");
       }
-      // Prevent form submission
       return;
     }
-    // Assuming you have the necessary data (name, bio, post, social_links, and a file) in variables
-    const ProfilePicFile = new File([selectedteamprofilephoto], "team_pic.jpg");
-    console.log(ProfilePicFile);
-    const formData = new FormData();
-    formData.append("name", team.name);
-    formData.append("bio", team.bio);
-    formData.append("post", team.post);
-    team.social_links.forEach((link) => {
-      formData.append("social_links", link);
-    });
-    formData.append("team", team.team); // Replace with the appropriate team value
-    formData.append("file", ProfilePicFile);
-    // formData.append("teamprofilephoto", file); // Replace 'file' with your file input reference
-    // console.log(localStorage.getItem("adminAuthToken"));
+
+    console.log(localStorage.getItem("adminAuthToken"));
     fetch(`${hostname}/admin/add-teammember`, {
       method: "POST",
       headers: {
-        authorization: localStorage.getItem("adminAuthToken"), // Replace with your access token if needed
+        "Content-type": "application/json",
+        authorization: localStorage.getItem("adminAuthToken"),
       },
-      body: formData,
+      body: JSON.stringify({
+        name: team.name,
+        bio: team.bio,
+        post: team.post,
+        team: team.team,
+        social_links: team.social_links,
+        pics: selectedteamprofilephoto,
+      }),
     })
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          // Team member added successfully, you can handle the response data here
           console.log("Team member added successfully:", data.team_member);
           setteam({
             name: "",
@@ -213,16 +214,13 @@ const Team = () => {
             social_links: [],
           });
 
-          // Close the modal (if you want)
           fetchTeamMembers();
 
-          // Add code to close the modal here if needed
           toast("Successfully Submited!", {
             position: "top-right",
             backgroundColor: "#0E8388",
           });
         } else {
-          // Error occurred while adding a team member, handle the error message
           console.error("Error adding team member:", data.message);
           toast("Error Occured!", {
             position: "top-right",
@@ -231,7 +229,6 @@ const Team = () => {
         }
       })
       .catch((error) => {
-        // Handle any network or other errors
         console.error("Error:", error);
         toast("Error Occured!", {
           position: "top-right",
@@ -241,7 +238,6 @@ const Team = () => {
   };
 
   const handleDelete = async (event, Id) => {
-    // Make an HTTP DELETE request to delete the event
     if (isDeleteEnabled) {
       console.log(isDeleteEnabled);
       event.preventDefault();
@@ -261,7 +257,6 @@ const Team = () => {
         const data = await response.json();
         console.log("Speaker deleted successfully:", data);
         fetchTeamMembers();
-        // Navigate to the "/speakers" route
       } catch (error) {
         console.error("Error deleting speaker:", error);
       }
@@ -472,7 +467,8 @@ const Team = () => {
                   </div>
                 </form>
               </div>
-              <div className="modal-header"></div><br/>
+              <div className="modal-header"></div>
+              <br />
               <button
                 type="button"
                 className="btn btn-primary"

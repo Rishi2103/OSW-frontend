@@ -23,9 +23,9 @@ const ViewProfile = () => {
   const [userId, setUserId] = useState(
     location.state ? location.state.userId : "" || ""
   );
-  const [userType,setUserType] = useState("")
+  const [userType, setUserType] = useState("");
   const [profileData, setProfileData] = useState(null);
-  const [isImageChanged, setIsImageChanged] = useState(false);
+  // const [isImageChanged, setIsImageChanged] = useState(false);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -33,22 +33,42 @@ const ViewProfile = () => {
       const token = localStorage.getItem("userAuthToken");
       const decodedToken = jwt_decode(token);
       setUserId(decodedToken._id);
-      setUserType(decodedToken.type)
+      setUserType(decodedToken.type);
     }
   }, []);
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
+    const pics = e.target.files[0];
 
-    if (file) {
-      const reader = new FileReader();
+    // if (file) {
+    //   const reader = new FileReader();
 
-      reader.onload = (e) => {
-        setSelectedImage(e.target.result);
-      };
-      setIsImageChanged(true); // Set the state variable to true indicating the image has been changed
+    //   reader.onload = (e) => {
+    //     setSelectedImage(e.target.result);
+    //   };
+    //   setIsImageChanged(true); // Set the state variable to true indicating the image has been changed
 
-      console.log(e.target.result);
-      reader.readAsDataURL(file);
+    //   console.log(e.target.result);
+    //   reader.readAsDataURL(file);
+    // }
+    if (pics.type === "image/jpeg" || pics.type === "image/png") {
+      const data = new FormData();
+      data.append("file", pics);
+      data.append("upload_preset", "chat-app");
+      data.append("cloud_name", "darsh-cloud");
+      fetch("https://api.cloudinary.com/v1_1/darsh-cloud/image/upload", {
+        method: "post",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setSelectedImage(data.url.toString());
+          console.log(data.url.toString());
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      return;
     }
   };
 
@@ -113,26 +133,26 @@ const ViewProfile = () => {
       return;
     }
     // logo upload start
-    const logoData = new FormData();
-    if (isImageChanged) {
-      const ProfilePicFile = new File([selectedImage], "profile_pic.jpg");
-      console.log(ProfilePicFile);
-      logoData.append("file", ProfilePicFile);
+    // const logoData = new FormData();
+    // if (isImageChanged) {
+    //   const ProfilePicFile = new File([selectedImage], "profile_pic.jpg");
+    //   console.log(ProfilePicFile);
+    //   logoData.append("file", ProfilePicFile);
 
-      const logoUploadRes = await fetch(
-        `http://localhost:4000/user/upload-pic`,
-        {
-          method: "POST",
-          headers: {
-            authorization: localStorage.getItem("userAuthToken"),
-          },
-          body: logoData,
-        }
-      );
-      const logoRes = await logoUploadRes.json();
+    //   const logoUploadRes = await fetch(
+    //     `http://localhost:4000/user/upload-pic`,
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         authorization: localStorage.getItem("userAuthToken"),
+    //       },
+    //       body: logoData,
+    //     }
+    //   );
+    //   const logoRes = await logoUploadRes.json();
 
-      console.log(logoRes);
-    }
+    //   console.log(logoRes);
+    // }
     try {
       const config = {
         headers: {
@@ -149,6 +169,7 @@ const ViewProfile = () => {
           first_name: fname,
           last_name: lname,
           email: email,
+          pic: selectedImage,
           contact_no: contactno,
         }),
       });
