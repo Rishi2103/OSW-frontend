@@ -61,7 +61,7 @@ const MeetupCard = ({ event, onDelete }) => {
   };
   return (
     <Link
-      to={{ pathname: `/event/details/${event.id}`, state: { data: event } }}
+      to={{ pathname: `/event/details/${event._id}`, state: { data: event } }}
       className="card-con"
     >
       {user && user.type === "admin" && (
