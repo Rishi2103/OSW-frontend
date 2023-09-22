@@ -5,10 +5,12 @@ import { faAngleDoubleRight } from "@fortawesome/free-solid-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { hostname } from "../../hostname";
+import { useNavigate } from "react-router-dom";
 
 const NotificationsPanel = ({ onClose }) => {
   const [notifications, setNotifications] = useState([]);
-
+  const navigate = useNavigate();
+  const [panelOpen, setPanelOpen] = useState(true);
   const getUserNotifications = async () => {
     try {
       const response = await fetch(`${hostname}/notifications`, {
@@ -35,36 +37,42 @@ const NotificationsPanel = ({ onClose }) => {
   };
 
   useEffect(() => {
-    getUserNotifications();
-  }, []);
+    if (panelOpen) {
+      getUserNotifications();
+    }
+  }, [panelOpen]);
 
   const removeNotification = async (id) => {
+    console.log(id);
     try {
-    const response = await fetch(`${hostname}/notifications/delete`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: localStorage.getItem("userAuthToken"), // Add your authentication token here
+      const response = await fetch(`${hostname}/notifications/delete`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: localStorage.getItem("userAuthToken"), // Add your authentication token here
 
-        // You may need to include authentication headers here
-      },
-      body: JSON.stringify({ notificationID: id }),
-    });
+          // You may need to include authentication headers here
+        },
+        body: JSON.stringify({ notificationID: id }),
+      });
 
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      console.log("Notification deletion response:", data);
+      // Handle the response data as needed
+      getUserNotifications();
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
     }
-
-    const data = await response.json();
-    console.log("Notification deletion response:", data);
-    // Handle the response data as needed
-  } catch (error) {
-    console.error("There was a problem with the fetch operation:", error);
-  }
-
   };
 
-  const visitNotificationLink = (link, id) => {};
+  const visitNotificationLink = (link, id) => {
+    markAsVisited(id);
+    // navigate(link);
+  };
 
   const markAsVisited = (id) => {
     fetch(`${hostname}/notifications/updatestatus`, {
@@ -83,6 +91,7 @@ const NotificationsPanel = ({ onClose }) => {
       })
       .then((data) => {
         console.log("Read status updated successfully:", data);
+        getUserNotifications();
         // Handle the response data as needed
       })
       .catch((error) => {
@@ -90,9 +99,51 @@ const NotificationsPanel = ({ onClose }) => {
       });
   };
 
-  const deleteAllNotifications = () => {};
+  const deleteAllNotifications = () => {
+    fetch(`${hostname}/notifications/delete-all`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: localStorage.getItem("userAuthToken"), // Include your access token if needed
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Success:", data);
+        getUserNotifications();
+        // Handle success or update UI accordingly
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        // Handle error or update UI accordingly
+      });
+  };
 
-  const [panelOpen, setPanelOpen] = useState(true);
+  const MarkAllNotificationsRead = async () => {
+    console.log(1);
+    try {
+      const response = await fetch(
+        `${hostname}/notifications/updatestatus-all`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: localStorage.getItem("userAuthToken"),
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to mark all notifications as read.");
+      }
+
+      const data = await response.json();
+      console.log(data); // Handle the response data
+      getUserNotifications();
+    } catch (error) {
+      console.error("Error marking all notifications as read:", error.message);
+    }
+  };
 
   const togglePanel = () => {
     setPanelOpen(!panelOpen);
@@ -143,7 +194,7 @@ const NotificationsPanel = ({ onClose }) => {
                 </button>
                 <button
                   className="delete-notificaton"
-                  onClick={() => removeNotification(notification.id)}
+                  onClick={() => removeNotification(notification._id)}
                 >
                   <FontAwesomeIcon icon={faXmark} />
                 </button>
@@ -156,11 +207,16 @@ const NotificationsPanel = ({ onClose }) => {
         <div className="panel-footer">
           <button
             className="delete-all-button"
-            onClick={deleteAllNotifications}
+            onClick={() => deleteAllNotifications()}
           >
-            Delete All
+            Delete All Readed
           </button>
-          <button className="mark-as-read-all-button">Marks as Read All</button>
+          <button
+            className="mark-as-read-all-button"
+            onClick={() => MarkAllNotificationsRead()}
+          >
+            Marks All as Read
+          </button>
         </div>
       )}
     </div>
