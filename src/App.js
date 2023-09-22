@@ -17,7 +17,7 @@ import ResourceLibrary from "./components/ResourceLibrary/ResourceLibrary";
 import "./App.css";
 // import Meetup from "./components/home-comp/Meetup";
 import EventsPage from "./components/EventsPage";
-import BlogPage from "./components/blogPage";
+import BlogPage from "./components/BlogPage";
 import Team from "./components/Team";
 // import teamProfile from "./components/Team/TeamProfile";
 import Speakers from "./components/Speakers";

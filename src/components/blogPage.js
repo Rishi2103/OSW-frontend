@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
-import blogData from "./blogData";
-import "./blogPage.css";
+import blogData from "./BlogData";
+import "./BlogPage.css";
 import Profile from "../img/blank-profile.png";
 import { deepOrange } from "@mui/material/colors";
 import Navbar from "./Navbar";
