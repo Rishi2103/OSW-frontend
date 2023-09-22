@@ -33,7 +33,7 @@ export default function ResourceLibrary() {
   const [projects, setProjects] = useState({
     project_name: "",
     project_details: "",
-    project_tags: [],
+    project_tags: "",
     project_links: "",
   });
   const [getprojects, setGetProjects] = useState([]);
@@ -115,7 +115,7 @@ export default function ResourceLibrary() {
   };
   const handleEditButtonClick = (project) => {
     console.log(project);
-    setEditProject(project)
+    setEditProject(project);
     setIseditModalOpen(true);
   };
 
@@ -274,6 +274,7 @@ export default function ResourceLibrary() {
       setProjectNameError("");
       setProjectDescError("");
       setProjectLinksError("");
+      setProjecttagsError("");
 
       // Update the corresponding field based on the identifier and index
       if (identifier === "project_name") {
@@ -286,6 +287,9 @@ export default function ResourceLibrary() {
       } else if (identifier === "project_links") {
         updatedProjects.project_links = event.target.value;
         setProjectLinksError("");
+      } else if (identifier === "project_tags") {
+        updatedProjects.project_tags = event.target.value;
+        setProjecttagsError("");
       }
       // console.log(updatedProjects);
 
@@ -293,31 +297,6 @@ export default function ResourceLibrary() {
       setProjects(updatedProjects);
     }
   };
-  const handletagsInputChange = (event, index) => {
-    const updatedtags = [...projects.project_tags];
-    updatedtags[index] = event.target.value;
-    setProjects({
-      ...projects,
-      project_tags: updatedtags,
-    });
-    setProjecttagsError("");
-  };
-  const removeTextInput = (index) => {
-    if (textInputs.length > 1) {
-      const updatedInputs = [...textInputs];
-      updatedInputs.splice(index, 1);
-      setTextInputs(updatedInputs);
-    }
-  };
-
-  const addTextInput = () => {
-    setTextInputs([...textInputs, ""]);
-    setProjects((prevProject) => ({
-      ...prevProject,
-      project_tags: [...prevProject.project_tags, ""],
-    }));
-  };
-
   return (
     <>
       <Navbar />
@@ -339,7 +318,6 @@ export default function ResourceLibrary() {
                 <th>Project Discription</th>
                 <th>Github/Docker Link</th>
                 <th>Tags</th>
-                <th>See More</th>
                 {user && user.type === "admin" && (
                   <>
                     <th>Edit Project</th>
@@ -365,10 +343,28 @@ export default function ResourceLibrary() {
                     {projects.project_links && (
                       <React.Fragment key={projects._id}>
                         {projects.project_links.includes("docker") && (
-                          <FontAwesomeIcon icon={faDocker} className="docker" />
+                          <a
+                            href={`https://${projects.project_links}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <FontAwesomeIcon
+                              icon={faDocker}
+                              className="docker"
+                            />
+                          </a>
                         )}
                         {projects.project_links.includes("github") && (
-                          <FontAwesomeIcon icon={faGithub} className="github" />
+                          <a
+                            href={`https://${projects.project_links}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <FontAwesomeIcon
+                              icon={faGithub}
+                              className="github"
+                            />
+                          </a>
                         )}
                       </React.Fragment>
                     )}
@@ -376,20 +372,7 @@ export default function ResourceLibrary() {
 
                   <td className="tags-cell">
                     {/* Add margin or padding to the tags */}
-                    {projects.project_tags &&
-                      projects.project_tags.map((tag, index) => (
-                        <span key={index} className="tag-cell-span">
-                          {tag}
-                        </span>
-                      ))}
-                  </td>
-                  <td className="see-more-cell">
-                    <a href={`/projects-details`}>
-                      <FontAwesomeIcon
-                        icon={faEye}
-                        className="eye"
-                      ></FontAwesomeIcon>
-                    </a>
+                    {projects.project_tags}
                   </td>
                   {user && user.type === "admin" && (
                     <>
@@ -582,44 +565,26 @@ export default function ResourceLibrary() {
                         >
                           Project Tags
                         </label>
-                        {textInputs.map((textInput, index) => (
-                          <div className="minus" key={index}>
-                            <div className="project-tagsInput">
-                              <input
-                                type="text"
-                                id={`project-tags-${index}`}
-                                name={`project_tags-${index}`}
-                                // value={projects.project_tags[index] || ""}
-                                className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
-                                onChange={(e) =>
-                                  handletagsInputChange(e, index)
-                                }
-                                required
-                              />
-                            </div>
-                            <button
-                              type="button"
-                              className="ms-3 btn btn-primary"
-                              style={{ backgroundColor: "#0E8388" }}
-                              onClick={() => removeTextInput(index)}
-                            >
-                              Remove
-                            </button>
-                            {projecttagsError && (
-                              <div className="error-message">
-                                {projecttagsError}
-                              </div>
-                            )}
+                        <div className="minus">
+                          <div className="project-tagsInput">
+                            <input
+                              type="text"
+                              id={`project-tags`}
+                              name={`project_tags`}
+                              // value={projects.project_tags[index] || ""}
+                              className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
+                              onChange={(e) =>
+                                handleTextInputChange("project_tags", e)
+                              }
+                              required
+                            />
                           </div>
-                        ))}
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          style={{ backgroundColor: "#0E8388" }}
-                          onClick={addTextInput}
-                        >
-                          Add Tag
-                        </button>
+                          {projecttagsError && (
+                            <div className="error-message">
+                              {projecttagsError}
+                            </div>
+                          )}
+                        </div>
                       </div>
                       <div className="mb-3">
                         <label

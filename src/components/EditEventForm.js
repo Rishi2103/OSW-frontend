@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "./EventForm.css";
 import { hostname } from "../hostname";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 function EventEditForm() {
   const Id = useParams();
   const [event, setEvent] = useState();
   const [loading, setLoading] = useState(true); // Add loading state
-
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     event_name: "",
     language: "",
-    event_poster: null,
     event_date: null,
     startTime: null,
     endTime: null,
@@ -39,12 +38,12 @@ function EventEditForm() {
   const [dropdownSpeakerOpen, setDropdownSpeakerOpen] = useState(false);
   const [speakerOptions, setSpeakerOptions] = useState([]);
   const [user, setUser] = useState(null);
-  let token1;
-
+  const [eventPoster, setEventPoster] = useState(null);
+  const [token1, setToken] = useState();
   const getUser = async () => {
     if (localStorage.getItem("userAuthToken")) {
       const token = localStorage.getItem("userAuthToken");
-      token1 = localStorage.getItem("userAuthToken");
+      setToken(localStorage.getItem("userAuthToken"));
 
       if (token) {
         try {
@@ -71,7 +70,7 @@ function EventEditForm() {
           const payload = JSON.parse(atob(tokenParts[1]));
           console.log(payload.type);
           setUser(payload); // Set user state with decoded data
-          token1 = localStorage.getItem("adminAuthToken");
+          setToken(localStorage.getItem("adminAuthToken"));
         } catch (error) {
           // Handle decoding error (e.g., token is invalid)
           console.error("Error decoding JWT token:", error);
@@ -84,6 +83,57 @@ function EventEditForm() {
   }, []);
   useEffect(() => {
     if (user && user === "admin") {
+      get_speaker();
+    }
+    // Call the function to fetch the speakers
+  }, [user]);
+  const convertTime = (time) => {
+    const inputDate = new Date(time);
+
+    const hours = String(inputDate.getUTCHours()).padStart(2, "0"); // Extract hours and pad with 0 if needed
+    const minutes = String(inputDate.getUTCMinutes()).padStart(2, "0"); // Extract minutes and pad with 0 if needed
+
+    const formattedTime = `${hours}:${minutes}`;
+    console.log(formattedTime); // Outputs: "00:00"
+    return formattedTime;
+  };
+  const convertDate = (date) => {
+    const originalDate = new Date(date); // Parse the original date string
+    const year = originalDate.getFullYear(); // Get the year
+    const month = String(originalDate.getMonth() + 1).padStart(2, "0"); // Get the month (adding 1 because months are zero-based)
+    const day = String(originalDate.getDate()).padStart(2, "0"); // Get the day
+
+    const formattedDate = `${year}-${month}-${day}`;
+    console.log(formattedDate); // Output: "2023-09-23"
+    return formattedDate;
+  };
+  const get_speaker = async () => {
+    try {
+      const response = await fetch(`${hostname}/all-speaker`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          // Add any headers if needed
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Now, 'data' contains the fetched speakers
+        setSpeakerOptions(data.speakers);
+        console.log(data.speakers);
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to fetch speakers:", errorData);
+        // Handle error or display an error message to the user
+      }
+    } catch (error) {
+      console.error("An error occurred while fetching speakers:", error);
+      // Handle the error
+    }
+  };
+  useEffect(() => {
+    if (user && user.type === "admin") {
       get_speaker();
     }
     // Call the function to fetch the speakers
@@ -101,7 +151,28 @@ function EventEditForm() {
         if (response.ok) {
           const data = await response.json();
           console.log(data.eventData);
-          setEvent(data.eventData);
+          setFormData({
+            event_name: data.eventData.event_name || "",
+            language: data.eventData.language || "",
+            event_date: convertDate(data.eventData.event_date) || null,
+            startTime: convertTime(data.eventData.startTime) || null,
+            endTime: convertTime(data.eventData.endTime) || null,
+            timeZone: data.eventData.timeZone || "UTC",
+            event_type: data.eventData.event_type || "",
+            address: data.eventData.address || "", //add to form
+            country: data.eventData.location.country || "",
+            city: data.eventData.location.city || "",
+            state: data.eventData.location.state || "", //add to form
+            pincode: data.eventData.location.pincode || 0,
+            meet_link: data.eventData.meet_link || "",
+            limit: data.eventData.limit || null, //add o form
+            socialmedia_links: data.eventData.social_links || [], //add to form
+            event_goals: data.eventData.event_goals || "",
+            event_tags: data.eventData.event_tags || [],
+            speakers: data.eventData.speakers || [],
+            event_description: data.eventData.event_description || "",
+            // ... (other fields)
+          });
         } else {
           const errorData = await response.json();
           console.error("Failed to fetch event details:", errorData);
@@ -123,39 +194,26 @@ function EventEditForm() {
     return <div>Loading...</div>;
   }
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    // const reader = new FileReader();
-
-    //------------- for showing the selected image -------------
-    // const file1 = e.target.files[0];
-    const reader = new FileReader();
-    // reader.onload = () => {
-    //   setImageURL(reader.result);
-    // };
-    // if (file1) {
-    //   reader.readAsDataURL(file1);
-    // }
-
-    // -----------------------------------------------------------
-    reader.onload = () => {
-      setFormData({ ...formData, [formData.event_poster]: file });
-    };
-    if (file) {
-      // Validate file type
-      if (
-        file.type === "image/jpeg" ||
-        file.type === "image/jpg" ||
-        file.type === "image/png"
-      ) {
-        // Validate file size
-        if (file.size <= 1500 * 1024) {
-          // setIsImageChanged(true); // Set the state variable to true indicating the image has been changed
-        } else {
-          alert("Please select an image file smaller than 1500 KB.");
-        }
-      } else {
-        alert("Please select a JPEG, JPG, or PNG image file.");
-      }
+    const pics = e.target.files[0];
+    if (pics.type === "image/jpeg" || pics.type === "image/png") {
+      const data = new FormData();
+      data.append("file", pics);
+      data.append("upload_preset", "chat-app");
+      data.append("cloud_name", "darsh-cloud");
+      fetch("https://api.cloudinary.com/v1_1/darsh-cloud/image/upload", {
+        method: "post",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setEventPoster(data.url.toString());
+          console.log(data.url.toString());
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      return;
     }
   };
   const handleChange = (e) => {
@@ -321,70 +379,47 @@ function EventEditForm() {
       endDateTime.setHours(parseInt(endTimeParts[0], 10)); // Set hours
       endDateTime.setMinutes(parseInt(endTimeParts[1], 10)); // Set minutes
 
-      // const response = await fetch(`${hostname}/event/update-event/${Id}`, {
-      //   method: "POST",
-      //   headers: options,
-      //   body: JSON.stringify({
-      //     event_name: formData.event_name,
-      //     event_description: formData.event_description,
-      //     language: formData.language,
-      //     event_date: formData.event_date,
-      //     startTime: startDateTime,
-      //     endTime: endDateTime,
-      //     timeZone: formData.timeZone,
-      //     event_type: formData.event_type,
-      //     meet_link: formData.meet_link,
-      //     address: formData.address,
-      //     city: formData.city,
-      //     state: formData.state,
-      //     country: formData.country,
-      //     pincode: formData.pincode,
-      //     limit: formData.limit,
-      //     socialmedia_links: formData.socialmedia_links,
-      //     event_goals: formData.event_goals,
-      //     event_tags: formData.event_tags,
-      //     speakers: formData.speakers,
-      //   }), // Convert form data to JSON
-      // });
-
-      // if (response.ok) {
-      //   const data = await response.json();
-      //   console.log("Event created successfully:", data.Event);
-      //   // Reset the form or perform any other actions
-      // } else {
-      //   const errorData = await response.json();
-      //   console.error("Failed to create event:", errorData);
-      //   // Handle error or display an error message to the user
-      // }
-    } catch (error) {
-      console.error("Error creating event:", error);
-      // Handle network errors or other exceptions
-    }
-  };
-
-  const get_speaker = async () => {
-    try {
-      const response = await fetch(`${hostname}/all-speaker`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          // Add any headers if needed
-        },
+      const response = await fetch(`${hostname}/event/update-event/${Id.id}`, {
+        method: "PUT",
+        headers: options,
+        body: JSON.stringify({
+          event_name: formData.event_name,
+          event_description: formData.event_description,
+          language: formData.language,
+          event_date: formData.event_date,
+          startTime: startDateTime,
+          endTime: endDateTime,
+          timeZone: formData.timeZone,
+          event_type: formData.event_type,
+          meet_link: formData.meet_link,
+          address: formData.address,
+          city: formData.city,
+          state: formData.state,
+          country: formData.country,
+          pincode: formData.pincode,
+          limit: formData.limit,
+          socialmedia_links: formData.socialmedia_links,
+          event_goals: formData.event_goals,
+          event_tags: formData.event_tags,
+          speakers: formData.speakers,
+          pic: eventPoster,
+        }), // Convert form data to JSON
       });
 
       if (response.ok) {
         const data = await response.json();
-        // Now, 'data' contains the fetched speakers
-        setSpeakerOptions(data.speakers);
-        console.log(data.speakers);
+        console.log("Event created successfully:", data.Event);
+        navigate(`/event/details/${Id.id}`)
+        // Reset the form or perform any other actions
       } else {
         const errorData = await response.json();
-        console.error("Failed to fetch speakers:", errorData);
+        console.error("Failed to create event:", errorData.message);
+        throw new Error(errorData.message);
         // Handle error or display an error message to the user
       }
     } catch (error) {
-      console.error("An error occurred while fetching speakers:", error);
-      // Handle the error
+      console.error("Error creating event:", error);
+      // Handle network errors or other exceptions
     }
   };
 
@@ -393,7 +428,6 @@ function EventEditForm() {
     let options;
 
     // if (user && user.type === "user") {
-    console.log(localStorage.getItem("userAuthToken"));
     options = {
       "Content-type": "application/json",
       authorization: token1,
@@ -417,7 +451,7 @@ function EventEditForm() {
             type="text"
             name="event_name"
             placeholder="Event name"
-            defaultValue={"darsh"}
+            defaultValue={formData.event_name}
             // value={formData.event_name}
             onChange={handleChange}
           />
@@ -427,7 +461,7 @@ function EventEditForm() {
           <label htmlFor="language">Language</label>
           <select
             name="language"
-            // defaultValue={}
+            // defaultValue={"English"}
             // value={formData.language}
             onChange={handleChange}
           >
@@ -439,22 +473,22 @@ function EventEditForm() {
           </select>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="eventImage">Event Image</label> {/* Updated label */}
+        {/* <div className="form-group">
+          <label htmlFor="eventImage">Event Image</label> 
           <input
             type="file"
             name="event_poster"
             accept="image/*"
             onChange={handleImageChange}
           />
-        </div>
+        </div> */}
         <div className="dates">
           <div className="form-group" id="SD">
-            <label htmlFor="startDate">Start Date</label> {/* Updated label */}
+            <label htmlFor="startDate">Event Date</label> {/* Updated label */}
             <input
               type="date"
               name="event_date"
-              // defaultValue={}
+              defaultValue={formData.event_date}
               // value={formData.event_date}
               onChange={handleChange}
             />
@@ -466,7 +500,7 @@ function EventEditForm() {
             <input
               type="time"
               name="startTime"
-              defaultValue={event.startTime}
+              defaultValue={formData.startTime}
               // value={formData.startTime}
               onChange={handleChange}
             />
@@ -477,7 +511,7 @@ function EventEditForm() {
             <input
               type="time"
               name="endTime"
-              // defaultValue={}
+              defaultValue={formData.endTime}
               // value={formData.endTime}
               onChange={handleChange}
             />
@@ -488,7 +522,7 @@ function EventEditForm() {
           <select
             name="timeZone"
             // defaultValue={}
-            // value={formData.timeZone}
+            value={formData.timeZone}
             onChange={handleChange}
           >
             {timezoneOptions.map((option) => (
@@ -503,7 +537,7 @@ function EventEditForm() {
           <label htmlFor="meetingMode">Meeting Mode</label>
           <select
             name="event_type"
-            // value={formData.event_type}
+            value={formData.event_type}
             // defaultValue={}
             onChange={handleChange}
           >
@@ -523,7 +557,7 @@ function EventEditForm() {
               type="url"
               name="meet_link"
               placeholder="Meeting link"
-              // defaultValue={}
+              defaultValue={formData.meet_link}
               // value={formData.meet_link}
               onChange={handleChange}
             />
@@ -538,18 +572,14 @@ function EventEditForm() {
                 type="text"
                 name="address"
                 placeholder="Address"
-                // defaultValue={}
+                defaultValue={formData.address}
                 // value={formData.address}
                 onChange={handleChange}
               />
             </div>
             <div className="form-group">
               <label htmlFor="city">City</label>
-              <select
-                name="city"
-                // value={formData.city}
-                onChange={handleChange}
-              >
+              <select name="city" value={formData.city} onChange={handleChange}>
                 {countryOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -561,7 +591,7 @@ function EventEditForm() {
               <label htmlFor="state">state</label>
               <select
                 name="state"
-                // value={formData.state}
+                value={formData.state}
                 onChange={handleChange}
               >
                 {countryOptions.map((option) => (
@@ -575,7 +605,7 @@ function EventEditForm() {
               <label htmlFor="country">Country</label>
               <select
                 name="country"
-                // value={formData.country}
+                value={formData.country}
                 onChange={handleChange}
               >
                 {countryOptions.map((option) => (
@@ -592,7 +622,7 @@ function EventEditForm() {
                 type="number"
                 name="pincode"
                 placeholder="Enter Zip Code/Pin Code of city"
-                // value={formData.pincode}
+                value={formData.pincode}
                 onChange={handleChange}
               />
             </div>
@@ -606,7 +636,7 @@ function EventEditForm() {
             type="number"
             name="limit"
             placeholder="Enter limit"
-            // value={formData.limit}
+            defaultValue={formData.limit}
             onChange={handleChange}
           />
         </div>
@@ -630,7 +660,8 @@ function EventEditForm() {
             <label>Given Social media links:</label>
             <textarea
               readOnly
-              value={formData.socialmedia_links.join(", ")}
+              defaultValue={formData.socialmedia_links.join(", ")}
+              // value={formData.socialmedia_links.join(", ")}
               rows={"1"}
             />
           </div>
@@ -641,7 +672,7 @@ function EventEditForm() {
           <textarea
             name="event_goals"
             placeholder="Enter event goals"
-            // value={formData.event_goals}
+            value={formData.event_goals}
             onChange={handleChange}
           />
         </div>
@@ -650,7 +681,7 @@ function EventEditForm() {
           <textarea
             name="event_description"
             placeholder="Enter event description"
-            // value={formData.event_description}
+            value={formData.event_description}
             onChange={handleChange}
           />
         </div>
@@ -674,7 +705,7 @@ function EventEditForm() {
                       <input
                         type="text"
                         name="customTag"
-                        // value={formData.customTag}
+                        value={formData.customTag}
                         onChange={handleChange}
                       />
                       <button type="button" onClick={handleAddCustomTag}>
@@ -689,6 +720,9 @@ function EventEditForm() {
                           type="checkbox"
                           name="event_tags"
                           value={option.label}
+                          defaultChecked={formData.event_tags.includes(
+                            option.value
+                          )}
                           checked={formData.event_tags.includes(option.value)}
                           onChange={handleChange}
                         />
@@ -752,7 +786,9 @@ function EventEditForm() {
                               type="checkbox"
                               name="speakers"
                               value={speaker._id}
-                              checked={formData.speakers.includes(speaker.name)}
+                              defaultChecked={formData.speakers.includes(
+                                speaker._id
+                              )}
                               onChange={handleChange}
                             />
                             {speaker.name}

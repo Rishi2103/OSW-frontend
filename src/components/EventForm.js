@@ -6,7 +6,6 @@ function EventRegistrationForm(props) {
   const [formData, setFormData] = useState({
     event_name: "",
     language: "",
-    event_poster: null,
     event_date: null,
     startTime: null,
     endTime: null,
@@ -34,6 +33,7 @@ function EventRegistrationForm(props) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [dropdownSpeakerOpen, setDropdownSpeakerOpen] = useState(false);
   const [speakerOptions, setSpeakerOptions] = useState([]);
+  const [eventPoster, setEventPoster] = useState(null);
   const location = useLocation();
 
   // Check if location.state is defined before accessing properties
@@ -42,39 +42,26 @@ function EventRegistrationForm(props) {
   console.log(user, token);
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    // const reader = new FileReader();
-
-    //------------- for showing the selected image -------------
-    // const file1 = e.target.files[0];
-    const reader = new FileReader();
-    // reader.onload = () => {
-    //   setImageURL(reader.result);
-    // };
-    // if (file1) {
-    //   reader.readAsDataURL(file1);
-    // }
-
-    // -----------------------------------------------------------
-    reader.onload = () => {
-      setFormData({ ...formData, [formData.event_poster]: file });
-    };
-    if (file) {
-      // Validate file type
-      if (
-        file.type === "image/jpeg" ||
-        file.type === "image/jpg" ||
-        file.type === "image/png"
-      ) {
-        // Validate file size
-        if (file.size <= 1500 * 1024) {
-          // setIsImageChanged(true); // Set the state variable to true indicating the image has been changed
-        } else {
-          alert("Please select an image file smaller than 1500 KB.");
-        }
-      } else {
-        alert("Please select a JPEG, JPG, or PNG image file.");
-      }
+    const pics = e.target.files[0];
+    if (pics.type === "image/jpeg" || pics.type === "image/png") {
+      const data = new FormData();
+      data.append("file", pics);
+      data.append("upload_preset", "chat-app");
+      data.append("cloud_name", "darsh-cloud");
+      fetch("https://api.cloudinary.com/v1_1/darsh-cloud/image/upload", {
+        method: "post",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setEventPoster(data.url.toString());
+          console.log(data.url.toString());
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      return;
     }
   };
   const handleChange = (e) => {
@@ -263,6 +250,7 @@ function EventRegistrationForm(props) {
           event_goals: formData.event_goals,
           event_tags: formData.event_tags,
           speakers: formData.speakers,
+          pic: eventPoster,
         }), // Convert form data to JSON
       });
 
@@ -322,7 +310,7 @@ function EventRegistrationForm(props) {
       authorization: token,
     };
 
-    await createEvent(options); 
+    await createEvent(options);
   };
 
   return (

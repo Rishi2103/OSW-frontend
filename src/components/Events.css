@@ -14,7 +14,19 @@
 }
 .personal-events-button {
   position: relative;
-  right:-68vw;
+  right:-60vw;
+  margin-top: -10vh;
+  background-color: rgb(14, 131, 136);
+  border: none;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: bold;
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.3);
+  cursor: pointer; /* Change cursor to pointer on hover */
+}
+.all-events-button {
+  position: relative;
+  right:-55vw;
   margin-top: -10vh;
   background-color: rgb(14, 131, 136);
   border: none;
@@ -28,7 +40,9 @@
 .personal-events-button:hover {
   background-color: #1565c0; /* Change color on hover */
 }
-
+.all-events-button:hover {
+  background-color: #1565c0; /* Change color on hover */
+}
 .eventpg-head {
   font-family: "Open Sans", sans-serif;
   font-size: 32px;

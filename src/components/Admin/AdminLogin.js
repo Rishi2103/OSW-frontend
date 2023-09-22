@@ -120,8 +120,8 @@ const AdminLogin = () => {
               }}
             >
               <div className="form-field">
-                <label>Email:</label>
-                <input type="text" style={{ width: "100%" }} required />
+                <label>Otp:</label>
+                <input type="number" style={{ width: "100%" }} required />
               </div>
               <div>
                 <button
@@ -129,7 +129,7 @@ const AdminLogin = () => {
                   type="submit"
                   style={{ marginTop: "20px" }}
                 >
-                  Get OTP
+                  Log In
                 </button>
                 <span
                   style={{

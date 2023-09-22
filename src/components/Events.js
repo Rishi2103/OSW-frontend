@@ -110,8 +110,40 @@ const Events = () => {
     console.log(user,Token);
     navigate(`/events/create-Event`, { state: { user, Token } });
   };
-  const handlePersonalEevntsClick = (event) => {
-    navigate(`/personal-events`);
+  const handlePersonalEevntsClick = async () => {
+    let options;
+
+    if (user && user.type === "user") {
+      console.log(localStorage.getItem("userAuthToken"));
+      options = {
+        "Content-Type": "application/json",
+        authorization: localStorage.getItem("userAuthToken"),
+      };
+    } else {
+      options = {
+        "Content-Type": "application/json",
+        authorization: localStorage.getItem("adminAuthToken"),
+      };
+    }
+    try {
+      const response = await fetch(`${hostname}/personal-events`, {
+        method: "GET",
+        headers:options,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+        setEvents(data.eventsData);
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to fetch events:", errorData);
+        // Handle the error or display an error message to the user
+      }
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      // Handle the error or display an error message to the user
+    }
   };
   const handleDeleteClick = (eventId) => {
     // Make an HTTP DELETE request to delete the event
@@ -166,7 +198,9 @@ const Events = () => {
   useEffect(() => {
     fetchData(); // Call the fetchData function when the component mounts
   }, []);
-
+  const handleAllEevntsClick = () => {
+    fetchData();
+  }
   return (
     <div className="eventpg">
       <Navbar />
@@ -184,6 +218,12 @@ const Events = () => {
         <p className="past-events-text">
           Events are listed in reverse chronological order by date.
         </p>
+        <button
+          className="all-events-button"
+          onClick={handleAllEevntsClick}
+        >
+          All Events
+        </button>
         <button
           className="personal-events-button"
           onClick={handlePersonalEevntsClick}

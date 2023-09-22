@@ -10,6 +10,48 @@ const EventsPage = (props) => {
   const [event, setEvent] = useState();
   const { id } = useParams();
   const [loading, setLoading] = useState(true); // Add loading state
+  const [user, setUser] = useState(null);
+  const [regisered, setRegistered] = useState(false);
+  useEffect(() => {
+    // Get the JWT token from wherever you have stored it (e.g., localStorage)
+    const getUser = async () => {
+      if (localStorage.getItem("userAuthToken")) {
+        const token = localStorage.getItem("userAuthToken");
+
+        if (token) {
+          try {
+            // Split the token into its parts
+            const tokenParts = token.split(".");
+
+            // Base64-decode and parse the payload part (the second part)
+            const payload = JSON.parse(atob(tokenParts[1]));
+            setUser(payload); // Set user state with decoded data
+          } catch (error) {
+            // Handle decoding error (e.g., token is invalid)
+            console.error("Error decoding JWT token:", error);
+          }
+        }
+      } else {
+        const token = localStorage.getItem("adminAuthToken");
+        if (token) {
+          try {
+            // Split the token into its parts
+            const tokenParts = token.split(".");
+
+            // Base64-decode and parse the payload part (the second part)
+            const payload = JSON.parse(atob(tokenParts[1]));
+            console.log(payload.type);
+            setUser(payload); // Set user state with decoded data
+          } catch (error) {
+            // Handle decoding error (e.g., token is invalid)
+            console.error("Error decoding JWT token:", error);
+          }
+        }
+      }
+    };
+    getUser();
+    // console.log(user.type);
+  }, []);
 
   const convertDate = (date) => {
     const originalDate = new Date(date); // Parse the original date string
@@ -20,6 +62,29 @@ const EventsPage = (props) => {
     const formattedDate = `${year}-${month}-${day}`;
     console.log(formattedDate); // Output: "2023-09-23"
     return formattedDate;
+  };
+  const RegisterForEvent = async () => {
+    console.log(1);
+    try {
+      const response = await fetch(`${hostname}/event/attend-event/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: localStorage.getItem("userAuthToken"), // Replace with your authorization token
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("Successfully registered for the event:", data.message);
+        fetchData();
+      } else {
+        console.error("Failed to register for the event:", data.message);
+      }
+    } catch (error) {
+      console.error("Error registering for the event:", error.message);
+    }
   };
 
   const convertTime = (time) => {
@@ -33,35 +98,35 @@ const EventsPage = (props) => {
     return formattedTime;
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${hostname}/event/${id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`${hostname}/event/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-        if (response.ok) {
-          const data = await response.json();
-          console.log(data.eventData);
-          setEvent(data.eventData);
-        } else {
-          const errorData = await response.json();
-          console.error("Failed to fetch event details:", errorData);
-          // Handle the error or display an error message to the user
-        }
-      } catch (error) {
-        console.error("Error fetching event details:", error);
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data.eventData);
+        setEvent(data.eventData);
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to fetch event details:", errorData);
         // Handle the error or display an error message to the user
-      } finally {
-        // Set loading to false regardless of success or failure
-        setLoading(false);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching event details:", error);
+      // Handle the error or display an error message to the user
+    } finally {
+      // Set loading to false regardless of success or failure
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchData(); // Call the fetchData function when the component mounts
-  }, [id]);
+  }, []);
 
   if (loading) {
     // While loading, you can show a loading indicator or message
@@ -146,9 +211,20 @@ const EventsPage = (props) => {
               </p>
             </div>
             <div className="eve-det-btn">
-              <button className="btn btn-primary custom-btn1">
-                <p className="btn-text">REGISTRATION</p>
-              </button>
+              {!event.attendees.includes(user._id) ? (
+                <>
+                  <button
+                    className="btn btn-primary custom-btn1"
+                    onClick={() => RegisterForEvent()}
+                  >
+                    <p className="btn-text">REGISTRATION</p>
+                  </button>
+                </>
+              ) : (
+                <button className="btn btn-primary custom-btn1">
+                  <p className="btn-text">REGISTERED</p>
+                </button>
+              )}
               {/* <button className="btn btn-secondary custom-btn2 ">
                 <p className="btn-text">MEETUP</p>
               </button> */}

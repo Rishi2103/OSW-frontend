@@ -360,7 +360,6 @@ const Team = () => {
                         className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
                         id="name"
                         name="teamname"
-                        value={team.name}
                         onChange={(e) => handleTextInputChange("teamname", e)}
                         required
                       />
@@ -377,7 +376,6 @@ const Team = () => {
                         className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
                         id="team-post"
                         name="teampost"
-                        // value={team.post}
                         onChange={(e) => handleTextInputChange("teampost", e)}
                         required
                       />
@@ -394,7 +392,6 @@ const Team = () => {
                         className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
                         id="team"
                         name="team"
-                        value={team.team}
                         onChange={(e) => handleTextInputChange("team", e)}
                         required
                       />
@@ -412,7 +409,6 @@ const Team = () => {
                       className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
                       id="team-bio"
                       name="teambio" // <-- Corrected name attribute
-                      // value={team.bio}
                       onChange={(e) => handleTextInputChange("teambio", e)} // <-- Corrected identifier
                       required
                     ></textarea>
@@ -484,11 +480,6 @@ const Team = () => {
         <div className="TeamTile">
           {teamMembers.map((member, index) => (
             <TeamTile
-              // _id={member._id}
-              // name={member.name}
-              // job={member.post}
-              // img={member.pic} // Assuming pic is the image URL
-              // links={member.social_links}
               team={member}
               onDelete={(event) => handleDelete(event, member._id)}
 
