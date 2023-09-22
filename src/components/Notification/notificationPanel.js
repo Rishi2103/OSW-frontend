@@ -182,7 +182,9 @@ const NotificationsPanel = ({ onClose }) => {
               className={`notification-item ${
                 notification.read ? "visited" : ""
               }`}
-              onClick={() => visitNotificationLink(notification.link)}
+              onClick={() =>
+                visitNotificationLink(notification.link, notification._id)
+              }
             >
               <div className="msg">{notification.content}</div>
               <div className="two-buttons">
