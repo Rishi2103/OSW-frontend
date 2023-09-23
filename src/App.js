@@ -1,30 +1,19 @@
 import React, { useEffect } from "react";
-import {
-  // BrowserRouter as Router,
-  Route,
-  Routes,
-  // useLocation,
-} from "react-router-dom";
-// import Navbar from "./components/Navbar";
+import { Route, Routes } from "react-router-dom";
 import Contact from "./components/Contact";
 import Events from "./components/Events";
 import Home from "./components/Home";
 import About from "./components/About";
 import Partners from "./components/Partners";
-import Blogs from "./components/Blogs";
+import Blogs from "./components/Blog/Blogs";
 import ResourceLibrary from "./components/ResourceLibrary/ResourceLibrary";
-// import Footer from "./components/Footer";
 import "./App.css";
-// import Meetup from "./components/home-comp/Meetup";
 import EventsPage from "./components/EventsPage";
-import BlogPage from "./components/BlogPage";
 import Team from "./components/Team";
-// import teamProfile from "./components/Team/TeamProfile";
 import Speakers from "./components/Speakers";
 import Login from "./components/Login";
 import { gapi } from "gapi-script";
 import EventRegistrationForm from "./components/EventForm";
-// import Forgotpassword from "./components/";
 import TeamProfile from "./components/Team/TeamProfile";
 import SpeakersProfile from "./components/Speakers/SpeakersProfile";
 import ForgetPassword from "./components/forgotePassword";
@@ -36,16 +25,15 @@ import ResourceLibraryProfile from "./components/ResourceLibrary/ResourceLibrary
 import PersonalEvents from "./components/PersonalEvents";
 import EventEditForm from "./components/EditEventForm.js";
 import AddAdmin from "./components/Admin/AddAdmin";
-// import EventEditForm from "./components/editEventForm";
+import BlogPage from "./components/Blog/BlogPage";
+import PostBlogs from "./components/Blog/PostBlogs";
+import ShowBlog from "./components/Blog/ShowBlog";
 
 const clientId =
   "574757039734-2hfvakv45d24o82mp3r80akqri2b70mq.apps.googleusercontent.com";
 
 function App() {
-  // const authToken = localStorage.getItem("userAuthToken");
   const AdminauthToken = localStorage.getItem("adminAuthToken");
-  // let selectedOption = "";
-  // const isUserAuthenticated = authToken !== null;
   const isAdminAuthenticated = AdminauthToken !== null;
 
   useEffect(() => {
@@ -70,7 +58,6 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/adminLogin" exact element={<AdminLogin />} />
         <Route path="/" element={<Home />} />
-        {/* {(isUserAuthenticated || isAdminAuthenticated) && ( */}
         <>
           <Route path="/events" element={<Events />} />
           <Route path="/personal-events" element={<PersonalEvents />} />
@@ -93,13 +80,13 @@ function App() {
           />
           <Route path="/event/details/:id" element={<EventsPage />} />
           <Route path="/blogs" element={<Blogs />} />
+          <Route path="/post-blogs" element={<PostBlogs />} />
           <Route path="/profile" element={<ViewProfile />} />
           <Route path="/user" element={<User />} />
           <Route path="/user/reset-password" element={<ForgetPassword />} />
           <Route path="/contact-us/send-message" element={<ContactForm />} />
-          <Route path="/blogPage/:id" exact element={<BlogPage />} />
+          <Route path="/blogPage/:id" exact element={<ShowBlog />} />
         </>
-        {/* )} */}
       </Routes>
     </div>
   );

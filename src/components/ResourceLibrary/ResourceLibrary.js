@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDocker, faGithub } from "@fortawesome/free-brands-svg-icons";
 import {
   faEdit,
-  faEye,
   faGreaterThan,
   faTrash,
   // faLessThan,
@@ -38,7 +37,6 @@ export default function ResourceLibrary() {
   });
   const [getprojects, setGetProjects] = useState([]);
   const [user, setUser] = useState(null);
-  const [textInputs, setTextInputs] = useState([""]);
 
   useEffect(() => {
     // Get the JWT token from wherever you have stored it (e.g., localStorage)

@@ -46,7 +46,7 @@ function EventRegistrationForm(props) {
     if (pics.type === "image/jpeg" || pics.type === "image/png") {
       const data = new FormData();
       data.append("file", pics);
-      data.append("upload_preset", "chat-app");
+      data.append("upload_preset", "Open Source Weekend");
       data.append("cloud_name", "darsh-cloud");
       fetch("https://api.cloudinary.com/v1_1/darsh-cloud/image/upload", {
         method: "post",

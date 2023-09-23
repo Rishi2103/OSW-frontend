@@ -6,7 +6,7 @@ function EventEditForm() {
   const Id = useParams();
   const [event, setEvent] = useState();
   const [loading, setLoading] = useState(true); // Add loading state
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     event_name: "",
     language: "",
@@ -409,7 +409,7 @@ function EventEditForm() {
       if (response.ok) {
         const data = await response.json();
         console.log("Event created successfully:", data.Event);
-        navigate(`/event/details/${Id.id}`)
+        navigate(`/event/details/${Id.id}`, { replace: true });
         // Reset the form or perform any other actions
       } else {
         const errorData = await response.json();

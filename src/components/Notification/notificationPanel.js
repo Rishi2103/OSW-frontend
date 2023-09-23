@@ -71,7 +71,7 @@ const NotificationsPanel = ({ onClose }) => {
 
   const visitNotificationLink = (link, id) => {
     markAsVisited(id);
-    // navigate(link);
+    navigate(link);
   };
 
   const markAsVisited = (id) => {
@@ -182,9 +182,6 @@ const NotificationsPanel = ({ onClose }) => {
               className={`notification-item ${
                 notification.read ? "visited" : ""
               }`}
-              onClick={() =>
-                visitNotificationLink(notification.link, notification._id)
-              }
             >
               <div className="msg">{notification.content}</div>
               <div className="two-buttons">
@@ -201,6 +198,15 @@ const NotificationsPanel = ({ onClose }) => {
                   <FontAwesomeIcon icon={faXmark} />
                 </button>
               </div>
+              <button
+                // className="delete-notificaton"
+                onClick={() =>
+                  visitNotificationLink(notification.link, notification._id)
+                }
+                // onClick={() => removeNotification(notification._id)}
+              >
+                <FontAwesomeIcon icon={faAngleDoubleRight} />
+              </button>
             </div>
           ))
         )}

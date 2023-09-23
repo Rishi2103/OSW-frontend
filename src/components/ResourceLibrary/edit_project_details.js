@@ -9,7 +9,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 
 export default function EditResourceLibrary({ project, isOpen }) {
-  console.log(project);
   const [projectNameError, setProjectNameError] = useState("");
   const [projectDescError, setProjectDescError] = useState("");
   const [projectLinksError, setProjectLinksError] = useState("");
@@ -21,11 +20,10 @@ export default function EditResourceLibrary({ project, isOpen }) {
   const navigate = useNavigate();
 
   const [projectLinks, setProjectLinks] = useState(project.project_links || "");
-  const [projectTags, setProjectTags] = useState(project.project_tags || []);
-  const [textInputs, setTextInputs] = useState([""]);
+  const [projectTags, setProjectTags] = useState(project.project_tags || "");
   const closeModal = () => {
     // Reload the page
-    window.location.reload();
+    // window.location.reload();
     navigate("/resourceLibrary"); // Navigate to the desired page (optional)
   };
 
@@ -79,11 +77,11 @@ export default function EditResourceLibrary({ project, isOpen }) {
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          console.log("Project added successfully:", data.team_member);
-          setProjectName("");
-          setProjectDetails("");
-          setProjectLinks("");
-          setProjectTags([]);
+          console.log("Project added successfully:", data.updatedProject);
+          // setProjectName("");
+          // setProjectDetails("");
+          // setProjectLinks("");
+          // setProjectTags("");
           toast("Successfully Submitted!", {
             position: "top-right",
             backgroundColor: "#0E8388",
@@ -112,10 +110,12 @@ export default function EditResourceLibrary({ project, isOpen }) {
   const handleTextInputChange = (identifier, event) => {
     // Ensure that the event object is properly passed
     if (event && event.target) {
+      console.log(event.target.value);
       // Clear previous error messages when input changes
       setProjectNameError("");
       setProjectDescError("");
       setProjectLinksError("");
+      setProjecttagsError("");
 
       // Update the corresponding field based on the identifier
       if (identifier === "project_name") {
@@ -124,37 +124,10 @@ export default function EditResourceLibrary({ project, isOpen }) {
         setProjectDetails(event.target.value);
       } else if (identifier === "project_links") {
         setProjectLinks(event.target.value);
+      } else if (identifier === "project_tags") {
+        setProjectTags(event.target.value);
       }
     }
-  };
-
-  const handletagsInputChange = (event, index) => {
-    const updatedTags = [...projectTags]; // Copy the current projectTags array
-    updatedTags[index] = event.target.value; // Update the tag at the specified index
-
-    // Update the state with the modified projectTags array
-    setProjectTags(updatedTags);
-    setProjecttagsError(""); // Clear any error messages if needed
-  };
-
-  const removeTextInput = (index) => {
-    console.log(projectTags);
-    if (textInputs.length > 1) {
-      const updatedInputs = [...textInputs];
-      updatedInputs.splice(index, 1); // Remove the item at the specified index
-      const filteredInputs = updatedInputs.filter((item) => item !== null); // Filter out null values
-      setTextInputs(filteredInputs); // Update the state with the modified array
-
-      // Also remove the corresponding project tag
-      const updatedTags = [...projectTags];
-      updatedTags.splice(index, 1);
-      setProjectTags(updatedTags);
-    }
-  };
-
-  const addTextInput = () => {
-    setTextInputs([...textInputs, ""]);
-    setProjectTags((prevTags) => [...prevTags, ""]);
   };
 
   return (
@@ -232,41 +205,24 @@ export default function EditResourceLibrary({ project, isOpen }) {
                   <label htmlFor="project-taas" className="col-form-label">
                     Project Tags
                   </label>
-                  {textInputs.map((textInput, index) => (
-                    <div className="minus" key={index}>
-                      <div className="project-tagsInput">
-                        <input
-                          type="text"
-                          id={`project-tags-${index}`}
-                          name={`project_tags-${index}`}
-                          defaultValue={projectTags[index]} // Use the correct tag value
-                          className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
-                          onChange={(e) => handletagsInputChange(e, index)}
-                          required
-                        />
-                      </div>
-                      <button
-                        type="button"
-                        className="ms-3 btn btn-primary"
-                        style={{ backgroundColor: "#0E8388" }}
-                        onClick={() => removeTextInput(index)}
-                      >
-                        Remove
-                      </button>
-                      {projecttagsError && (
-                        <div className="error-message">{projecttagsError}</div>
-                      )}
+                  <div className="minus">
+                    <div className="project-tagsInput">
+                      <input
+                        type="text"
+                        id={`project-tags`}
+                        name={`project_tags`}
+                        defaultValue={projectTags} // Use the correct tag value
+                        className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
+                        onChange={(e) =>
+                          handleTextInputChange("project_tags", e)
+                        }
+                        required
+                      />
                     </div>
-                  ))}
-
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    style={{ backgroundColor: "#0E8388" }}
-                    onClick={addTextInput}
-                  >
-                    Add Tag
-                  </button>
+                    {projecttagsError && (
+                      <div className="error-message">{projecttagsError}</div>
+                    )}
+                  </div>
                 </div>
                 <div className="mb-3">
                   <label htmlFor="projectlinks" className="col-form-label">
