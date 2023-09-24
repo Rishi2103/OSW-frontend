@@ -479,152 +479,163 @@ export default function ResourceLibrary() {
                 </button>
               </div>
             )}
-            <div
-              className="modal fade"
-              id="exampleModal"
-              tabindex="-1"
-              aria-labelledby="exampleModalLabel"
-              aria-hidden="true"
-            >
+            {isModalOpen && (
               <div
-                className="modal-dialog modal-lg"
-                style={{
-                  marginLeft: "30vw",
-                  maxWidth: "150%",
-                  marginRight: "-90vw",
-                }}
+                className="modal fade"
+                id="exampleModal"
+                tabindex="-1"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true"
+                style={{ opacity: 1 }}
               >
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h1 className="modal-title fs-5" id="exampleModalLabel">
-                      Add Project
-                    </h1>
-                    <button
-                      type="button"
-                      className="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
-                  </div>
-                  <div className="modal-body">
-                    <form>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="project-name"
-                          className="col-form-label"
-                        >
-                          Project Name
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
-                          id="project-name"
-                          name="project_name"
-                          // value={getprojects.projectname}
-                          onChange={(e) =>
-                            handleTextInputChange("project_name", e)
-                          }
-                          required
-                        />
-                        {projectNameError && (
-                          <div className="error-message">
-                            {projectNameError}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="mb-3">
-                        <label
-                          htmlFor="project_details-text"
-                          className="col-form-label"
-                        >
-                          Project Description
-                        </label>
-                        <textarea
-                          className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
-                          id="project_details-text"
-                          name="project_details"
-                          // value={projects.project_details}
-                          onChange={(e) =>
-                            handleTextInputChange("project_details", e)
-                          }
-                          required
-                        ></textarea>
-                        {projectDescError && (
-                          <div className="error-message">
-                            {projectDescError}
-                          </div>
-                        )}
-                      </div>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="project-taas"
-                          className="col-form-label"
-                        >
-                          Project Tags
-                        </label>
-                        <div className="minus">
-                          <div className="project-tagsInput">
-                            <input
-                              type="text"
-                              id={`project-tags`}
-                              name={`project_tags`}
-                              // value={projects.project_tags[index] || ""}
-                              className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
-                              onChange={(e) =>
-                                handleTextInputChange("project_tags", e)
-                              }
-                              required
-                            />
-                          </div>
-                          {projecttagsError && (
-                            <div className="error-message">
-                              {projecttagsError}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="projectlinks"
-                          className="col-form-label"
-                        >
-                          Project Link
-                        </label>
-                        <div className="projectlinksInput">
+                <div
+                  className="modal-dialog modal-lg"
+                  style={{
+                    // marginLeft: "30vw",
+                    width: "100%",
+                    // marginRight: "-90vw",
+                  }}
+                >
+                  <div
+                    className="modal-content"
+                    style={{
+                      // marginLeft: "30vw",
+                      width: "100%",
+                      marginTop: "8vw",
+                    }}
+                  >
+                    <div className="modal-header">
+                      <h1 className="modal-title fs-5" id="exampleModalLabel">
+                        Add Project
+                      </h1>
+                      <button
+                        type="button"
+                        className="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                        onClick={() => setIsModalOpen(false)}
+                      ></button>
+                    </div>
+                    <div className="modal-body">
+                      <form>
+                        <div className="mb-3">
+                          <label
+                            htmlFor="project-name"
+                            className="col-form-label"
+                          >
+                            Project Name
+                          </label>
                           <input
                             type="text"
-                            id="project_links"
-                            name="project_links"
-                            // value={projects.project_links}
                             className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
+                            id="project-name"
+                            name="project_name"
+                            // value={getprojects.projectname}
                             onChange={(e) =>
-                              handleTextInputChange("project_links", e)
+                              handleTextInputChange("project_name", e)
                             }
                             required
                           />
-                          {projectLinksError && (
+                          {projectNameError && (
                             <div className="error-message">
-                              {projectLinksError}
+                              {projectNameError}
                             </div>
                           )}
                         </div>
-                      </div>
-                    </form>
+
+                        <div className="mb-3">
+                          <label
+                            htmlFor="project_details-text"
+                            className="col-form-label"
+                          >
+                            Project Description
+                          </label>
+                          <textarea
+                            className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
+                            id="project_details-text"
+                            name="project_details"
+                            // value={projects.project_details}
+                            onChange={(e) =>
+                              handleTextInputChange("project_details", e)
+                            }
+                            required
+                          ></textarea>
+                          {projectDescError && (
+                            <div className="error-message">
+                              {projectDescError}
+                            </div>
+                          )}
+                        </div>
+                        <div className="mb-3">
+                          <label
+                            htmlFor="project-taas"
+                            className="col-form-label"
+                          >
+                            Project Tags
+                          </label>
+                          <div className="minus">
+                            <div className="project-tagsInput">
+                              <input
+                                type="text"
+                                id={`project-tags`}
+                                name={`project_tags`}
+                                // value={projects.project_tags[index] || ""}
+                                className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
+                                onChange={(e) =>
+                                  handleTextInputChange("project_tags", e)
+                                }
+                                required
+                              />
+                            </div>
+                            {projecttagsError && (
+                              <div className="error-message">
+                                {projecttagsError}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mb-3">
+                          <label
+                            htmlFor="projectlinks"
+                            className="col-form-label"
+                          >
+                            Project Link
+                          </label>
+                          <div className="projectlinksInput">
+                            <input
+                              type="text"
+                              id="project_links"
+                              name="project_links"
+                              // value={projects.project_links}
+                              className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
+                              onChange={(e) =>
+                                handleTextInputChange("project_links", e)
+                              }
+                              required
+                            />
+                            {projectLinksError && (
+                              <div className="error-message">
+                                {projectLinksError}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                    <div className="modal-header"></div>
+                    <br />
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      data-bs-dismiss
+                      onClick={handleSubmit}
+                    >
+                      Add Project
+                    </button>
                   </div>
-                  <div className="modal-header"></div>
-                  <br />
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    data-bs-dismiss
-                    onClick={handleSubmit}
-                  >
-                    Add Project
-                  </button>
                 </div>
               </div>
-            </div>
+            )}
           </div>
           <ToastContainer /> <SecFooter />
           <Footer />

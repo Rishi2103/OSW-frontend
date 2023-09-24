@@ -31,10 +31,10 @@ const PostUpdateAlert = ({ isOpen, onClose, onDelete }) => {
             </AlertDialogBody>
 
             <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
+              <Button ref={cancelRef} onClick={onClose} ml={-10} mr={3}>
                 Cancel
               </Button>
-              <Button colorScheme="blue" onClick={onDelete} ml={3}>
+              <Button colorScheme="blue" onClick={onDelete} mr={-10}>
                 Update
               </Button>
             </AlertDialogFooter>

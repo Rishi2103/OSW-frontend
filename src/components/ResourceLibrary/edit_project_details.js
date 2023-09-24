@@ -23,7 +23,7 @@ export default function EditResourceLibrary({ project, isOpen }) {
   const [projectTags, setProjectTags] = useState(project.project_tags || "");
   const closeModal = () => {
     // Reload the page
-    // window.location.reload();
+    window.location.reload();
     navigate("/resourceLibrary"); // Navigate to the desired page (optional)
   };
 

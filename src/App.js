@@ -28,6 +28,8 @@ import AddAdmin from "./components/Admin/AddAdmin";
 import BlogPage from "./components/Blog/BlogPage";
 import PostBlogs from "./components/Blog/PostBlogs";
 import ShowBlog from "./components/Blog/ShowBlog";
+import MediaSection from "./components/Blog/BlogSection";
+import UpdateBlog from "./components/Blog/UpdateBlog";
 
 const clientId =
   "574757039734-2hfvakv45d24o82mp3r80akqri2b70mq.apps.googleusercontent.com";
@@ -66,6 +68,11 @@ function App() {
             element={<EventRegistrationForm />}
           />
           <Route path="/events/edit-Event/:id" element={<EventEditForm />} />
+          <Route path="/event/details/:id" element={<EventsPage />} />
+          <Route path="/profile" element={<ViewProfile />} />
+          <Route path="/user" element={<User />} />
+          <Route path="/user/reset-password" element={<ForgetPassword />} />
+          <Route path="/contact-us/send-message" element={<ContactForm />} />
           <Route path="/team" element={<Team />} />
           <Route path="/team-member/details/:id" element={<TeamProfile />} />
           <Route path="/speakers" element={<Speakers />} />
@@ -78,14 +85,10 @@ function App() {
             path="/project/details/:id"
             element={<ResourceLibraryProfile />}
           />
-          <Route path="/event/details/:id" element={<EventsPage />} />
-          <Route path="/blogs" element={<Blogs />} />
+          <Route path="/blogs" element={<MediaSection />} />
           <Route path="/post-blogs" element={<PostBlogs />} />
-          <Route path="/profile" element={<ViewProfile />} />
-          <Route path="/user" element={<User />} />
-          <Route path="/user/reset-password" element={<ForgetPassword />} />
-          <Route path="/contact-us/send-message" element={<ContactForm />} />
-          <Route path="/blogPage/:id" exact element={<ShowBlog />} />
+          <Route path="/blogPage/:id" element={<ShowBlog />} />
+          <Route path="/blog/update/:id" element={<UpdateBlog />} />
         </>
       </Routes>
     </div>

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import NgoNavigation from "../Navigation/NgoNavigation";
 import {
   Box,
   Button,
@@ -8,13 +7,22 @@ import {
   Input,
   Flex,
   useToast,
+  ChakraProvider,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
-import PostEditor from "../PostEditor";
+import PostEditor from "./PostEditor";
+import Navbar from "../Navbar";
+import { hostname } from "../../hostname";
 
 const UpdateBlog = () => {
   const { id } = useParams();
-
+  const [isPreviewOpen, setPreviewOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
@@ -23,12 +31,18 @@ const UpdateBlog = () => {
 
   useEffect(() => {
     const fetchBlog = async () => {
-      const url = `http://localhost:4000/media/post/${id}`;
-      const token = localStorage.getItem("NgoAuthToken");
+      const url = `${hostname}/blog/${id}`;
+      let token;
+      if (localStorage.getItem("userAuthToken")) {
+        token = localStorage.getItem("userAuthToken");
+        console.log(token);
+      } else {
+        token = localStorage.getItem("adminAuthToken");
+      }
       const options = {
         headers: {
           "Content-type": "application/json",
-          Authorization: token,
+          authorization: token,
         },
       };
 
@@ -39,8 +53,8 @@ const UpdateBlog = () => {
         console.log(Data);
 
         // setBlog(Data.postData);
-        setTitle(Data.postData.title);
-        setContent(Data.postData.content);
+        setTitle(Data.blogData.title);
+        setContent(Data.blogData.content);
       } catch (error) {
         console.error("Error fetching blog:", error);
       }
@@ -75,14 +89,20 @@ const UpdateBlog = () => {
     console.log("Title:", title);
     console.log("Content:", content);
 
-    const token = localStorage.getItem("NgoAuthToken");
+    let token;
+    if (localStorage.getItem("userAuthToken")) {
+      token = localStorage.getItem("userAuthToken");
+      console.log(token);
+    } else {
+      token = localStorage.getItem("adminAuthToken");
+    }
 
     try {
-      const response = await fetch(`http://localhost:4000/media/update/${id}`, {
+      const response = await fetch(`${hostname}/blog/updateblog/${id}`, {
         method: "PUT",
         headers: {
           "Content-type": "application/json",
-          Authorization: token,
+          authorization: token,
         },
         body: JSON.stringify({ title, content }),
       });
@@ -102,7 +122,7 @@ const UpdateBlog = () => {
         setTitle("");
         setContent("");
 
-        navigate(`/Ngo/media/${data.postData._id}`);
+        navigate(`/blogPage/${data.blogData._id}`);
       } else {
         console.log("Post updation failed");
         // Handle error case
@@ -137,43 +157,86 @@ const UpdateBlog = () => {
 
   const handlePreview = () => {
     console.log("preview button clicked");
+    if (!title.trim() && !content.trim()) {
+      toast({
+        title: "Please provide a title and content!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
+      return;
+    } else if (!title.trim()) {
+      toast({
+        title: "Post title is required!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
+      return;
+    } else if (!content.trim()) {
+      toast({
+        title: "Post content is required!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
+      return;
+    }
+
+    setPreviewOpen(true);
   };
 
   return (
-    <div>
-      <NgoNavigation />
+    <ChakraProvider>
+      <div>
+        <Navbar />
 
-      <Box
-        mx={{ base: 2, md: "auto" }}
-        maxW={{ base: "none", md: "80vw" }}
-        mt={8}
-        borderWidth="1px"
-        p={2}
-        bg={"white"}
-        borderRadius="md"
-        boxShadow="md"
-      >
-        <FormControl>
-          <FormLabel>Title</FormLabel>
-          <Input value={title} onChange={(e) => setTitle(e.target.value)} />
-        </FormControl>
+        <Box
+          mx={{ base: 2, md: "auto" }}
+          maxW={{ base: "none", md: "80vw" }}
+          mt={8}
+          borderWidth="1px"
+          p={2}
+          bg={"white"}
+          borderRadius="md"
+          boxShadow="md"
+        >
+          <FormControl>
+            <FormLabel>Title</FormLabel>
+            <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+          </FormControl>
 
-        <FormControl mt={4}>
-          <FormLabel>Content</FormLabel>
+          <FormControl mt={4}>
+            <FormLabel>Content</FormLabel>
 
-          <PostEditor content={content} setContent={setContent} />
-        </FormControl>
+            <PostEditor content={content} setContent={setContent} />
+          </FormControl>
 
-        <Flex justifyContent="center" mt={4}>
-          <Button onClick={handlePreview} mx={1}>
-            preview
-          </Button>
-          <Button onClick={handleSubmit} mx={1}>
-            Submit
-          </Button>
-        </Flex>
-      </Box>
-    </div>
+          <Flex justifyContent="center" mt={4}>
+            <Button onClick={handlePreview} mx={1}>
+              preview
+            </Button>
+            <Button onClick={handleSubmit} mx={1}>
+              Submit
+            </Button>
+          </Flex>
+          <Modal isOpen={isPreviewOpen} onClose={() => setPreviewOpen(false)}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Preview</ModalHeader>
+              <ModalCloseButton color={"red"} colorScheme={"transparent"} />
+              <ModalBody>
+                <h2>{title}</h2>
+                <p dangerouslySetInnerHTML={{ __html: content }}></p>
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+        </Box>
+      </div>
+    </ChakraProvider>
   );
 };
 

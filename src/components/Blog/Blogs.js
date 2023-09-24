@@ -8,6 +8,7 @@ import "aos";
 import "aos/dist/aos.css";
 
 const Blogs = () => {
+  
   useEffect(() => {
     // Initialize AOS
     const aos = require("aos");

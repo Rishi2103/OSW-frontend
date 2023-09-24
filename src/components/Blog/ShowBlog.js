@@ -217,7 +217,7 @@ const ShowBlog = ({ userType }) => {
     //   return;
     // }
 
-    // navigate(`/Ngo/media/update/${blogId}`, { replace: true });
+    navigate(`/blog/update/${blogId}`, { replace: true });
   };
 
   if (!blog) {
@@ -339,7 +339,7 @@ const ShowBlog = ({ userType }) => {
                 textOverflow="ellipsis"
                 whiteSpace="nowrap"
               >
-                {blog.user_author}&nbsp;
+                {blog.user_author ? blog.user_author : blog.admin_author}
               </Text>{" "}
               -{" "}
               <Text
@@ -380,17 +380,17 @@ const ShowBlog = ({ userType }) => {
                 }}
               />
               {/* {userType === "ngo" && ( */}
-                <IconButton
-                  icon={<EditIcon />}
-                  variant="ghost"
-                  _hover={{ color: "blue", bgColor: "transparent" }}
-                  color="black"
-                  aria-label="Edit"
-                  size="md"
-                  onClick={() => {
-                    setIsUpdateDialogOpen(true);
-                  }}
-                />
+              <IconButton
+                icon={<EditIcon />}
+                variant="ghost"
+                _hover={{ color: "blue", bgColor: "transparent" }}
+                color="black"
+                aria-label="Edit"
+                size="md"
+                onClick={() => {
+                  setIsUpdateDialogOpen(true);
+                }}
+              />
               {/* )} */}
             </Flex>
             {/* )} */}

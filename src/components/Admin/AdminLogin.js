@@ -28,16 +28,16 @@ const AdminLogin = () => {
         },
         body: JSON.stringify({ email, password }),
       });
-
+      let data;
       if (response.ok) {
-        const data = await response.json();
+        data = await response.json();
         const { result } = data;
         localStorage.setItem("adminAuthToken", result);
         // console.log(token);
         navigate("/", { replace: true });
         console.log("Login successful", data);
       } else {
-        console.error("Login failed");
+        console.error("Login failed",data);
       }
     } catch (error) {
       console.error("An error occurred during login", error);

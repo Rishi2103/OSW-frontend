@@ -197,7 +197,7 @@ export default function Navbar() {
           <ul className="dropdown-menu">
             {user ? (
               <>
-                {user.type === "admin" ? (
+                {user.type === "admin" && user.superadmin === true ? (
                   <>
                     <li style={{ marginTop: "10px" }} onClick={DeleteUser}>
                       <i
@@ -342,7 +342,7 @@ export default function Navbar() {
           <ul className="dropdown-menu">
             {user ? (
               <>
-                {user.type === "admin" ? (
+                {user.type === "admin" && user.superadmin === true ? (
                   <>
                     <li style={{ marginTop: "10px" }} onClick={DeleteUser}>
                       <i

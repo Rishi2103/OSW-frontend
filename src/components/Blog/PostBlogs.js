@@ -4,14 +4,29 @@ import Navbar from "../Navbar";
 import PostEditor from "./PostEditor";
 import "./PostBlog.css";
 import { hostname } from "../../hostname";
+import {
+  useToast,
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Flex,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ChakraProvider,
+} from "@chakra-ui/react";
 
 const PostBlogs = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-
-  const [isPreviewOpen, setPreviewOpen] = useState(false);
-
   const navigate = useNavigate();
+  const [isPreviewOpen, setPreviewOpen] = useState(false);
+  const toast = useToast();
 
   const handleSubmit = async () => {
     let errorMessage = "";
@@ -25,13 +40,13 @@ const PostBlogs = () => {
     }
 
     if (errorMessage) {
-      //   toast({
-      //     title: errorMessage,
-      //     status: "warning",
-      //     duration: 5000,
-      //     isClosable: true,
-      //     position: "top-right",
-      //   });
+      toast({
+        title: errorMessage,
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
       return;
     }
 
@@ -59,43 +74,43 @@ const PostBlogs = () => {
         const createdPost = await response.json();
         console.log("Post created:", createdPost);
         // Perform any additional actions after successful post creation
-        // toast({
-        //   title: "Successfully created the post.",
-        //   status: "success",
-        //   duration: 5000,
-        //   isClosable: true,
-        //   position: "top-right",
-        // });
+        toast({
+          title: "Successfully created the post.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top-right",
+        });
         // Reset form fields
         setTitle("");
         setContent("");
 
-        // navigate(`/Ngo/media/${createdPost._id}`);
+        navigate(`/blogPage/${createdPost._id}`);
       } else {
         console.log("Post creation failed");
         // Handle error case
         errorMessage = "Error creating post else case.";
 
-        // toast({
-        //   title: errorMessage,
-        //   status: "warning",
-        //   duration: 5000,
-        //   isClosable: true,
-        //   position: "top-right",
-        // });
+        toast({
+          title: errorMessage,
+          status: "warning",
+          duration: 5000,
+          isClosable: true,
+          position: "top-right",
+        });
       }
     } catch (error) {
       console.error("Error creating post:", error);
 
       errorMessage = "Error creating post";
 
-      //   toast({
-      //     title: errorMessage,
-      //     status: "error",
-      //     duration: 5000,
-      //     isClosable: true,
-      //     position: "top-right",
-      //   });
+      toast({
+        title: errorMessage,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
     }
 
     // Reset form fields
@@ -107,31 +122,31 @@ const PostBlogs = () => {
     console.log("preview button clicked");
 
     if (!title.trim() && !content.trim()) {
-      //   toast({
-      //     title: "Please provide a title and content!",
-      //     status: "warning",
-      //     duration: 5000,
-      //     isClosable: true,
-      //     position: "top-right",
-      //   });
+      toast({
+        title: "Please provide a title and content!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
       return;
     } else if (!title.trim()) {
-      //   toast({
-      //     title: "Post title is required!",
-      //     status: "warning",
-      //     duration: 5000,
-      //     isClosable: true,
-      //     position: "top-right",
-      //   });
+      toast({
+        title: "Post title is required!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
       return;
     } else if (!content.trim()) {
-      //   toast({
-      //     title: "Post content is required!",
-      //     status: "warning",
-      //     duration: 5000,
-      //     isClosable: true,
-      //     position: "top-right",
-      //   });
+      toast({
+        title: "Post content is required!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
       return;
     }
 
@@ -139,36 +154,53 @@ const PostBlogs = () => {
   };
 
   return (
-    <div className="post-blogs">
-      <Navbar />
+    <ChakraProvider>
+      <div>
+        <Navbar />
 
-      <div className="content-box">
-        <label>Title</label>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+        <Box
+          mx={{ base: 2, md: "auto" }}
+          maxW={{ base: "none", md: "80vw" }}
+          mt={8}
+          borderWidth="1px"
+          p={2}
+          bg={"white"}
+          borderRadius="md"
+          boxShadow="md"
+        >
+          <FormControl>
+            <FormLabel>Title</FormLabel>
+            <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+          </FormControl>
 
-        <label>Content</label>
-        <PostEditor content={content} setContent={setContent} />
+          <FormControl mt={4}>
+            <FormLabel>Content</FormLabel>
 
-        <div className="button-group">
-          <button onClick={handlePreview}>Preview</button>
-          <button onClick={handleSubmit}>Submit</button>
-        </div>
+            <PostEditor content={content} setContent={setContent} />
+          </FormControl>
 
-        {isPreviewOpen && (
-          <div className="modal">
-            <div className="modal-content">
-              <h2>{title}</h2>
-              <p dangerouslySetInnerHTML={{ __html: content }}></p>
-              <button onClick={() => setPreviewOpen(false)}>Close</button>
-            </div>
-          </div>
-        )}
+          <Flex justifyContent="center" mt={4}>
+            <Button onClick={handlePreview} mx={1}>
+              preview
+            </Button>
+            <Button onClick={handleSubmit} mx={1}>
+              Submit
+            </Button>
+          </Flex>
+          <Modal isOpen={isPreviewOpen} onClose={() => setPreviewOpen(false)}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Preview</ModalHeader>
+              <ModalCloseButton color={"red"} colorScheme={"transparent"} />
+              <ModalBody>
+                <h2>{title}</h2>
+                <p dangerouslySetInnerHTML={{ __html: content }}></p>
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+        </Box>
       </div>
-    </div>
+    </ChakraProvider>
   );
 };
 

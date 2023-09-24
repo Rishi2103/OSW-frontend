@@ -7,6 +7,9 @@ import "react-toastify/dist/ReactToastify.css";
 import SecFooter from "./SecFooter";
 import Footer from "./Footer";
 import { hostname } from "../hostname";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "bootstrap/dist/js/bootstrap.bundle.min.js.map";
+
 // import minus from "../img/minus-solid.svg";
 export default function Speakers() {
   const [getspeakers, setgetSpeakers] = useState([]);
@@ -24,7 +27,11 @@ export default function Speakers() {
   const [sociallinksError, setsocsociallinksError] = useState("");
   const [selectedspeakerprofilephoto, setSelectedspeakerprofilephoto] =
     useState(null);
+  const [showModal, setShowModal] = useState(false);
 
+  const handleModalToggle = () => {
+    setShowModal(!showModal);
+  };
   useEffect(() => {
     // Get the JWT token from wherever you have stored it (e.g., localStorage)
     const getUser = async () => {
@@ -318,254 +325,282 @@ export default function Speakers() {
             className="btn btn-primary"
             data-bs-toggle="modal"
             data-bs-target="#exampleModal"
+            onClick={handleModalToggle}
           >
             Add Speaker
           </button>
         </div>
       )}
-      <div
-        className="modal fade"
-        id="exampleModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
+      {showModal && (
         <div
-          className="modal-dialog modal-lg"
-          style={{ marginLeft: "30vw", maxWidth: "150%", marginRight: "-90vw" }}
+          className="modal fade"
+          id="exampleModal"
+          tabIndex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+          style={{ opacity: 1 }}
         >
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModalLabel">
-                Speaker Registration
-              </h1>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <form>
-                <div class="mb-3 ">
-                  <label for="formFile" className="form-label">
-                    Profile Photo
-                  </label>
-                  {selectedspeakerprofilephoto && (
-                    <img
-                      className="speakerprofilephoto"
-                      src={selectedspeakerprofilephoto}
-                      alt="SelectedProfilePhoto"
+          <div
+            className="modal-dialog modal-lg"
+            style={{
+              // marginLeft: "30vw",
+              width: "100%",
+              // marginRight: "-90vw",
+            }}
+          >
+            <div
+              className="modal-content"
+              style={{
+                // marginLeft: "30vw",
+                width: "100%",
+                marginTop: "65vw",
+              }}
+            >
+              <div className="modal-header">
+                <h1 className="modal-title fs-5" id="exampleModalLabel">
+                  Speaker Registration
+                </h1>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                  onClick={() => setShowModal(false)}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <form>
+                  <div class="mb-3 ">
+                    <label for="formFile" className="form-label">
+                      Profile Photo
+                    </label>
+                    {selectedspeakerprofilephoto && (
+                      <img
+                        className="speakerprofilephoto"
+                        src={selectedspeakerprofilephoto}
+                        alt="SelectedProfilePhoto"
+                      />
+                    )}
+                    <input
+                      className="form-control"
+                      name="speakerprofilephoto"
+                      type="file"
+                      id="formFile"
+                      onChange={handleChange}
+                      required
                     />
-                  )}
-                  <input
-                    className="form-control"
-                    name="speakerprofilephoto"
-                    type="file"
-                    id="formFile"
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
+                  </div>
 
-                <div className="d-flex">
-                  <div className="mb-3 p-2 flex-fill">
-                    <label htmlFor="speaker-name" className="col-form-label">
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
-                      id="speaker-name"
-                      name="speakername"
-                      value={speaker.name}
-                      onChange={(e) => handleTextInputChange("speakername", e)}
-                      required
-                    />
-                    {nameError && (
-                      <div className="error-message">{nameError}</div>
-                    )}
-                  </div>
-                  <div className="mb-3 p-2 flex-fill">
-                    <label htmlFor="speaker-post" className="col-form-label">
-                      Post
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
-                      id="speaker-post"
-                      name="speakerpost"
-                      value={speaker.post}
-                      onChange={(e) => handleTextInputChange("speakerpost", e)}
-                      required
-                    />
-                    {postError && (
-                      <div className="error-message">{postError}</div>
-                    )}
-                  </div>
-                </div>
-                <div className="mb-3">
-                  <label
-                    htmlFor="speaker-university"
-                    className="col-form-label"
-                  >
-                    University
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
-                    id="speaker-university"
-                    name="speakeruniversity"
-                    value={speaker.university}
-                    onChange={(e) =>
-                      handleTextInputChange("speakeruniversity", e)
-                    }
-                    required
-                  />
-                  {universityError && (
-                    <div className="error-message">{universityError}</div>
-                  )}
-                </div>
-                <div className="mb-3">
-                  <label className="col-form-label">Location</label>
                   <div className="d-flex">
-                    <span className="p-2 flex-fill">
-                      <label htmlFor="speaker-city" className="col-form-label">
-                        city
+                    <div className="mb-3 p-2 flex-fill">
+                      <label htmlFor="speaker-name" className="col-form-label">
+                        Name
                       </label>
                       <input
                         type="text"
                         className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
-                        id="speaker-city"
-                        name="speakercity"
-                        value={speaker.city}
+                        id="speaker-name"
+                        name="speakername"
+                        value={speaker.name}
                         onChange={(e) =>
-                          handleTextInputChange("speakercity", e)
+                          handleTextInputChange("speakername", e)
                         }
                         required
                       />
-                      {cityError && (
-                        <div className="error-message">{cityError}</div>
-                      )}
-                    </span>
-                    <span className="p-2 flex-fill">
-                      <label htmlFor="speaker-state" className="col-form-label">
-                        state
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
-                        id="speaker-state"
-                        name="speakerstate"
-                        value={speaker.state}
-                        onChange={(e) =>
-                          handleTextInputChange("speakerstate", e)
-                        }
-                        required
-                      />
-                      {stateError && (
-                        <div className="error-message">{stateError}</div>
-                      )}
-                    </span>
-                    <span className="p-2 flex-fill">
-                      <label
-                        htmlFor="speaker-pincode"
-                        className="col-form-label"
-                      >
-                        Pincode
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
-                        id="speaker-pincode"
-                        name="speakerpincode"
-                        value={speaker.pincode}
-                        onChange={(e) =>
-                          handleTextInputChange("speakerpincode", e)
-                        }
-                        required
-                      />
-                      {pincodeError && (
-                        <div className="error-message">{pincodeError}</div>
-                      )}
-                    </span>
-                  </div>
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="speaker-about" className="col-form-label">
-                    About
-                  </label>
-                  <textarea
-                    className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
-                    id="speaker-about"
-                    name="speakerabout"
-                    value={speaker.about}
-                    onChange={(e) => handleTextInputChange("speakerabout", e)}
-                    required
-                  ></textarea>
-                  {aboutError && (
-                    <div className="error-message">{aboutError}</div>
-                  )}
-                </div>
-
-                <div className="mb-3">
-                  <label
-                    htmlFor="speaker-sociallinks"
-                    className="col-form-label"
-                  >
-                    Social Links
-                  </label>
-                  {textInputs.map((textInput, index) => (
-                    <div className="minus" key={index}>
-                      <div className="speaker-sociallinksInput">
-                        <input
-                          type="text"
-                          id={`speaker-sociallinks-${index}`}
-                          name={`speakersociallinks-${index}`}
-                          // value={speaker.sociallinks[index] || ""} // Use the value from the state based on the index
-                          className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
-                          onChange={(e) => handlelinksInputChange(e, index)}
-                          required
-                        />
-                      </div>
-                      <button
-                        type="button"
-                        className="ms-3 btn btn-primary"
-                        style={{ backgroundColor: "#0E8388" }}
-                        onClick={() => removeTextInput(index)}
-                      >
-                        Remove
-                      </button>
-                      {sociallinksError && (
-                        <div className="error-message">{sociallinksError}</div>
+                      {nameError && (
+                        <div className="error-message">{nameError}</div>
                       )}
                     </div>
-                  ))}
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    style={{ backgroundColor: "#0E8388" }}
-                    onClick={addTextInput}
-                  >
-                    Add Social Links
-                  </button>
-                </div>
-              </form>
+                    <div className="mb-3 p-2 flex-fill">
+                      <label htmlFor="speaker-post" className="col-form-label">
+                        Post
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
+                        id="speaker-post"
+                        name="speakerpost"
+                        value={speaker.post}
+                        onChange={(e) =>
+                          handleTextInputChange("speakerpost", e)
+                        }
+                        required
+                      />
+                      {postError && (
+                        <div className="error-message">{postError}</div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="mb-3">
+                    <label
+                      htmlFor="speaker-university"
+                      className="col-form-label"
+                    >
+                      University
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
+                      id="speaker-university"
+                      name="speakeruniversity"
+                      value={speaker.university}
+                      onChange={(e) =>
+                        handleTextInputChange("speakeruniversity", e)
+                      }
+                      required
+                    />
+                    {universityError && (
+                      <div className="error-message">{universityError}</div>
+                    )}
+                  </div>
+                  <div className="mb-3">
+                    <label className="col-form-label">Location</label>
+                    <div className="d-flex">
+                      <span className="p-2 flex-fill">
+                        <label
+                          htmlFor="speaker-city"
+                          className="col-form-label"
+                        >
+                          city
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
+                          id="speaker-city"
+                          name="speakercity"
+                          value={speaker.city}
+                          onChange={(e) =>
+                            handleTextInputChange("speakercity", e)
+                          }
+                          required
+                        />
+                        {cityError && (
+                          <div className="error-message">{cityError}</div>
+                        )}
+                      </span>
+                      <span className="p-2 flex-fill">
+                        <label
+                          htmlFor="speaker-state"
+                          className="col-form-label"
+                        >
+                          state
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
+                          id="speaker-state"
+                          name="speakerstate"
+                          value={speaker.state}
+                          onChange={(e) =>
+                            handleTextInputChange("speakerstate", e)
+                          }
+                          required
+                        />
+                        {stateError && (
+                          <div className="error-message">{stateError}</div>
+                        )}
+                      </span>
+                      <span className="p-2 flex-fill">
+                        <label
+                          htmlFor="speaker-pincode"
+                          className="col-form-label"
+                        >
+                          Pincode
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
+                          id="speaker-pincode"
+                          name="speakerpincode"
+                          value={speaker.pincode}
+                          onChange={(e) =>
+                            handleTextInputChange("speakerpincode", e)
+                          }
+                          required
+                        />
+                        {pincodeError && (
+                          <div className="error-message">{pincodeError}</div>
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="speaker-about" className="col-form-label">
+                      About
+                    </label>
+                    <textarea
+                      className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
+                      id="speaker-about"
+                      name="speakerabout"
+                      value={speaker.about}
+                      onChange={(e) => handleTextInputChange("speakerabout", e)}
+                      required
+                    ></textarea>
+                    {aboutError && (
+                      <div className="error-message">{aboutError}</div>
+                    )}
+                  </div>
+
+                  <div className="mb-3">
+                    <label
+                      htmlFor="speaker-sociallinks"
+                      className="col-form-label"
+                    >
+                      Social Links
+                    </label>
+                    {textInputs.map((textInput, index) => (
+                      <div className="minus" key={index}>
+                        <div className="speaker-sociallinksInput">
+                          <input
+                            type="text"
+                            id={`speaker-sociallinks-${index}`}
+                            name={`speakersociallinks-${index}`}
+                            // value={speaker.sociallinks[index] || ""} // Use the value from the state based on the index
+                            className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
+                            onChange={(e) => handlelinksInputChange(e, index)}
+                            required
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          className="ms-3 btn btn-primary"
+                          style={{ backgroundColor: "#0E8388" }}
+                          onClick={() => removeTextInput(index)}
+                        >
+                          Remove
+                        </button>
+                        {sociallinksError && (
+                          <div className="error-message">
+                            {sociallinksError}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      style={{ backgroundColor: "#0E8388" }}
+                      onClick={addTextInput}
+                    >
+                      Add Social Links
+                    </button>
+                  </div>
+                </form>
+              </div>
+              <div className="modal-header"></div>
+              <br />
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleSubmit}
+              >
+                Submit
+                <ToastContainer />{" "}
+              </button>
             </div>
-            <div className="modal-header"></div>
-            <br />
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handleSubmit}
-            >
-              Submit
-              <ToastContainer />{" "}
-            </button>
           </div>
         </div>
-      </div>
+      )}
       <div className="SpeakersTile">
         {getspeakers.map((speaker) => (
           <SpeakersTile

@@ -262,6 +262,11 @@ const Team = () => {
       }
     }
   };
+  const [showModal, setShowModal] = useState(false);
+
+  const handleModalToggle = () => {
+    setShowModal(!showModal);
+  };
   return (
     <>
       <div className="team">
@@ -290,76 +295,96 @@ const Team = () => {
             className="addteammember"
             style={{ marginLeft: "10vw", marginTop: "3vw" }}
           >
-            <button
+            {/* <button
               type="button"
               className="btn btn-primary"
               data-bs-toggle="modal"
               data-bs-target="#exampleModal"
             >
               Add Team Member
+            </button> */}
+            <button
+              type="button"
+              className="btn btn-primary"
+              ata-bs-toggle="modal"
+              data-bs-target="#exampleModal"
+              onClick={handleModalToggle}
+            >
+              Add Team Member
             </button>
           </div>
         )}
-
-        <div
-          className="modal fade"
-          id="exampleModal"
-          tabindex="-1"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
+        {showModal && (
           <div
-            className="modal-dialog modal-lg"
-            style={{
-              marginLeft: "30vw",
-              maxWidth: "150%",
-              marginRight: "-90vw",
-            }}
+            className="modal fade"
+            id="exampleModal"
+            tabIndex="-1"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+            style={{ opacity: 1 }}
           >
-            <div className="modal-content">
-              <div className="modal-header">
-                <h1 className="modal-title fs-5" id="exampleModalLabel">
-                  Add Member
-                </h1>
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div className="modal-body">
-                <form>
-                  <div class="mb-3">
-                    <label for="formFile" className="form-label">
-                      Profile Photo
-                    </label>
-                    {selectedteamprofilephoto && (
-                      <img
-                        className="teamprofilephoto"
-                        src={selectedteamprofilephoto}
-                        alt="Selected_Profile_Photo"
+            <div
+              className="modal-dialog modal-lg"
+              style={{
+                // marginRight: "10vw",
+                width: "100%",
+                // marginLeft: "0vw",
+              }}
+            >
+              <div
+                className="modal-content"
+                style={{
+                  // marginLeft: "30vw",
+                  width: "100%",
+                  marginTop: "20vw",
+                }}
+              >
+                <div className="modal-header">
+                  <h1 className="modal-title fs-5" id="exampleModalLabel">
+                    Add Member
+                  </h1>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                    onClick={() => setShowModal(false)}
+                  ></button>
+                </div>
+                <div className="modal-body">
+                  <form>
+                    {/* Profile Photo */}
+                    <div className="mb-3">
+                      <label htmlFor="formFile" className="form-label">
+                        Profile Photo
+                      </label>
+                      {selectedteamprofilephoto && (
+                        <img
+                          className="teamprofilephoto"
+                          src={selectedteamprofilephoto}
+                          alt="Selected_Profile_Photo"
+                        />
+                      )}
+                      <input
+                        className="form-control"
+                        name="teamprofilephoto"
+                        type="file"
+                        id="formFile"
+                        onChange={handleChange}
                       />
-                    )}
-                    <input
-                      className="form-control"
-                      name="teamprofilephoto"
-                      type="file"
-                      id="formFile"
-                      onChange={handleChange}
-                    />
-                  </div>
+                    </div>
 
-                  <div className="d-flex">
-                    <div className="mb-3 p-2 flex-fill">
-                      <label htmlFor="name" className="col-form-label">
+                    {/* Name, Post, Team */}
+                    <div className="mb-3">
+                      <label htmlFor="name" className="form-label">
                         Name
                       </label>
                       <input
                         type="text"
-                        className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
+                        className="form-control"
                         id="name"
                         name="teamname"
+                        value={team.name}
                         onChange={(e) => handleTextInputChange("teamname", e)}
                         required
                       />
@@ -367,13 +392,13 @@ const Team = () => {
                         <div className="error-message">{nameError}</div>
                       )}
                     </div>
-                    <div className="mb-3 p-2 flex-fill">
-                      <label htmlFor="team-post" className="col-form-label">
+                    <div className="mb-3">
+                      <label htmlFor="team-post" className="form-label">
                         Post
                       </label>
                       <input
                         type="text"
-                        className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
+                        className="form-control"
                         id="team-post"
                         name="teampost"
                         onChange={(e) => handleTextInputChange("teampost", e)}
@@ -383,15 +408,16 @@ const Team = () => {
                         <div className="error-message">{postError}</div>
                       )}
                     </div>
-                    <div className="mb-3 p-2 flex-fill">
-                      <label htmlFor="team" className="col-form-label">
+                    <div className="mb-3">
+                      <label htmlFor="team" className="form-label">
                         Team
                       </label>
                       <input
                         type="text"
-                        className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
+                        className="form-control"
                         id="team"
                         name="team"
+                        value={team.team}
                         onChange={(e) => handleTextInputChange("team", e)}
                         required
                       />
@@ -399,84 +425,89 @@ const Team = () => {
                         <div className="error-message">{teamError}</div>
                       )}
                     </div>
-                  </div>
 
-                  <div className="mb-3">
-                    <label htmlFor="team-bio" className="col-form-label">
-                      Bio
-                    </label>
-                    <textarea
-                      className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
-                      id="team-bio"
-                      name="teambio" // <-- Corrected name attribute
-                      onChange={(e) => handleTextInputChange("teambio", e)} // <-- Corrected identifier
-                      required
-                    ></textarea>
-                    {bioError && (
-                      <div className="error-message">{bioError}</div>
-                    )}
-                  </div>
+                    {/* Bio */}
+                    <div className="mb-3">
+                      <label htmlFor="team-bio" className="form-label">
+                        Bio
+                      </label>
+                      <textarea
+                        className="form-control"
+                        id="team-bio"
+                        name="teambio"
+                        onChange={(e) => handleTextInputChange("teambio", e)}
+                        required
+                      />
+                      {bioError && (
+                        <div className="error-message">{bioError}</div>
+                      )}
+                    </div>
 
-                  <div className="mb-3">
-                    <label
-                      htmlFor="team-sociallinks"
-                      className="col-form-label"
-                    >
-                      Social Links
-                    </label>
-                    {textInputs.map((textInput, index) => (
-                      <div className="minus" key={index}>
-                        <div className="team-sociallinksInput">
-                          <input
-                            type="text"
-                            id={`team-sociallinks-${index}`}
-                            name={`teamsociallinks-${index}`}
-                            value={team.social_links[index] || ""}
-                            className="form-control border border-2 shadow-sm bg-body-tertiary rounded"
-                            onChange={(e) => handlelinksInputChange(e, index)}
-                            required
-                          />
-                        </div>
-                        <button
-                          type="button"
-                          className="ms-3 btn btn-primary"
-                          style={{ backgroundColor: "#0E8388" }}
-                          onClick={() => removeTextInput(index)}
-                        >
-                          Remove
-                        </button>
-                        {social_linksError && (
-                          <div className="error-message">
-                            {social_linksError}
+                    {/* Social Links */}
+                    <div className="mb-3">
+                      <label htmlFor="team-sociallinks" className="form-label">
+                        Social Links
+                      </label>
+                      {textInputs.map((textInput, index) => (
+                        <div className="minus" key={index}>
+                          <div className="team-sociallinksInput">
+                            <input
+                              type="text"
+                              id={`team-sociallinks-${index}`}
+                              name={`teamsociallinks-${index}`}
+                              value={team.social_links[index] || ""}
+                              className="form-control"
+                              onChange={(e) => handlelinksInputChange(e, index)}
+                              required
+                            />
                           </div>
-                        )}
-                      </div>
-                    ))}
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      style={{ backgroundColor: "#0E8388" }}
-                      onClick={addTextInput}
-                    >
-                      Add Social Links
-                    </button>
-                  </div>
-                </form>
+                          <button
+                            type="button"
+                            className="ms-3 btn btn-primary"
+                            style={{ backgroundColor: "#0E8388" }}
+                            onClick={() => removeTextInput(index)}
+                          >
+                            Remove
+                          </button>
+                          {social_linksError && (
+                            <div className="error-message">
+                              {social_linksError}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        style={{ backgroundColor: "#0E8388" }}
+                        onClick={addTextInput}
+                      >
+                        Add Social Links
+                      </button>
+                    </div>
+                  </form>
+                </div>
+                <div className="modal-header"></div>
+                <br />
+                {/* <button
+                    type="button"
+                    className="btn btn-promary"
+                    data-bs-dismiss="modal"
+                  >
+                    Close
+                  </button> */}
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={handleSubmit}
+                >
+                  Submit
+                  <ToastContainer />{" "}
+                </button>
               </div>
-              <div className="modal-header"></div>
-              <br />
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={handleSubmit}
-              >
-                Submit
-                <ToastContainer />{" "}
-              </button>
             </div>
           </div>
-        </div>
-
+        )}
         <div className="TeamTile">
           {teamMembers.map((member, index) => (
             <TeamTile
