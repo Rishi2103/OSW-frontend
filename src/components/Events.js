@@ -360,16 +360,20 @@ const Events = () => {
             </tr>
           </tbody>
         </table>
-        <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-primary"
-            data-bs-dismiss
-            onClick={handleCreateClick}
-          >
-            Create Event
-          </button>
-        </div>
+        {user && (
+          <>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss
+                onClick={handleCreateClick}
+              >
+                Create Event
+              </button>
+            </div>
+          </>
+        )}
       </div>
       <p className="eventpg-text">
         <span style={{ color: "#0E8388", fontSize: "30px", fontWeight: "500" }}>
