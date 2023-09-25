@@ -18,7 +18,9 @@ export default function Navbar() {
   const [selectedImage, setSelectedImage] = useState(profile_img);
   const [showNotifications, setShowNotifications] = useState(false);
   const [panelClosing, setPanelClosing] = useState(false);
-
+  const navigateToChat = () => {
+    navigate("/chat");
+  };
   const toggleNotifications = () => {
     if (showNotifications) {
       // Start the panel closing transition
@@ -322,7 +324,7 @@ export default function Navbar() {
           </span>
           Resource Library
         </CustomLink>
-        <span className="icons-norm">
+        <span className="icons-norm" onClick={navigateToChat}>
           <i className="fa-solid fa-comment-dots"></i>
         </span>
         <span className="icons-norm">

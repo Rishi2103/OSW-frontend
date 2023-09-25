@@ -29,9 +29,9 @@ import BlogPage from "./components/Blog/BlogPage";
 import PostBlogs from "./components/Blog/PostBlogs";
 import ShowBlog from "./components/Blog/ShowBlog";
 import MediaSection from "./components/Blog/BlogSection";
+import Chatpp from './components/Chatapp';
 import UpdateBlog from "./components/Blog/UpdateBlog";
 import AdminForgotPassword from "./components/Admin/AdminForgotPassword";
-
 const clientId =
   "574757039734-2hfvakv45d24o82mp3r80akqri2b70mq.apps.googleusercontent.com";
 
@@ -82,6 +82,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/partners" element={<Partners />} />
+          <Route path="/chat" element={<Chatpp />} />
           <Route path="/resourceLibrary" element={<ResourceLibrary />} />
           <Route
             path="/project/details/:id"
