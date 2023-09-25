@@ -10,7 +10,7 @@
   overflow-y: auto;
   z-index: 100;
   overflow-x: hidden;
-  font-size: medium;
+  box-shadow: 0 0px 8px rgb(98, 98, 98);
 }
 
 .notifications-panel.hidden {
@@ -31,7 +31,6 @@
   border: none;
   /* color: rgb(0, 0, 0); */
   cursor: pointer;
-  margin-top: -0.8vh;
   transition: transform 0.1s ease;
 }
 
@@ -52,7 +51,9 @@
 .msg {
   margin-left: 5px;
   max-width: 70%;
+  font-size: medium;
 }
+
 
 .notification-item:hover {
   background-color: rgb(226, 226, 226);
@@ -64,8 +65,6 @@
   padding: 10px;
   background-color: #008080;
   color: white;
-  flex-shrink: 0; /* Prevent the footer from shrinking */
-  margin-top: auto; /* Push the footer to the bottom */
 }
 
 .delete-notification {
@@ -84,9 +83,10 @@
 }
 
 .delete-notificaton:hover {
-  background-color: #0e8388;
+  background-color: #0E8388;
   cursor: pointer;
   color: white;
+
 }
 
 .notifications-panel .two-buttons {
@@ -103,9 +103,11 @@
 
 .two-buttons button {
   /* position: relative;
-    top: 0; */
+  top: 0; */
+  right: -5!important;
   height: 28px;
-  border-radius: 50%;
+  width: 28px;
+  /* border-radius: 50% ; */
   border: none;
   background-color: transparent;
 }
@@ -115,7 +117,7 @@
 }
 
 .two-buttons .mark-as-read:hover {
-  background-color: rgba(11, 139, 182, 0.142);
+  background-color: rgba(0, 0, 0, 0.0);
   color: rgb(11, 139, 182);
 }
 
@@ -125,35 +127,39 @@
 
 .two-buttons .delete-notificaton:hover {
   color: rgb(209, 13, 13);
-  background-color: rgba(220, 46, 46, 0.142);
+  background-color: rgba(0, 0, 0, 0.0);
+
 }
 
 /* .button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    margin-right: 5px;
-    cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-right: 5px;
+  cursor: pointer;
 } */
 
 /* .button:hover {
-    background-color: #0056b3;
+  background-color: #0056b3;
 } */
 
 .panel-footer button {
   margin: 5px 13px;
-  border: none;
-  /* border-radius: 5%; */
+  border: none
+      /* border-radius: 5%; */
 }
 
 .panel-footer {
   display: flex;
   justify-content: space-around;
   width: 100%;
-  position: absolute;
+  position: sticky;
   bottom: 0;
   box-shadow: 0px -5px 20px rgb(98, 98, 98);
+  /* position: sticky; */
+  /* bottom: 0; */
+  /* z-index: 1; */
 }
 
 .notification-item.visited {
@@ -173,12 +179,12 @@
 }
 
 .delete-all-button {
-  background: #ff4742;
-  border: 1px solid #ff4742;
+  background: #FF4742;
+  border: 1px solid #FF4742;
   border-radius: 6px;
   box-shadow: rgba(0, 0, 0, 0.1) 1px 2px 4px;
   box-sizing: border-box;
-  color: #ffffff;
+  color: #FFFFFF;
   cursor: pointer;
   display: inline-block;
   font-family: nunito, roboto, proxima-nova, "proxima nova", sans-serif;
@@ -201,11 +207,11 @@
 .delete-all-button:active {
   background-color: white;
   background-position: 0 0;
-  color: #ff4742;
+  color: #FF4742;
 }
 
 .delete-all-button:active {
-  opacity: 0.5;
+  opacity: .5;
 }
 
 .mark-as-read-all-button {
@@ -214,7 +220,7 @@
   border-radius: 6px;
   box-shadow: rgba(0, 0, 0, 0.1) 1px 2px 4px;
   box-sizing: border-box;
-  color: #ffffff;
+  color: #FFFFFF;
   cursor: pointer;
   display: inline-block;
   font-family: nunito, roboto, proxima-nova, "proxima nova", sans-serif;
@@ -241,38 +247,40 @@
 }
 
 .mark-as-read-all-button:active {
-  opacity: 0.5;
+  opacity: .5;
 }
+
 
 /* Mobile and Tablet Styles */
 @media (max-width: 768px) {
   .notifications-panel {
-    width: 100%;
-    transform: translateX(0);
+      width: 100%;
+      transform: translateX(0);
   }
 
   .panel-header {
-    justify-content: space-between;
-    padding: 10px 20px;
+      justify-content: space-between;
+      padding: 10px 20px;
+
   }
 
   .panel-footer {
-    padding: 10px 20px;
+      padding: 10px 20px;
   }
 
   .two-buttons {
-    display: flex;
-    justify-content: space-around;
+      display: flex;
+      justify-content: space-around;
   }
 
   .notification-item {
-    padding: 10px 20px;
+      padding: 10px 20px;
   }
 }
 
 /* Larger Screens Styles */
 @media (min-width: 769px) {
   .notifications-panel {
-    width: 350px;
+      width: 350px;
   }
 }

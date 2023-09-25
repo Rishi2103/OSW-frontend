@@ -6,6 +6,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { hostname } from "../../hostname";
 import { useNavigate } from "react-router-dom";
+import TruncateText from "../TruncateText";
 
 const NotificationsPanel = ({ onClose }) => {
   const [notifications, setNotifications] = useState([]);
@@ -167,7 +168,7 @@ const NotificationsPanel = ({ onClose }) => {
         <button
           className="close-button"
           onClick={togglePanel}
-          style={{ color: "white", fontSize: "24px" }}
+          style={{ color: "white", fontSize: "24px", marginTop: "-1vh" }}
         >
           <FontAwesomeIcon icon={faAngleDoubleRight} />
         </button>
@@ -183,16 +184,20 @@ const NotificationsPanel = ({ onClose }) => {
                 notification.read ? "visited" : ""
               }`}
             >
-              <div className="msg">{notification.content}</div>
+              <div className="msg">
+                <TruncateText text={notification.content} maxChars={70} />
+              </div>
               <div className="two-buttons">
                 <button
                   className="mark-as-read"
+                  id="btn"
                   onClick={() => markAsVisited(notification._id)}
                 >
                   <FontAwesomeIcon icon={faCheck} />
                 </button>
                 <button
                   className="delete-notificaton"
+                  id="btn"
                   onClick={() => removeNotification(notification._id)}
                 >
                   <FontAwesomeIcon icon={faXmark} />
