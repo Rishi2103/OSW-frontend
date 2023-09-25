@@ -5,6 +5,7 @@ import Footer from "./Footer";
 import profile_img from "../img/profile-img.jpg";
 import jwt_decode from "jwt-decode";
 import { useLocation, useNavigate } from "react-router-dom";
+import { hostname } from "../hostname";
 
 const ViewProfile = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -82,7 +83,7 @@ const ViewProfile = () => {
     const fetchUserProfile = async () => {
       try {
         const response = await fetch(
-          `http://localhost:4000/user/profile/${userId}`
+          `${hostname}/user/profile/${userId}`
         );
         const data = await response.json();
         if (data.success) {
@@ -100,7 +101,7 @@ const ViewProfile = () => {
       console.log(userId);
       try {
         const response = await fetch(
-          `http://localhost:4000/user/profile-pic/${userId}`
+          `${hostname}/user/profile-pic/${userId}`
         );
 
         const res = await response.json();
@@ -161,7 +162,7 @@ const ViewProfile = () => {
         },
       };
 
-      const response = await fetch("http://localhost:4000/user/addprofile", {
+      const response = await fetch(`${hostname}/user/addprofile`, {
         method: "POST",
         headers: config.headers,
         body: JSON.stringify({
@@ -200,7 +201,7 @@ const ViewProfile = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:4000/user/email-verification/sendotp",
+        `${hostname}/user/email-verification/sendotp`,
         {
           method: "POST",
           headers: {
@@ -232,7 +233,7 @@ const ViewProfile = () => {
       };
 
       const response = await fetch(
-        "http://localhost:4000/user/email-verification/verify",
+        `${hostname}/user/email-verification/verify`,
         {
           method: "POST",
           headers: config.headers,

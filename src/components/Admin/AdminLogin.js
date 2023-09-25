@@ -6,18 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { hostname } from "../../hostname";
 
 const AdminLogin = () => {
-  const [optLoginOpen, setOtpLogin] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-
-  const openOtpLogin = () => {
-    setOtpLogin(true);
-  };
-
-  const closeOtpLogin = () => {
-    setOtpLogin(false);
-  };
 
   const handleLogin = async () => {
     try {
@@ -78,7 +69,7 @@ const AdminLogin = () => {
         </div>
 
         <div className="forgot-password">
-          Forgot Password? <span onClick={openOtpLogin}>Click Here!</span>
+          Forgot Password? <span onClick={()=>{navigate("/adminforgotpassword");}}>Click Here!</span>
         </div>
 
         <button
@@ -91,63 +82,6 @@ const AdminLogin = () => {
           Login
         </button>
       </div>
-      {optLoginOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <span className="close-button" onClick={closeOtpLogin}>
-              &times;
-            </span>
-            {/* Your form content goes here */}
-            <p
-              style={{
-                fontFamily: "'Open Sans', sans-serif",
-                fontSize: "25px",
-                fontWeight: "700",
-                textAlign: "center",
-                marginBottom: "30px",
-                color: "#0E8388",
-              }}
-            >
-              Otp Login
-            </p>
-            <form
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "17px",
-              }}
-            >
-              <div className="form-field">
-                <label>Otp:</label>
-                <input type="number" style={{ width: "100%" }} required />
-              </div>
-              <div>
-                <button
-                  className="modal-submit"
-                  type="submit"
-                  style={{ marginTop: "20px" }}
-                >
-                  Log In
-                </button>
-                <span
-                  style={{
-                    color: "#0E8388",
-                    fontFamily: "'Open Sans', sans-serif",
-                    fontSize: "15px",
-                    paddingLeft: "30px",
-                    cursor: "pointer",
-                  }}
-                >
-                  {" "}
-                  Resend Otp
-                </span>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

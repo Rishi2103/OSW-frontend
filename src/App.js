@@ -30,6 +30,7 @@ import PostBlogs from "./components/Blog/PostBlogs";
 import ShowBlog from "./components/Blog/ShowBlog";
 import MediaSection from "./components/Blog/BlogSection";
 import UpdateBlog from "./components/Blog/UpdateBlog";
+import AdminForgotPassword from "./components/Admin/AdminForgotPassword";
 
 const clientId =
   "574757039734-2hfvakv45d24o82mp3r80akqri2b70mq.apps.googleusercontent.com";
@@ -58,7 +59,8 @@ function App() {
           </>
         )}
         <Route path="/login" element={<Login />} />
-        <Route path="/adminLogin" exact element={<AdminLogin />} />
+        <Route path="/adminLogin" element={<AdminLogin />} />
+        <Route path="/adminforgotpassword" element={<AdminForgotPassword />} />
         <Route path="/" element={<Home />} />
         <>
           <Route path="/events" element={<Events />} />
