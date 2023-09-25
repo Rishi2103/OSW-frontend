@@ -204,7 +204,7 @@ export default function Navbar() {
                         className="fa-solid fa-user"
                         style={{ padding: "0", marginRight: "10px" }}
                       ></i>
-                      Delete user
+                      User List
                     </li>
                     <li style={{ marginTop: "10px" }} onClick={AddAdmin}>
                       <i
@@ -349,7 +349,7 @@ export default function Navbar() {
                         className="fa-solid fa-user"
                         style={{ padding: "0", marginRight: "10px" }}
                       ></i>
-                      Delete user
+                      User List
                     </li>
                     <li style={{ marginTop: "10px" }} onClick={AddAdmin}>
                       <i
