@@ -193,12 +193,6 @@ tr:nth-child(odd) {
   color: black;
 }
 
-.tags-cell {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-}
-
 .projectdesc {
   display: flex;
   flex-wrap: wrap;

@@ -313,7 +313,7 @@ export default function Speakers() {
     <div className="speakers">
       <Navbar />
       <div className="speakersheader">
-        <span className="speakerstext">Our</span> Speakers
+      <span style={{ color: '#0E8388' }}>Our</span> Speakers
       </div>
       {user && user.type === "admin" && (
         <div
