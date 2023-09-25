@@ -238,10 +238,10 @@ const Events = () => {
           <thead>
             <tr>
               <th>
-                <span onClick={handleSort}>
+                {/* <span onClick={handleSort}> */}
                   Event Name
-                  {sortOrder === "asc" ? " ↓" : " ↑"}
-                </span>
+                  {/* {sortOrder === "asc" ? " ↓" : " ↑"} */}
+                {/* </span> */}
               </th>
               <th>Date</th>
               <th>Type</th>
