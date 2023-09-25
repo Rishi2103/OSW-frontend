@@ -92,7 +92,7 @@ export default function TeamTile({ team, onDelete }) {
       <img className="teamimg" src={team.pic} alt="" />
       <TruncateText text={team.name} maxChars={20} />
       <TruncateText text={team.post} maxChars={20} />
-      <div className="teamlinks">
+      <div className="teamlinkss">
         <div className="teamlinks">
           {team.social_links.map((link, index) => (
             <a key={index} className="links" href={link}>

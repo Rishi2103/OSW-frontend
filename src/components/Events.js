@@ -107,7 +107,7 @@ const Events = () => {
     navigate(`/events/edit-Event/${event._id}`, { state: { event } });
   };
   const handleCreateClick = () => {
-    console.log(user,Token);
+    console.log(user, Token);
     navigate(`/events/create-Event`, { state: { user, Token } });
   };
   const handlePersonalEevntsClick = async () => {
@@ -128,7 +128,7 @@ const Events = () => {
     try {
       const response = await fetch(`${hostname}/personal-events`, {
         method: "GET",
-        headers:options,
+        headers: options,
       });
 
       if (response.ok) {
@@ -200,7 +200,7 @@ const Events = () => {
   }, []);
   const handleAllEevntsClick = () => {
     fetchData();
-  }
+  };
   return (
     <div className="eventpg">
       <Navbar />
@@ -218,18 +218,22 @@ const Events = () => {
         <p className="past-events-text">
           Events are listed in reverse chronological order by date.
         </p>
-        <button
-          className="all-events-button"
-          onClick={handleAllEevntsClick}
-        >
-          All Events
-        </button>
-        <button
-          className="personal-events-button"
-          onClick={handlePersonalEevntsClick}
-        >
-          Personal Events
-        </button>
+        {user && (
+          <>
+            <button
+              className="all-events-button"
+              onClick={handleAllEevntsClick}
+            >
+              All Events
+            </button>
+            <button
+              className="personal-events-button"
+              onClick={handlePersonalEevntsClick}
+            >
+              Personal Events
+            </button>
+          </>
+        )}
         <table className="event-table">
           <thead>
             <tr>

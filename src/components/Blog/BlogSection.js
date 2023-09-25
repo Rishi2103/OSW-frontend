@@ -99,7 +99,7 @@ const MediaSection = ({ userType }) => {
   const fetchPersonalBlogs = async () => {
     let options;
 
-    if (user && user.type === "user") {
+    if (localStorage.getItem("userAuthToken")) {
       console.log(localStorage.getItem("userAuthToken"));
       options = {
         "Content-Type": "application/json",
@@ -228,23 +228,27 @@ const MediaSection = ({ userType }) => {
             },
           }}
         >
-          <Flex
-            justifyContent="flex-start"
-            position="absolute"
-            top="10px"
-            left="10px"
-          >
-            <Button
-              colorScheme="teal"
-              mr={2}
-              onClick={() => fetchPersonalBlogs()}
-            >
-              Personal Blogs
-            </Button>
-            <Button colorScheme="teal" onClick={() => fetchBlogs()}>
-              All Blogs
-            </Button>
-          </Flex>
+          {user && (
+            <>
+              <Flex
+                justifyContent="flex-start"
+                position="absolute"
+                top="10px"
+                left="10px"
+              >
+                <Button
+                  colorScheme="teal"
+                  mr={2}
+                  onClick={() => fetchPersonalBlogs()}
+                >
+                  Personal Blogs
+                </Button>
+                <Button colorScheme="teal" onClick={() => fetchBlogs()}>
+                  All Blogs
+                </Button>
+              </Flex>
+            </>
+          )}
           {/* <Flex justifyContent={"center"}> */}
           <Heading
             as="h1"

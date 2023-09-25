@@ -150,7 +150,7 @@ export default function EditResourceLibrary({ project, isOpen }) {
           <div className="modal-content">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="exampleModalLabel">
-                Add Project
+                Edit Project
               </h1>
               <button
                 type="button"

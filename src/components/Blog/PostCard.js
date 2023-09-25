@@ -219,37 +219,41 @@ const PostCard = ({ blog, setBlogs, user, personal }) => {
               })}
             </Text>
           </Flex>
-          {(personal || user.type==="admin") && (
-            <Flex
-              _groupHover={{ opacity: 1 }} // Visible on hover
-            >
-              <IconButton
-                icon={<DeleteIcon />}
-                variant="ghost"
-                _hover={{ color: "black", bgColor: "transparent" }}
-                color="red"
-                aria-label="Delete"
-                size="md"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsDeleteDialogOpen(true);
-                }}
-                title="Delete Post"
-              />
-              <IconButton
-                icon={<EditIcon />}
-                variant="ghost"
-                _hover={{ color: "blue", bgColor: "transparent" }}
-                color="black"
-                aria-label="Edit"
-                size="md"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsUpdateDialogOpen(true);
-                }}
-                title="Edit Post"
-              />
-            </Flex>
+          {user && (
+            <>
+              {(personal || user.type === "admin") && (
+                <Flex
+                  _groupHover={{ opacity: 1 }} // Visible on hover
+                >
+                  <IconButton
+                    icon={<DeleteIcon />}
+                    variant="ghost"
+                    _hover={{ color: "black", bgColor: "transparent" }}
+                    color="red"
+                    aria-label="Delete"
+                    size="md"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsDeleteDialogOpen(true);
+                    }}
+                    title="Delete Post"
+                  />
+                  <IconButton
+                    icon={<EditIcon />}
+                    variant="ghost"
+                    _hover={{ color: "blue", bgColor: "transparent" }}
+                    color="black"
+                    aria-label="Edit"
+                    size="md"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsUpdateDialogOpen(true);
+                    }}
+                    title="Edit Post"
+                  />
+                </Flex>
+              )}
+            </>
           )}
         </Flex>
         <Text

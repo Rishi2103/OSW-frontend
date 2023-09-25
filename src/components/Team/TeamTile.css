@@ -35,8 +35,8 @@
   align-items: center;
   line-height: 1.2em;
 }
-.teamlinks {
-  width: 80%;
+.teamlinkss {
+  width: 150% !important;
   margin-left: 10%;
   /* padding-left: 17%; */
 }

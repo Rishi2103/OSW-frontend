@@ -210,21 +210,25 @@ const EventsPage = (props) => {
                 <b>Total Attendees:</b> {event.total_attendees}
               </p>
             </div>
+
             <div className="eve-det-btn">
-              {!event.attendees.includes(user._id) ? (
-                <>
-                  <button
-                    className="btn btn-primary custom-btn1"
-                    onClick={() => RegisterForEvent()}
-                  >
-                    <p className="btn-text">REGISTRATION</p>
-                  </button>
-                </>
-              ) : (
-                <button className="btn btn-primary custom-btn1">
-                  <p className="btn-text">REGISTERED</p>
+              {user && (
+                <button
+                  className="btn btn-primary custom-btn1"
+                  onClick={
+                    !event.attendees.includes(user._id)
+                      ? RegisterForEvent
+                      : null
+                  }
+                >
+                  <p className="btn-text">
+                    {!event.attendees.includes(user._id)
+                      ? "REGISTER"
+                      : "REGISTERED"}
+                  </p>
                 </button>
               )}
+
               {/* <button className="btn btn-secondary custom-btn2 ">
                 <p className="btn-text">MEETUP</p>
               </button> */}
