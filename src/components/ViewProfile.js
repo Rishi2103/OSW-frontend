@@ -329,7 +329,7 @@ const ViewProfile = () => {
                 {userType === "user" && showOtpButton && (
                   <>
                     {is_verified ? (
-                      "verified"
+                      <span style={{color:"green"}}>&#10004;</span>
                     ) : (
                       <button onClick={handleverifyemail}>Verify</button>
                     )}

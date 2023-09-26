@@ -300,12 +300,6 @@ function EventEditForm() {
     }
   };
 
-  const languageOptions = [
-    { value: "", label: "Select Language" },
-    { value: "english", label: "English" },
-    { value: "spanish", label: "Spanish" },
-    // Add more language options here
-  ];
 
   const meetingModeOptions = [
     { value: "", label: "Select Meeting Mode" },
@@ -313,23 +307,6 @@ function EventEditForm() {
     { value: "Offline", label: "Offline" },
   ];
 
-  const timezoneOptions = [
-    { value: "", label: "Select Timezone" },
-    { value: "America/New_York", label: "America/New_York (EST)" },
-    { value: "America/Los_Angeles", label: "America/Los_Angeles (PST)" },
-    { value: "Europe/London", label: "Europe/London (GMT)" },
-    { value: "Europe/Paris", label: "Europe/Paris (CET)" },
-    { value: "Asia/Tokyo", label: "Asia/Tokyo (JST)" },
-    // Add more timezone options here
-  ];
-
-  const countryOptions = [
-    { value: "", label: "Select Country" },
-    { value: "us", label: "United States" },
-    { value: "ca", label: "Canada" },
-    { value: "uk", label: "United Kingdom" },
-    // Add more country options here
-  ];
 
   const tagOptions = [
     // { value: "", label: "Select Tag" },
@@ -459,7 +436,7 @@ function EventEditForm() {
 
         <div className="form-group">
           <label htmlFor="language">Language</label>
-          <select
+          {/* <select
             name="language"
             // defaultValue={"English"}
             // value={formData.language}
@@ -470,7 +447,15 @@ function EventEditForm() {
                 {option.label}
               </option>
             ))}
-          </select>
+          </select> */}
+          <input
+            type="text"
+            name="language"
+            placeholder="Language"
+            defaultValue={formData.language}
+            // value={formData.event_name}
+            onChange={handleChange}
+          />
         </div>
 
         {/* <div className="form-group">
@@ -519,7 +504,7 @@ function EventEditForm() {
         </div>
         <div className="form-group">
           <label htmlFor="timezone">Timezone</label>
-          <select
+          {/* <select
             name="timeZone"
             // defaultValue={}
             value={formData.timeZone}
@@ -530,7 +515,15 @@ function EventEditForm() {
                 {option.label}
               </option>
             ))}
-          </select>
+          </select> */}
+          <input
+            type="text"
+            name="timeZone"
+            placeholder="TimeZone"
+            defaultValue={formData.timeZone}
+            // value={formData.event_name}
+            onChange={handleChange}
+          />
         </div>
 
         <div className="form-group">
@@ -579,17 +572,25 @@ function EventEditForm() {
             </div>
             <div className="form-group">
               <label htmlFor="city">City</label>
-              <select name="city" value={formData.city} onChange={handleChange}>
+              {/* <select name="city" value={formData.city} onChange={handleChange}>
                 {countryOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
                 ))}
-              </select>
+              </select> */}
+              <input
+                type="text"
+                name="city"
+                placeholder="City"
+                defaultValue={formData.city}
+                // value={formData.event_name}
+                onChange={handleChange}
+              />
             </div>
             <div className="form-group">
               <label htmlFor="state">state</label>
-              <select
+              {/* <select
                 name="state"
                 value={formData.state}
                 onChange={handleChange}
@@ -599,11 +600,19 @@ function EventEditForm() {
                     {option.label}
                   </option>
                 ))}
-              </select>
+              </select> */}
+              <input
+                type="text"
+                name="state"
+                placeholder="State"
+                defaultValue={formData.state}
+                // value={formData.event_name}
+                onChange={handleChange}
+              />
             </div>
             <div className="form-group">
               <label htmlFor="country">Country</label>
-              <select
+              {/* <select
                 name="country"
                 value={formData.country}
                 onChange={handleChange}
@@ -613,7 +622,15 @@ function EventEditForm() {
                     {option.label}
                   </option>
                 ))}
-              </select>
+              </select> */}
+              <input
+                type="text"
+                name="country"
+                placeholder="Country"
+                defaultValue={formData.country}
+                // value={formData.event_name}
+                onChange={handleChange}
+              />
             </div>
 
             <div className="form-group">

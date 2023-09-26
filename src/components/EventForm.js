@@ -148,37 +148,11 @@ function EventRegistrationForm(props) {
     }
   };
 
-  const languageOptions = [
-    { value: "", label: "Select Language" },
-    { value: "english", label: "English" },
-    { value: "spanish", label: "Spanish" },
-    // Add more language options here
-  ];
-
   const meetingModeOptions = [
     { value: "", label: "Select Meeting Mode" },
     { value: "Online", label: "Online" },
     { value: "Offline", label: "Offline" },
   ];
-
-  const timezoneOptions = [
-    { value: "", label: "Select Timezone" },
-    { value: "America/New_York", label: "America/New_York (EST)" },
-    { value: "America/Los_Angeles", label: "America/Los_Angeles (PST)" },
-    { value: "Europe/London", label: "Europe/London (GMT)" },
-    { value: "Europe/Paris", label: "Europe/Paris (CET)" },
-    { value: "Asia/Tokyo", label: "Asia/Tokyo (JST)" },
-    // Add more timezone options here
-  ];
-
-  const countryOptions = [
-    { value: "", label: "Select Country" },
-    { value: "us", label: "United States" },
-    { value: "ca", label: "Canada" },
-    { value: "uk", label: "United Kingdom" },
-    // Add more country options here
-  ];
-
   const tagOptions = [
     // { value: "", label: "Select Tag" },
     { value: "Coding", label: "Coding" },
@@ -324,7 +298,7 @@ function EventRegistrationForm(props) {
             type="text"
             name="event_name"
             placeholder="Event name"
-            defaultValue={formData.event_name}
+            value={formData.event_name}
             // value={formData.event_name}
             onChange={handleChange}
           />
@@ -332,7 +306,7 @@ function EventRegistrationForm(props) {
 
         <div className="form-group">
           <label htmlFor="language">Language</label>
-          <select
+          {/* <select
             name="language"
             // value={formData.language}
             onChange={handleChange}
@@ -342,7 +316,15 @@ function EventRegistrationForm(props) {
                 {option.label}
               </option>
             ))}
-          </select>
+          </select> */}
+          <input
+            type="text"
+            name="language"
+            placeholder="Language"
+            value={formData.language}
+            // value={formData.event_name}
+            onChange={handleChange}
+          />
         </div>
 
         <div className="form-group">
@@ -388,7 +370,7 @@ function EventRegistrationForm(props) {
         </div>
         <div className="form-group">
           <label htmlFor="timezone">Timezone</label>
-          <select
+          {/* <select
             name="timeZone"
             // value={formData.timeZone}
             onChange={handleChange}
@@ -398,7 +380,15 @@ function EventRegistrationForm(props) {
                 {option.label}
               </option>
             ))}
-          </select>
+          </select> */}
+          <input
+            type="text"
+            name="timeZone"
+            placeholder="TimeZone"
+            value={formData.timeZone}
+            // value={formData.event_name}
+            onChange={handleChange}
+          />
         </div>
 
         <div className="form-group">
@@ -444,7 +434,7 @@ function EventRegistrationForm(props) {
             </div>
             <div className="form-group">
               <label htmlFor="city">City</label>
-              <select
+              {/* <select
                 name="city"
                 // value={formData.city}
                 onChange={handleChange}
@@ -454,11 +444,19 @@ function EventRegistrationForm(props) {
                     {option.label}
                   </option>
                 ))}
-              </select>
+              </select> */}
+              <input
+                type="text"
+                name="city"
+                placeholder="City"
+                value={formData.city}
+                // value={formData.event_name}
+                onChange={handleChange}
+              />
             </div>
             <div className="form-group">
               <label htmlFor="state">state</label>
-              <select
+              {/* <select
                 name="state"
                 // value={formData.state}
                 onChange={handleChange}
@@ -468,11 +466,19 @@ function EventRegistrationForm(props) {
                     {option.label}
                   </option>
                 ))}
-              </select>
+              </select> */}
+              <input
+                type="text"
+                name="state"
+                placeholder="State"
+                value={formData.state}
+                // value={formData.event_name}
+                onChange={handleChange}
+              />
             </div>
             <div className="form-group">
               <label htmlFor="country">Country</label>
-              <select
+              {/* <select
                 name="country"
                 // value={formData.country}
                 onChange={handleChange}
@@ -482,7 +488,15 @@ function EventRegistrationForm(props) {
                     {option.label}
                   </option>
                 ))}
-              </select>
+              </select> */}
+              <input
+                type="text"
+                name="country"
+                placeholder="Country"
+                value={formData.country}
+                // value={formData.event_name}
+                onChange={handleChange}
+              />
             </div>
 
             <div className="form-group">

@@ -157,7 +157,10 @@ export default function Navbar() {
     navigate("/admin/add-admin");
   };
   const DeleteUser = () => {
-    navigate("/admin/delete-user");
+    navigate("/admin/user-list");
+  };
+  const DeleteAdmin = () => {
+    navigate("/admin/admin-list");
   };
   return (
     <nav className={`nav ${menuOpen ? "open" : ""}`}>
@@ -199,7 +202,7 @@ export default function Navbar() {
           <ul className="dropdown-menu">
             {user ? (
               <>
-                {user.type === "admin" && user.superadmin === true ? (
+                {user.type === "admin" ? (
                   <>
                     <li style={{ marginTop: "10px" }} onClick={DeleteUser}>
                       <i
@@ -208,13 +211,24 @@ export default function Navbar() {
                       ></i>
                       User List
                     </li>
-                    <li style={{ marginTop: "10px" }} onClick={AddAdmin}>
-                      <i
-                        className="fa-solid fa-user"
-                        style={{ padding: "0", marginRight: "10px" }}
-                      ></i>
-                      Add Admin
-                    </li>
+                    {user.superadmin === true && (
+                      <>
+                        <li style={{ marginTop: "10px" }} onClick={AddAdmin}>
+                          <i
+                            className="fa-solid fa-user"
+                            style={{ padding: "0", marginRight: "10px" }}
+                          ></i>
+                          Add Admin
+                        </li>
+                        <li style={{ marginTop: "10px" }} onClick={DeleteAdmin}>
+                          <i
+                            className="fa-solid fa-user"
+                            style={{ padding: "0", marginRight: "10px" }}
+                          ></i>
+                          Admin List
+                        </li>
+                      </>
+                    )}
                   </>
                 ) : (
                   <li style={{ marginTop: "10px" }} onClick={viewProfile}>
@@ -324,15 +338,19 @@ export default function Navbar() {
           </span>
           Resource Library
         </CustomLink>
-        <span className="icons-norm" onClick={navigateToChat}>
-          <i className="fa-solid fa-comment-dots"></i>
-        </span>
-        <span className="icons-norm">
-          <i class="fa-solid fa-bell" onClick={toggleNotifications}></i>
-          {showNotifications && (
-            <NotificationsPanel onClose={toggleNotifications} />
-          )}
-        </span>
+        {user && user.type === "user" && (
+          <>
+            <span className="icons-norm" onClick={navigateToChat}>
+              <i className="fa-solid fa-comment-dots"></i>
+            </span>
+            <span className="icons-norm">
+              <i class="fa-solid fa-bell" onClick={toggleNotifications}></i>
+              {showNotifications && (
+                <NotificationsPanel onClose={toggleNotifications} />
+              )}
+            </span>
+          </>
+        )}
         <div className="profile-div" onClick={dropdown}>
           <img
             className="profile-img"
@@ -344,7 +362,7 @@ export default function Navbar() {
           <ul className="dropdown-menu">
             {user ? (
               <>
-                {user.type === "admin" && user.superadmin === true ? (
+                {user.type === "admin" ? (
                   <>
                     <li style={{ marginTop: "10px" }} onClick={DeleteUser}>
                       <i
@@ -353,13 +371,24 @@ export default function Navbar() {
                       ></i>
                       User List
                     </li>
-                    <li style={{ marginTop: "10px" }} onClick={AddAdmin}>
-                      <i
-                        className="fa-solid fa-user"
-                        style={{ padding: "0", marginRight: "10px" }}
-                      ></i>
-                      Add Admin
-                    </li>
+                    {user.superadmin === true && (
+                      <>
+                        <li style={{ marginTop: "10px" }} onClick={AddAdmin}>
+                          <i
+                            className="fa-solid fa-user"
+                            style={{ padding: "0", marginRight: "10px" }}
+                          ></i>
+                          Add Admin
+                        </li>
+                        <li style={{ marginTop: "10px" }} onClick={DeleteAdmin}>
+                          <i
+                            className="fa-solid fa-user"
+                            style={{ padding: "0", marginRight: "10px" }}
+                          ></i>
+                          Admin List
+                        </li>
+                      </>
+                    )}
                   </>
                 ) : (
                   <li style={{ marginTop: "10px" }} onClick={viewProfile}>

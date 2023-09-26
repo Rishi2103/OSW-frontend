@@ -114,15 +114,16 @@ tr:nth-child(odd) {
 }
 
 .pagination {
-  /* width: 100%; */
+  width: 50vw !important;
   /* padding-top: 10px; */
-  /* margin-bottom: 10px; */
-  padding-right: 30px;
+  margin-right: -10vw;
   right: 0;
+  float: right;
+  margin-left: -20vw;
+  padding-right: 30px;
   display: flex;
   flex-direction: row;
-  flex-direction: row;
-  justify-content: center;
+  width: fit-content;
 }
 
 .btn {
@@ -139,7 +140,7 @@ tr:nth-child(odd) {
 
 .pagination-con {
   /* flex: 0; */
-  width: 1000px;
+  width: 90%!important;
   display: flex;
   width: auto;
   padding-right: 50px;
@@ -157,9 +158,11 @@ tr:nth-child(odd) {
 }
 
 .rppdd {
+  width: 30%;
   font-size: 12px;
   margin-right: 30px;
   height: 25px;
+  font: black;
 }
 
 .projecttags {

@@ -103,13 +103,38 @@ export default function ResourceLibrary() {
     setCurrentPage(1);
   };
 
-  const prev = <FontAwesomeIcon icon={faGreaterThan}></FontAwesomeIcon>;
+  const prev = <i className="fa-solid fa-less-than"></i>;
   const next = (
     <i className="fa-solid fa-greater-than" style={{ paddingLeft: "8px" }}></i>
   );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+  };
+
+  const totalProjects = getprojects.length;
+  const totalPages = Math.ceil(totalProjects / rowsPerPage);
+  const indexOfLastProject = currentPage * rowsPerPage;
+  // const indexOfFirstProject = indexOfLastProject - rowsPerPage;
+  const indexOfFirstProject = indexOfLastProject - rowsPerPage;
+  const currentProjects = getprojects.slice(indexOfFirstProject, indexOfLastProject);
+
+  const handleSort = () => {
+    const sortedProjects = [...getprojects].sort((a, b) => {
+      const nameA = a.name.toLowerCase();
+      const nameB = b.name.toLowerCase();
+
+      if (nameA < nameB) {
+        return sortOrder === "asc" ? -1 : 1;
+      }
+      if (nameA > nameB) {
+        return sortOrder === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+
+    setGetProjects(sortedProjects);
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
   const handleEditButtonClick = (project) => {
     console.log(project);
@@ -144,29 +169,6 @@ export default function ResourceLibrary() {
         console.error("Error deleting event:", error);
       });
   };
-  const totalProjects = projects.length;
-  const totalPages = Math.ceil(totalProjects / rowsPerPage);
-  const indexOfLastProject = currentPage * rowsPerPage;
-  // const indexOfFirstProject = indexOfLastProject - rowsPerPage;
-
-  const handleSort = () => {
-    const sortedProjects = [...getprojects].sort((a, b) => {
-      const nameA = a.name.toLowerCase();
-      const nameB = b.name.toLowerCase();
-
-      if (nameA < nameB) {
-        return sortOrder === "asc" ? -1 : 1;
-      }
-      if (nameA > nameB) {
-        return sortOrder === "asc" ? 1 : -1;
-      }
-      return 0;
-    });
-
-    setGetProjects(sortedProjects);
-    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(
@@ -309,8 +311,8 @@ export default function ResourceLibrary() {
               <tr>
                 <th>
                   {/* <span onClick={handleSort}> */}
-                    Project Name
-                    {/* {sortOrder === "asc" ? " ↓" : " ↑"} */}
+                  Project Name
+                  {/* {sortOrder === "asc" ? " ↓" : " ↑"} */}
                   {/* </span> */}
                 </th>
                 <th>Project Discription</th>
@@ -325,7 +327,7 @@ export default function ResourceLibrary() {
               </tr>
             </thead>
             <tbody>
-              {getprojects.map((projects) => (
+              {currentProjects.map((projects) => (
                 <tr key={projects._id}>
                   <td>{projects.project_name}</td>
                   <td
@@ -433,7 +435,10 @@ export default function ResourceLibrary() {
                         onChange={handleRowsPerPageChange}
                       >
                         {rowsPerPageOptions.map((option) => (
-                          <option key={option} value={option}>
+                          <option
+                            key={option}
+                            value={option}
+                          >
                             {option}
                           </option>
                         ))}
@@ -447,7 +452,7 @@ export default function ResourceLibrary() {
                       >
                         {prev}
                       </button>
-                      <p style={{ fontSize: "13px", paddingTop: "5px" }}>
+                      <p style={{ fontSize: "13px", paddingTop: "10px" }}>
                         Page {currentPage} of {totalPages}
                       </p>
                       {/* Pagination controls */}

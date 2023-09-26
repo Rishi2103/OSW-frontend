@@ -8,17 +8,19 @@ import { hostname } from "../../hostname";
 const AddAdmin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isSuperadmin, setIsSuperadmin] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
+      console.log(email, password, isSuperadmin);
       const response = await fetch(`${hostname}/admin/add-newadmin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           authorization: localStorage.getItem("adminAuthToken"),
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, superadmin: isSuperadmin }),
       });
 
       if (response.ok) {
@@ -64,6 +66,16 @@ const AddAdmin = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+          </div>
+          <div style={{ marginLeft: "6vw" }}>
+            <label>
+              <input
+                type="checkbox"
+                checked={isSuperadmin}
+                onChange={() => setIsSuperadmin(!isSuperadmin)}
+              />
+              Make Superadmin
+            </label>
           </div>
         </div>
 

@@ -32,6 +32,7 @@ import MediaSection from "./components/Blog/BlogSection";
 import Chatpp from './components/Chatapp';
 import UpdateBlog from "./components/Blog/UpdateBlog";
 import AdminForgotPassword from "./components/Admin/AdminForgotPassword";
+import Admin from "./components/Admin/AdminList";
 const clientId =
   "574757039734-2hfvakv45d24o82mp3r80akqri2b70mq.apps.googleusercontent.com";
 
@@ -55,7 +56,8 @@ function App() {
         {isAdminAuthenticated && (
           <>
             <Route path="/admin/add-admin" element={<AddAdmin />} />
-            <Route path="/admin/delete-user" element={<User />} />
+            <Route path="/admin/user-list" element={<User />} />
+            <Route path="/admin/admin-list" element={<Admin />} />
           </>
         )}
         <Route path="/login" element={<Login />} />

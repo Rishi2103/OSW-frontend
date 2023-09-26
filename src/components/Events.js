@@ -239,8 +239,8 @@ const Events = () => {
             <tr>
               <th>
                 {/* <span onClick={handleSort}> */}
-                  Event Name
-                  {/* {sortOrder === "asc" ? " ↓" : " ↑"} */}
+                Event Name
+                {/* {sortOrder === "asc" ? " ↓" : " ↑"} */}
                 {/* </span> */}
               </th>
               <th>Date</th>
@@ -314,8 +314,15 @@ const Events = () => {
             ))}
 
             <tr>
-              <td colSpan="4">
-                <div className="pagination">
+              <td
+                colSpan="10"
+                style={{
+                  backgroundColor: "white",
+                  borderColor: "white",
+                  borderStyle: "none",
+                }}
+              >
+                <div className="event-pagination">
                   {/* Number of rows per page select */}
                   <div className="pagination-con">
                     <label className="rpp" htmlFor="rowsPerPage">
@@ -342,7 +349,7 @@ const Events = () => {
                     >
                       {prev}
                     </button>
-                    <p style={{ fontSize: "13px", paddingTop: "5px" }}>
+                    <p style={{ fontSize: "13px", paddingTop: "10px" }}>
                       Page {currentPage} of {totalPages}
                     </p>
                     {/* Pagination controls */}

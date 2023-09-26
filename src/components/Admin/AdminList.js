@@ -5,13 +5,11 @@ import SecFooter from "../SecFooter";
 import "./User.css";
 import { hostname } from "../../hostname";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
-const User = () => {
+const Admin = () => {
   const [sortOrder, setSortOrder] = useState("asc");
   const [user, setUsers] = useState([]);
-  const navigate = useNavigate();
   const rowsPerPageOptions = [5, 10, 15]; // Customize the rows per page options as needed
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -26,17 +24,62 @@ const User = () => {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch(`${hostname}/admins`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: localStorage.getItem("adminAuthToken"),
+          // Add any additional headers you need (e.g., authentication headers)
+        },
+      });
 
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      console.log("Users data:", data.users);
+      setUsers(data.admins);
+      // Process the data as needed
+    } catch (error) {
+      console.error("Error fetching users:", error.message);
+    }
+  };
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+  const deleteUser = async (userId) => {
+    try {
+      const response = await fetch(`${hostname}/delete/admin/${userId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: localStorage.getItem("adminAuthToken"), // Add your authentication token here
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+
+      console.log("User deleted successfully:", data.message);
+      fetchUsers();
+      // Handle success here
+    } catch (error) {
+      console.error("Error deleting user:", error.message);
+      // Handle error here
+    }
+  };
   // Pagination calculation
   const totalEvents = user.length;
   const totalPages = Math.ceil(totalEvents / rowsPerPage);
   const indexOfLastEvent = currentPage * rowsPerPage;
   const indexOfFirstEvent = indexOfLastEvent - rowsPerPage;
   const currentEvents = user.slice(indexOfFirstEvent, indexOfLastEvent);
- 
-  const viewProfile = (userId) => {
-    navigate("/profile", { state: { userId } });
-  };
 
   const handleSort = () => {
     const sortedEvents = [...user].sort((a, b) => {
@@ -55,56 +98,7 @@ const User = () => {
     setUsers(sortedEvents);
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
-  const fetchUsers = async () => {
-    try {
-      const response = await fetch(`${hostname}/users`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: localStorage.getItem("adminAuthToken"),
-          // Add any additional headers you need (e.g., authentication headers)
-        },
-      });
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const data = await response.json();
-      console.log("Users data:", data.users);
-      setUsers(data.users);
-      // Process the data as needed
-    } catch (error) {
-      console.error("Error fetching users:", error.message);
-    }
-  };
-  useEffect(() => {
-    fetchUsers();
-  }, []);
- const deleteUser = async (userId) => {
-   try {
-     const response = await fetch(`${hostname}/delete/user/${userId}`, {
-       method: "DELETE",
-       headers: {
-         "Content-Type": "application/json",
-         authorization: localStorage.getItem("adminAuthToken"), // Add your authentication token here
-       },
-     });
-
-     const data = await response.json();
-
-     if (!response.ok) {
-       throw new Error(data.message);
-     }
-
-     console.log("User deleted successfully:", data.message);
-     fetchUsers();
-     // Handle success here
-   } catch (error) {
-     console.error("Error deleting user:", error.message);
-     // Handle error here
-   }
- };
   return (
     <div className="eventpg">
       <Navbar />
@@ -114,51 +108,22 @@ const User = () => {
         <table className="event-table">
           <thead>
             <tr>
-              <th>
-                <span onClick={handleSort}>
-                  User Name
-                  {sortOrder === "asc" ? " ↓" : " ↑"}
-                </span>
-              </th>
-              <th>Full Name</th>
               <th>Email</th>
-              <th>View</th>
+              <th>Super Admin</th>
               <th>Delete</th>
             </tr>
           </thead>
           <tbody>
             {currentEvents.map((user) => (
-              <tr key={user.id}>
-                <td>{user.user_name}</td>
-                <td>
-                  {user.profile ? (
-                    <>
-                      {user.profile.first_name || "-----"}{" "}
-                      {user.profile.last_name || "-----"}
-                    </>
-                  ) : (
-                    <>{"----- -----"}</>
-                  )}
-                </td>
+              <tr key={user._id}>
                 <td>{user.email}</td>
-                <td className="edit-project-buttons">
-                  <div className="editprojectbutton">
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => viewProfile(user._id)}
-                    >
-                      <FontAwesomeIcon
-                        icon={faEye}
-                        className="edit"
-                      ></FontAwesomeIcon>
-                    </button>
-                  </div>
-                </td>
+                {user.superadmin ? <td>Yes</td> : <td>No</td>}
                 <td className="delete-project-buttons">
                   <div className="deleteprojectbutton">
                     <button
                       className="btn btn-primary"
-                      onClick={(e) => (deleteUser(user._id))}
+                      onClick={(e) => deleteUser(user._id)}
+                      style={{ marginLeft: "-6.5  vw" }}
                     >
                       <FontAwesomeIcon
                         icon={faTrash}
@@ -224,4 +189,4 @@ const User = () => {
   );
 };
 
-export default User;
+export default Admin;
