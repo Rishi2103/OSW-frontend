@@ -72,22 +72,20 @@ export default function SpeakersTile({ speaker, onDelete }) {
     >
       {user && user.type === "admin" && (
         <button className="deletespeaker-icon" onClick={onDelete}>
-          <FontAwesomeIcon
-            icon={faTrashAlt}
-          />
+          <FontAwesomeIcon icon={faTrashAlt} />
         </button>
       )}
-      <img
-        className="speakertilespeakerimg"
-        src={speaker.pic}
-        alt=""
-      />
+      <img className="speakertilespeakerimg" src={speaker.pic} alt="hsbd" />
       <TruncateText text={speaker.name} maxChars={20} />
       <TruncateText text={speaker.university} maxChars={20} />
       <div className="teamlinks">
         <div className="teamlinks">
           {speaker.social_links.map((link, index) => (
-            <a key={index} className="links" href={link}>
+            <a
+              key={index}
+              className="links"
+              href={`https://${link}`}
+            >
               {generateLinkIcon(link)}
             </a>
           ))}

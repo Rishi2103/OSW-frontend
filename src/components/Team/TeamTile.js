@@ -68,8 +68,6 @@ export default function TeamTile({ team, onDelete }) {
       return <i className="fa fa-brands fa-youtube fa-2xs"></i>;
     } else if (link.includes("instagram")) {
       return <i className="fa fa-brands fa-instagram fa-2xs"></i>;
-    } else {
-      return <i className="fa fa-brands fa-link mx fa-2xs"></i>;
     }
   };
   return (
@@ -95,7 +93,11 @@ export default function TeamTile({ team, onDelete }) {
       <div className="teamlinkss">
         <div className="teamlinks">
           {team.social_links.map((link, index) => (
-            <a key={index} className="links" href={link}>
+            <a
+              key={index}
+              className="links"
+              href={`https://${link}`}
+            >
               {generateLinkIcon(link)}
             </a>
           ))}

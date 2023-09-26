@@ -266,7 +266,11 @@ const ViewProfile = () => {
       <div className="profile-con">
         <div className="profile-card">
           <div className="profile-card-img">
-            <img src={selectedImage} alt="" />
+            <img
+              src={selectedImage}
+              className="profile-image rounded-circle"
+              alt=""
+            />
           </div>
           <div className="profile-username">
             <p>{user_name}</p>

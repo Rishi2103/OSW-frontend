@@ -358,13 +358,13 @@ const Team = () => {
                       <label htmlFor="formFile" className="form-label">
                         Profile Photo
                       </label>
-                      {selectedteamprofilephoto && (
+                      {/* {selectedteamprofilephoto && (
                         <img
                           className="teamprofilephoto"
                           src={selectedteamprofilephoto}
                           alt="Selected_Profile_Photo"
                         />
-                      )}
+                      )} */}
                       <input
                         className="form-control"
                         name="teamprofilephoto"

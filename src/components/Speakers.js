@@ -353,7 +353,7 @@ export default function Speakers() {
               style={{
                 // marginLeft: "30vw",
                 width: "100%",
-                marginTop: "65vw",
+                marginTop: "35vw",
               }}
             >
               <div className="modal-header">
@@ -374,13 +374,13 @@ export default function Speakers() {
                     <label for="formFile" className="form-label">
                       Profile Photo
                     </label>
-                    {selectedspeakerprofilephoto && (
+                    {/* {selectedspeakerprofilephoto && (
                       <img
                         className="speakerprofilephoto"
                         src={selectedspeakerprofilephoto}
                         alt="SelectedProfilePhoto"
                       />
-                    )}
+                    )} */}
                     <input
                       className="form-control"
                       name="speakerprofilephoto"
