@@ -104,7 +104,7 @@ const Admin = () => {
       <Navbar />
       <div className="eventpg-intro"></div>
       <div className="past-events">
-        <p className="past-events-title">User List</p>
+        <p className="past-events-title">Admin List</p>
         <table className="event-table">
           <thead>
             <tr>
