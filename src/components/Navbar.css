@@ -86,7 +86,7 @@ background-color: rgb(130, 205, 71, 0.1);
 }
 .icons-norm{
   padding: 0px;
-  padding-left: 10px;
+  padding-left: 25px;
   display: flex;
   align-items: center;
   margin-left: 0px;
@@ -121,6 +121,7 @@ background-color: rgb(130, 205, 71, 0.1);
   /* height: auto; */
   margin-left: 30px;
   cursor: pointer;
+  border-radius: 50%;
 }
 .dropdown {
   position: relative;

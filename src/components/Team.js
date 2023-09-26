@@ -273,7 +273,7 @@ const Team = () => {
         <Navbar />
         <div className="teamheader">
           <div className="teamheadertitle">
-            <span className="our">Our</span> Team
+            <span style={{ color: '#0E8388' }}>Our</span> Team
           </div>
           <div className="headertext">
             <p>

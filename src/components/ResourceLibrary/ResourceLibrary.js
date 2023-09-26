@@ -308,10 +308,10 @@ export default function ResourceLibrary() {
             <thead>
               <tr>
                 <th>
-                  <span onClick={handleSort}>
+                  {/* <span onClick={handleSort}> */}
                     Project Name
-                    {sortOrder === "asc" ? " ↓" : " ↑"}
-                  </span>
+                    {/* {sortOrder === "asc" ? " ↓" : " ↑"} */}
+                  {/* </span> */}
                 </th>
                 <th>Project Discription</th>
                 <th>Github/Docker Link</th>
